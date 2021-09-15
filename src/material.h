@@ -124,3 +124,23 @@ class DiffuseLight : public Material {
  private:
   std::shared_ptr<Texture> emit_;
 };
+
+class Isotropic : public Material {
+ public:
+  explicit Isotropic(std::shared_ptr<Texture> albedo);
+
+  explicit Isotropic(const Color &albedo);
+
+  /**
+   * Compute scattered ray and attenuation from an inbound ray and collision information.
+   * @param[in] ray inbound ray
+   * @param[in] collision contains collision information
+   * @param[out] attenuation receives computed attenuation
+   * @param[out] scattered_ray receives computed scattered ray
+   * @return true if scattering happened, false otherwise
+   */
+  bool Scatter(const Ray &ray, const Collision &collision, Color &attenuation, Ray &scattered_ray) const override;
+
+ private:
+  std::shared_ptr<Texture> albedo_;
+};

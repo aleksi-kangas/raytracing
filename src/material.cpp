@@ -64,3 +64,13 @@ DiffuseLight::DiffuseLight(std::shared_ptr<Texture> albedo) : emit_(std::move(al
 Color DiffuseLight::Emit(double u, double v, const Point3D &point) const {
   return emit_->SampleColor(u, v, point);
 }
+
+Isotropic::Isotropic(std::shared_ptr<Texture> albedo) : albedo_(std::move(albedo)) {}
+
+Isotropic::Isotropic(const Color &albedo) : albedo_(std::make_shared<SolidColorTexture>(albedo)) {}
+
+bool Isotropic::Scatter(const Ray &ray, const Collision &collision, Color &attenuation, Ray &scattered_ray) const {
+  scattered_ray = Ray(collision.point, Vector3D::RandomInUnitSphere(), ray.Time());
+  attenuation = albedo_->SampleColor(collision.u, collision.v, collision.point);
+  return true;
+}

@@ -5,6 +5,7 @@
 
 #include "box.h"
 #include "bvh.h"
+#include "constant_medium.h"
 #include "material.h"
 #include "moving_sphere.h"
 #include "random.h"
@@ -33,25 +34,25 @@ void Scene::InitializeWorld() {
   std::shared_ptr<Material> red = std::make_shared<Lambertian>(Color(0.65, 0.05, 0.05));
   std::shared_ptr<Material> white = std::make_shared<Lambertian>(Color(0.73, 0.73, 0.73));
   std::shared_ptr<Material> green = std::make_shared<Lambertian>(Color(0.12, 0.45, 0.15));
-  std::shared_ptr<Material> light = std::make_shared<DiffuseLight>(Color(15, 15, 15));
+  std::shared_ptr<Material> light = std::make_shared<DiffuseLight>(Color(7, 7, 7));
 
   world.AddCollidable(std::make_shared<RectangleYZ>(0, 555, 0, 555, 555, green));
   world.AddCollidable(std::make_shared<RectangleYZ>(0, 555, 0, 555, 0, red));
   world.AddCollidable(std::make_shared<RectangleXZ>(0, 555, 0, 555, 0, white));
   world.AddCollidable(std::make_shared<RectangleXZ>(0, 555, 0, 555, 555, white));
   world.AddCollidable(std::make_shared<RectangleXY>(0, 555, 0, 555, 555, white));
-  world.AddCollidable(std::make_shared<RectangleXZ>(213, 343, 227, 332, 554, light));
+  world.AddCollidable(std::make_shared<RectangleXZ>(113, 443, 127, 432, 554, light));
 
   {
     std::shared_ptr<Collidable> box = std::make_shared<Box>(Point3D(0, 0, 0), Point3D(165, 330, 165), white);
     box = std::make_shared<RotateY>(box, 15.0);
     box = std::make_shared<Translate>(box, Vector3D(265, 0, 295));
-    world.AddCollidable(box);
+    world.AddCollidable(std::make_shared<ConstantMedium>(box, 0.01, Color(0, 0, 0)));
   }
   {
     std::shared_ptr<Collidable> box = std::make_shared<Box>(Point3D(0, 0, 0), Point3D(165, 165, 165), white);
     box = std::make_shared<RotateY>(box, -18.0);
     box = std::make_shared<Translate>(box, Vector3D(130, 0, 65));
-    world.AddCollidable(box);
+    world.AddCollidable(std::make_shared<ConstantMedium>(box, 0.01, Color(1, 1, 1)));
   }
 }
