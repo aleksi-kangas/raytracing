@@ -140,6 +140,11 @@ Vector3D Vector3D::RandomInUnitDisk() {
   }
 }
 
+Vector3D Vector3D::RandomInHemisphere(const Vector3D &normal) {
+  Vector3D in_unit_sphere = RandomInUnitSphere();
+  return DotProduct(in_unit_sphere, normal) > 0.0 ? in_unit_sphere : -in_unit_sphere;
+}
+
 Vector3D Vector3D::Reflect(const Vector3D &vector, const Vector3D &normal) {
   return vector - 2 * DotProduct(vector, normal) * normal;
 }

@@ -109,13 +109,14 @@ Color Renderer::ComputeColor(const Ray &ray, const Collidables &world, const Col
 
     Color attenuation;
     Ray scattered_ray;
+    double pdf;
 
-    const bool scattered = collision.material->Scatter(current_ray, collision, attenuation, scattered_ray);
+    const bool scattered = collision.material->Scatter(current_ray, collision, attenuation, scattered_ray, pdf);
     if (!scattered) {
       return computed_color;
     }
 
-    current_attenuation *= attenuation;
+    current_attenuation *= attenuation * collision.material->ScatteringPDF(current_ray, collision, scattered_ray) / pdf;
     current_ray = scattered_ray;
   }
   return {0, 0, 0};  // All child rays have been consumed.

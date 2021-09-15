@@ -5,24 +5,39 @@
 #include <utility>
 
 #include "random.h"
+#include "utils.h"
 
 Lambertian::Lambertian(const Color &albedo) : albedo_(std::make_shared<SolidColorTexture>(albedo)) {}
 
 Lambertian::Lambertian(std::shared_ptr<Texture> albedo) : albedo_(std::move(albedo)) {}
 
-bool Lambertian::Scatter(const Ray &ray, const Collision &collision, Color &attenuation, Ray &scattered_ray) const {
-  Vector3D scatter_direction = collision.normal + Vector3D::RandomUnitVector();
-  if (scatter_direction.IsNearZero()) {
-    scatter_direction = collision.normal;
-  }
+bool Lambertian::Scatter(const Ray &ray,
+                         const Collision &collision,
+                         Color &attenuation,
+                         Ray &scattered_ray,
+                         double &pdf) const {
+  Vector3D scatter_direction = Vector3D::RandomInHemisphere(collision.normal);
+//  if (scatter_direction.IsNearZero()) {
+//    scatter_direction = collision.normal;
+//  }
   scattered_ray = Ray(collision.point, scatter_direction, ray.Time());
   attenuation = albedo_->SampleColor(collision.u, collision.v, collision.point);
+  pdf = 0.5 / utils::kPI;
   return true;
+}
+
+double Lambertian::ScatteringPDF(const Ray &ray, const Collision &collision, const Ray &scattered_ray) const {
+  double cosine = Vector3D::DotProduct(collision.normal, scattered_ray.Direction().UnitVector());
+  return cosine < 0 ? 0 : cosine / utils::kPI;
 }
 
 Metal::Metal(const Color &albedo, double fuzziness) : albedo_(albedo), fuzziness_(std::clamp(fuzziness, 0.0, 1.0)) {}
 
-bool Metal::Scatter(const Ray &ray, const Collision &collision, Color &attenuation, Ray &scattered_ray) const {
+bool Metal::Scatter(const Ray &ray,
+                    const Collision &collision,
+                    Color &attenuation,
+                    Ray &scattered_ray,
+                    double &pdf) const {
   Vector3D reflected = Vector3D::Reflect(ray.Direction().UnitVector(), collision.normal);
   scattered_ray = Ray(collision.point, reflected + fuzziness_ * Vector3D::RandomInUnitSphere(), ray.Time());
   attenuation = albedo_;
@@ -31,7 +46,11 @@ bool Metal::Scatter(const Ray &ray, const Collision &collision, Color &attenuati
 
 Dielectric::Dielectric(double refraction_ratio) : refraction_ratio_(refraction_ratio) {}
 
-bool Dielectric::Scatter(const Ray &ray, const Collision &collision, Color &attenuation, Ray &scattered_ray) const {
+bool Dielectric::Scatter(const Ray &ray,
+                         const Collision &collision,
+                         Color &attenuation,
+                         Ray &scattered_ray,
+                         double &pdf) const {
   attenuation = Color(1.0, 1.0, 1.0);
   double refraction_ratio = collision.is_front_face ? (1.0 / refraction_ratio_) : refraction_ratio_;
   Vector3D unit_direction = ray.Direction().UnitVector();
@@ -69,7 +88,11 @@ Isotropic::Isotropic(std::shared_ptr<Texture> albedo) : albedo_(std::move(albedo
 
 Isotropic::Isotropic(const Color &albedo) : albedo_(std::make_shared<SolidColorTexture>(albedo)) {}
 
-bool Isotropic::Scatter(const Ray &ray, const Collision &collision, Color &attenuation, Ray &scattered_ray) const {
+bool Isotropic::Scatter(const Ray &ray,
+                        const Collision &collision,
+                        Color &attenuation,
+                        Ray &scattered_ray,
+                        double &pdf) const {
   scattered_ray = Ray(collision.point, Vector3D::RandomInUnitSphere(), ray.Time());
   attenuation = albedo_->SampleColor(collision.u, collision.v, collision.point);
   return true;

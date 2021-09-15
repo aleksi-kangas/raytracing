@@ -128,6 +128,13 @@ class Vector3D {
   static Vector3D RandomInUnitDisk();
 
   /**
+   * Generate a random 3D-vector in the given normal's hemisphere.
+   * @param normal surface normal
+   * @return generated vector
+   */
+  static Vector3D RandomInHemisphere(const Vector3D &normal);
+
+  /**
    * Compute a reflected vector from an inbound vector and surface normal vector.
    * @param vector inbound vector
    * @param normal surface normal vector
