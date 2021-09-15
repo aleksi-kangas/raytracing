@@ -7,6 +7,14 @@
 Scene::Scene(int image_width, int image_height, int samples_per_pixel)
     : image_width(image_width), image_height(image_height), samples_per_pixel(samples_per_pixel) {}
 
+void Scene::InitializeCamera() {
+  const double kAspectRatio = static_cast<double>(image_width) / static_cast<double>(image_height);
+  const Point3D kOrigin{0, 0, 0};
+  constexpr double kViewportHeight = 2.0;
+  constexpr double kFocalLength = 1.0;
+  camera = std::make_unique<Camera>(kOrigin, kAspectRatio, kViewportHeight, kFocalLength);
+}
+
 void Scene::InitializeWorld() {
   world.AddCollidable(std::make_shared<Sphere>(Point3D(0, 0, -1), 0.5));
   world.AddCollidable(std::make_shared<Sphere>(Point3D(0, -100.5, -1), 100));

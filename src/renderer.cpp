@@ -4,6 +4,7 @@
 #include <ctime>
 #include <iostream>
 
+#include "random.h"
 #include "utils.h"
 
 Renderer::Renderer(const Scene &scene, int nr_threads) : scene_(scene) {
@@ -56,24 +57,16 @@ std::vector<std::vector<Color>> Renderer::Render() {
 }
 
 void Renderer::RenderRow(int row_index) {
-  // Camera
-  const double kAspectRatio = static_cast<double>(scene_.image_width) / static_cast<double>(scene_.image_height);
-  constexpr double kViewportHeight = 2.0;
-  const double kViewportWidth = kAspectRatio * kViewportHeight;
-  constexpr double kFocalLength = 1.0;
-
-  const Point3D kOrigin{0, 0, 0};
-  const Vector3D kHorizontal{kViewportWidth, 0, 0};
-  const Vector3D kVertical{0, kViewportHeight, 0};
-  const Point3D kLowerLeftCorner = kOrigin - kHorizontal / 2 - kVertical / 2 - Vector3D(0, 0, kFocalLength);
-
   std::vector<Color> row;
   for (int column = 0; column < scene_.image_width; ++column) {
-    double u = static_cast<double>(column) / (scene_.image_width - 1);
-    double v = static_cast<double>(row_index) / (scene_.image_height - 1);
-    Ray ray(kOrigin, kLowerLeftCorner + u * kHorizontal + v * kVertical - kOrigin);
-    Color pixel_color = ComputeColor(ray, scene_.world);
-    row.emplace_back(pixel_color);
+    Color pixel{0, 0, 0};
+    for (int sample = 1; sample <= scene_.samples_per_pixel; ++sample) {
+      double u = (column + RandomDouble()) / (scene_.image_width - 1);
+      double v = (row_index + RandomDouble()) / (scene_.image_height - 1);
+      Ray ray = scene_.camera->GetRay(u, v);
+      pixel += ComputeColor(ray, scene_.world);
+    }
+    row.emplace_back(pixel);
   }
 
   image_[row_index] = row;

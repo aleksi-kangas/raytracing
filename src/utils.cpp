@@ -1,5 +1,6 @@
 #include "utils.h"
 
+#include <algorithm>
 #include <iostream>
 
 #include "lodepng.h"
@@ -7,14 +8,19 @@
 namespace utils {
 
 std::array<unsigned char, 3> ColorToRGB(const Color &color, int samples_per_pixel) {
-  double r = color.X();
-  double g = color.Y();
-  double b = color.Z();
+  double red = color.X();
+  double green = color.Y();
+  double blue = color.Z();
+
+  double scale = 1.0 / samples_per_pixel;
+  red *= scale;
+  green *= scale;
+  blue *= scale;
 
   std::array<unsigned char, 3> rgb{};
-  rgb[0] = static_cast<unsigned char>(255.999 * r);
-  rgb[1] = static_cast<unsigned char>(255.999 * g);
-  rgb[2] = static_cast<unsigned char>(255.999 * b);
+  rgb[0] = static_cast<unsigned char>(256 * std::clamp(red, 0.0, 0.999));
+  rgb[1] = static_cast<unsigned char>(256 * std::clamp(green, 0.0, 0.999));
+  rgb[2] = static_cast<unsigned char>(256 * std::clamp(blue, 0.0, 0.999));
   return rgb;
 }
 

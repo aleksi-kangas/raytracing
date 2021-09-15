@@ -5,9 +5,11 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 
 set(SOURCE_FILES
+        src/camera.cpp src/camera.h
         src/collidable.h
         src/collidables.cpp src/collidables.h
         src/main.cpp
+        src/random.cpp src/random.h
         src/ray.cpp src/ray.h
         src/renderer.cpp src/renderer.h
         src/scene.cpp src/scene.h

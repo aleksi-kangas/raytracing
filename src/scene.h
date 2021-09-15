@@ -1,5 +1,6 @@
 #pragma once
 
+#include "camera.h"
 #include "collidables.h"
 
 /**
@@ -9,6 +10,11 @@ struct Scene {
   Scene(int image_width, int image_height, int samples_per_pixel);
 
   /**
+   * Initialize the camera for rendering.
+   */
+  void InitializeCamera();
+
+  /**
    * Initialize the world of the scene.
    */
   void InitializeWorld();
@@ -16,5 +22,6 @@ struct Scene {
   int image_width = 0;
   int image_height = 0;
   int samples_per_pixel = 0;
+  std::unique_ptr<Camera> camera = nullptr;
   Collidables world;
 };

@@ -9,9 +9,10 @@ int main() {
   constexpr double kAspectRatio = 16.0 / 9.0;
   constexpr int kImageWidth = 400;
   constexpr int kImageHeight = static_cast<int>(kImageWidth / kAspectRatio);
-  constexpr int kSamplesPerPixel = 1;
+  constexpr int kSamplesPerPixel = 100;
 
   Scene scene(kImageWidth, kImageHeight, kSamplesPerPixel);
+  scene.InitializeCamera();
   scene.InitializeWorld();
   Renderer renderer(scene);
   const std::vector<std::vector<Color>> image = renderer.Render();
