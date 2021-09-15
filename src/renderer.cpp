@@ -4,6 +4,8 @@
 #include <ctime>
 #include <iostream>
 
+#include "utils.h"
+
 Renderer::Renderer(const Scene &scene, int nr_threads) : scene_(scene) {
   const int kHardwareThreads = static_cast<int>(std::thread::hardware_concurrency());
   nr_threads_ = std::clamp(nr_threads, 1, std::min(scene.image_height, kHardwareThreads));
@@ -70,7 +72,7 @@ void Renderer::RenderRow(int row_index) {
     double u = static_cast<double>(column) / (scene_.image_width - 1);
     double v = static_cast<double>(row_index) / (scene_.image_height - 1);
     Ray ray(kOrigin, kLowerLeftCorner + u * kHorizontal + v * kVertical - kOrigin);
-    Color pixel_color = ComputeColor(ray);
+    Color pixel_color = ComputeColor(ray, scene_.world);
     row.emplace_back(pixel_color);
   }
 
@@ -91,18 +93,10 @@ void Renderer::RunThread() {
   }
 }
 
-bool Renderer::CollideSphere(const Point3D &center, double radius, const Ray &ray) {
-  Vector3D to_ray_origin = ray.Origin() - center;
-  double a = Vector3D::DotProduct(ray.Direction(), ray.Direction());
-  double b = 2.0 * Vector3D::DotProduct(to_ray_origin, ray.Direction());
-  double c = Vector3D::DotProduct(to_ray_origin, to_ray_origin) - radius * radius;
-  double discriminant = b * b - 4 * a * c;
-  return discriminant > 0;
-}
-
-Color Renderer::ComputeColor(const Ray &ray) {
-  if (CollideSphere(Point3D(0, 0, -1), 0.5, ray)) {
-    return {1, 0, 0};
+Color Renderer::ComputeColor(const Ray &ray, const Collidables &world) {
+  Collision collision;
+  if (world.Collide(ray, 0, utils::kInfinity, collision)) {
+    return 0.5 * (collision.normal + Color(1, 1, 1));
   }
   Vector3D unit_direction = ray.Direction().UnitVector();
   double t = 0.5 * (unit_direction.Y() + 1.0);

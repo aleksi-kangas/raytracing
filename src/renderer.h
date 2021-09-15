@@ -7,6 +7,7 @@
 #include <thread>
 #include <vector>
 
+#include "collidables.h"
 #include "ray.h"
 #include "scene.h"
 #include "vector3d.h"
@@ -57,7 +58,5 @@ class Renderer {
 
   void RunThread();
 
-  static bool CollideSphere(const Point3D &center, double radius, const Ray &ray);
-
-  static Color ComputeColor(const Ray &ray);
+  static Color ComputeColor(const Ray &ray, const Collidables &world);
 };

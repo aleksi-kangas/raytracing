@@ -1,10 +1,15 @@
+#include <array>
 #include <filesystem>
+#include <limits>
 #include <optional>
 #include <vector>
 
 #include "vector3d.h"
 
 namespace utils {
+constexpr double kInfinity = std::numeric_limits<double>::max();
+constexpr double kNegativeInfinity = std::numeric_limits<double>::lowest();
+
 std::array<unsigned char, 3> ColorToRGB(const Color &color, int samples_per_pixel);
 
 /**

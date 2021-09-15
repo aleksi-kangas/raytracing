@@ -12,6 +12,7 @@ int main() {
   constexpr int kSamplesPerPixel = 1;
 
   Scene scene(kImageWidth, kImageHeight, kSamplesPerPixel);
+  scene.InitializeWorld();
   Renderer renderer(scene);
   const std::vector<std::vector<Color>> image = renderer.Render();
 

@@ -5,10 +5,13 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 
 set(SOURCE_FILES
+        src/collidable.h
+        src/collidables.cpp src/collidables.h
         src/main.cpp
         src/ray.cpp src/ray.h
         src/renderer.cpp src/renderer.h
         src/scene.cpp src/scene.h
+        src/sphere.cpp src/sphere.h
         src/utils.cpp src/utils.h
         src/vector3d.cpp src/vector3d.h)
 
