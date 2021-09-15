@@ -99,6 +99,11 @@ Vector3D Vector3D::CrossProduct(const Vector3D &u, const Vector3D &v) {
       u.X() * v.Y() - u.Y() * v.X()
   };
 }
+
+Vector3D Vector3D::UnitVector(const Vector3D &vector) {
+  return vector / vector.Length();
+}
+
 Vector3D Vector3D::Random() {
   return {RandomDouble(), RandomDouble(), RandomDouble()};
 }
@@ -121,8 +126,8 @@ Vector3D Vector3D::RandomUnitVector() {
   return RandomInUnitSphere().UnitVector();
 }
 
-Vector3D Vector3D::UnitVector(const Vector3D &vector) {
-  return vector / vector.Length();
+Vector3D Vector3D::Reflect(const Vector3D &vector, const Vector3D &normal) {
+  return vector - 2 * DotProduct(vector, normal) * normal;
 }
 
 Vector3D operator+(const Vector3D &u, const Vector3D &v) {

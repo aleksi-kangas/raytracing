@@ -121,6 +121,14 @@ class Vector3D {
    */
   static Vector3D RandomUnitVector();
 
+  /**
+   * Compute a reflected vector from an inbound vector and surface normal vector.
+   * @param vector inbound vector
+   * @param normal surface normal vector
+   * @return reflected vector
+   */
+  static Vector3D Reflect(const Vector3D &vector, const Vector3D &normal);
+
  private:
   std::array<double, 3> elements_;
 };

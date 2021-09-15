@@ -3,12 +3,16 @@
 #include "ray.h"
 #include "vector3d.h"
 
+// Forward declares.
+class Material;
+
 /**
  * Contains collision information.
  */
 struct Collision {
   Point3D point;
   Vector3D normal;
+  Material *material = nullptr;  // Raw pointer to increase performance.
   double t = 0.0;
   bool is_front_face = false;
 

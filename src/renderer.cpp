@@ -4,6 +4,7 @@
 #include <ctime>
 #include <iostream>
 
+#include "material.h"
 #include "random.h"
 #include "utils.h"
 
@@ -94,9 +95,9 @@ Color Renderer::ComputeColor(const Ray &ray, const Collidables &world) {
   // "Recursion" variables.
   Ray current_ray = ray;
 
-  while (child_rays > 0) {
+  while (child_rays--) {
     Collision collision;
-    bool collided = world.Collide(current_ray, 0.001, utils::kInfinity, collision);
+    const bool collided = world.Collide(current_ray, 0.001, utils::kInfinity, collision);
     if (!collided) {
       // Background color.
       Vector3D unit_direction = ray.Direction().UnitVector();
@@ -104,10 +105,17 @@ Color Renderer::ComputeColor(const Ray &ray, const Collidables &world) {
       computed_color *= (1.0 - t) * Color(1.0, 1.0, 1.0) + t * Color(0.5, 0.7, 1.0);
       return computed_color;
     }
-    Point3D target = collision.point + collision.normal + Vector3D::RandomUnitVector();
-    current_ray = Ray(collision.point, target - collision.point);
-    computed_color *= 0.5;
-    --child_rays;
+
+    Color current_attenuation;
+    Ray scattered_ray;
+
+    const bool scattered = collision.material->Scatter(current_ray, collision, current_attenuation, scattered_ray);
+    if (!scattered) {
+      return {0, 0, 0};
+    }
+
+    computed_color *= current_attenuation;
+    current_ray = scattered_ray;
   }
   return {0, 0, 0};  // All child rays have been consumed.
 }

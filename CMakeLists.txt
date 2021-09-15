@@ -9,6 +9,7 @@ set(SOURCE_FILES
         src/collidable.h
         src/collidables.cpp src/collidables.h
         src/main.cpp
+        src/material.cpp src/material.h
         src/random.cpp src/random.h
         src/ray.cpp src/ray.h
         src/renderer.cpp src/renderer.h

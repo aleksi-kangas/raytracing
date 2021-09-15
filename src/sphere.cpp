@@ -1,8 +1,10 @@
 #include "sphere.h"
 
 #include <cmath>
+#include <utility>
 
-Sphere::Sphere(const Point3D &center, double radius) : center_(center), radius_(radius) {}
+Sphere::Sphere(const Point3D &center, double radius, std::shared_ptr<Material> material)
+    : center_(center), radius_(radius), material_(std::move(material)) {}
 
 bool Sphere::Collide(const Ray &ray, double t_min, double t_max, Collision &collision) const {
   Vector3D to_ray_origin = ray.Origin() - center_;
@@ -26,8 +28,8 @@ bool Sphere::Collide(const Ray &ray, double t_min, double t_max, Collision &coll
 
   collision.t = root;
   collision.point = ray.PointAt(root);
-
   Vector3D outward_normal = (collision.point - center_) / radius_;
   collision.SetFaceNormal(ray, outward_normal);
+  collision.material = material_.get();
   return true;
 }
