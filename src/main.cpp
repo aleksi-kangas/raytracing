@@ -1,24 +1,23 @@
 #include <filesystem>
 
+#include "renderer.h"
+#include "scene.h"
 #include "utils.h"
 #include "vector3d.h"
 
 int main() {
-  constexpr int kImageWidth = 256;
-  constexpr int kImageHeight = 256;
+  constexpr double kAspectRatio = 16.0 / 9.0;
+  constexpr int kImageWidth = 400;
+  constexpr int kImageHeight = static_cast<int>(kImageWidth / kAspectRatio);
+  constexpr int kSamplesPerPixel = 1;
 
-  std::vector<std::vector<Color>> image(kImageHeight, std::vector<Color>(kImageWidth));
+  Scene scene(kImageWidth, kImageHeight, kSamplesPerPixel);
+  Renderer renderer(scene);
+  const std::vector<std::vector<Color>> image = renderer.Render();
 
-  for (int row = kImageHeight - 1; row >= 0; --row) {
-    for (int column = 0; column < kImageWidth; ++column) {
-      Color color(
-          static_cast<double>(column) / (kImageWidth - 1),
-          static_cast<double>(row) / (kImageHeight - 1),
-          0.25
-      );
-      image[row][column] = color;
-    }
-  }
-
-  utils::WritePNG(std::filesystem::current_path().append("image.png"), kImageWidth, kImageHeight, 1, image);
+  utils::WritePNG(std::filesystem::current_path().append("image.png"),
+                  kImageWidth,
+                  kImageHeight,
+                  kSamplesPerPixel,
+                  image);
 }
