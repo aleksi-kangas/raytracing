@@ -2,7 +2,6 @@
 #include <cmath>
 #include <filesystem>
 #include <limits>
-#include <optional>
 #include <vector>
 
 #include "vector3d.h"
@@ -26,11 +25,9 @@ double DegreesToRadians(double degrees);
  * @param[in] path filepath
  * @param[out] width receives image pixel width
  * @param[out] height receives image pixel height
- * @return 2D matrix of image pixels or std::nullopt on error
+ * @return 2D matrix of image pixels
  */
-std::optional<std::vector<std::vector<Color>>> ReadPNG(const std::filesystem::path &path,
-                                                       unsigned int &width,
-                                                       unsigned int &height);
+std::vector<std::vector<Color>> ReadPNG(const std::filesystem::path &path, unsigned int &width, unsigned int &height);
 
 /**
  * Write contents of the given image buffer to a .png-file.

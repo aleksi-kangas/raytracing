@@ -28,15 +28,13 @@ double DegreesToRadians(double degrees) {
   return degrees * kPI / 180.0;
 }
 
-std::optional<std::vector<std::vector<Color>>> ReadPNG(const std::filesystem::path &path,
-                                                       unsigned int &width,
-                                                       unsigned int &height) {
+std::vector<std::vector<Color>> ReadPNG(const std::filesystem::path &path, unsigned int &width, unsigned int &height) {
   std::vector<unsigned char> buffer;
   unsigned int error_code = lodepng::decode(buffer, width, height, path, LCT_RGB);
 
   if (error_code > 0) {
     std::cerr << lodepng_error_text(error_code) << std::endl;
-    return std::nullopt;
+    return {};
   }
 
   std::vector<std::vector<Color>> image(height);

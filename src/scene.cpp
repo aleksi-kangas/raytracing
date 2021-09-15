@@ -1,5 +1,6 @@
 #include "scene.h"
 
+#include <filesystem>
 #include <memory>
 
 #include "bvh.h"
@@ -25,15 +26,9 @@ void Scene::InitializeCamera() {
 }
 
 void Scene::InitializeWorld() {
-  Collidables collidables;
-
-  std::shared_ptr<Texture> noise_texture = std::make_shared<NoiseTexture>(4.0);
-  collidables.AddCollidable(std::make_shared<Sphere>(Point3D(0, -1000, 0),
-                                                     1000,
-                                                     std::make_shared<Lambertian>(noise_texture)));
-  collidables.AddCollidable(std::make_shared<Sphere>(Point3D(0, 2, 0),
-                                                     2,
-                                                     std::make_shared<Lambertian>(noise_texture)));
-
-  world.AddCollidable(std::make_shared<BoundingVolumeHierarchyNode>(collidables, 0.0, 1.0));
+  std::shared_ptr<Texture> earth_texture =
+      std::make_shared<ImageTexture>(std::filesystem::current_path().append("resources/textures/earth_map.png"));
+  world.AddCollidable(std::make_shared<Sphere>(Point3D(0, 0, 0),
+                                               2,
+                                               std::make_shared<Lambertian>(earth_texture)));
 }

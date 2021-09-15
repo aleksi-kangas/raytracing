@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <memory>
 #include <vector>
 
@@ -46,4 +47,16 @@ class NoiseTexture : public Texture {
  private:
   Perlin perlin_;
   double scale_;
+};
+
+class ImageTexture : public Texture {
+ public:
+  explicit ImageTexture(const std::filesystem::path &path);
+
+  [[nodiscard]] Color SampleColor(double u, double v, const Point3D &point) const override;
+
+ private:
+  std::vector<std::vector<Color>> texture_;
+  unsigned int width_ = 0;
+  unsigned int height_ = 0;
 };
