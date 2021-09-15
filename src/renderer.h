@@ -57,5 +57,7 @@ class Renderer {
 
   void RunThread();
 
+  static bool CollideSphere(const Point3D &center, double radius, const Ray &ray);
+
   static Color ComputeColor(const Ray &ray);
 };

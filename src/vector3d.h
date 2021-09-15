@@ -71,6 +71,29 @@ class Vector3D {
    */
   [[nodiscard]] Vector3D UnitVector() const;
 
+  /**
+   * Compute dot product of the given vectors.
+   * @param u the first vector
+   * @param v the second vector
+   * @return value of dot product
+   */
+  static double DotProduct(const Vector3D &u, const Vector3D &v);
+
+  /**
+   * Compute cross product of the given vectors.
+   * @param u first vector
+   * @param v second vector
+   * @return cross product vector
+   */
+  static Vector3D CrossProduct(const Vector3D &u, const Vector3D &v);
+
+  /**
+   * Create an unit vector that has a length of 1.0 and the direction of the input vector.
+   * @param vector from which to create the unit vector
+   * @return unit vector
+   */
+  static Vector3D UnitVector(const Vector3D &vector);
+
  private:
   std::array<double, 3> elements_;
 };

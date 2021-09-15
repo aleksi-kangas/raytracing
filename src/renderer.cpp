@@ -91,7 +91,19 @@ void Renderer::RunThread() {
   }
 }
 
+bool Renderer::CollideSphere(const Point3D &center, double radius, const Ray &ray) {
+  Vector3D to_ray_origin = ray.Origin() - center;
+  double a = Vector3D::DotProduct(ray.Direction(), ray.Direction());
+  double b = 2.0 * Vector3D::DotProduct(to_ray_origin, ray.Direction());
+  double c = Vector3D::DotProduct(to_ray_origin, to_ray_origin) - radius * radius;
+  double discriminant = b * b - 4 * a * c;
+  return discriminant > 0;
+}
+
 Color Renderer::ComputeColor(const Ray &ray) {
+  if (CollideSphere(Point3D(0, 0, -1), 0.5, ray)) {
+    return {1, 0, 0};
+  }
   Vector3D unit_direction = ray.Direction().UnitVector();
   double t = 0.5 * (unit_direction.Y() + 1.0);
   return (1.0 - t) * Color(1.0, 1.0, 1.0) + t * Color(0.5, 0.7, 1.0);
