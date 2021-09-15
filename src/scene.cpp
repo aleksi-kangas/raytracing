@@ -7,6 +7,7 @@
 #include "material.h"
 #include "moving_sphere.h"
 #include "random.h"
+#include "rectangle.h"
 #include "sphere.h"
 #include "texture.h"
 #include "utils.h"
@@ -15,10 +16,10 @@ Scene::Scene(int image_width, int image_height, int samples_per_pixel)
     : image_width(image_width), image_height(image_height), samples_per_pixel(samples_per_pixel) {}
 
 void Scene::InitializeCamera() {
-  const Point3D kPosition{13, 2, 2};
-  const Point3D kTarget{0, 0, 0};
+  const Point3D kPosition{278, 278, -800};
+  const Point3D kTarget{278, 278, 0};
   const double kAspectRatio = static_cast<double>(image_width) / static_cast<double>(image_height);
-  constexpr double kVerticalFOVDegrees = 20.0f;
+  constexpr double kVerticalFOVDegrees = 40.0f;
   constexpr double kAperture = 0.0f;
   constexpr double kFocusDistance = 10.0f;
   camera = std::make_unique<Camera>(
@@ -26,9 +27,15 @@ void Scene::InitializeCamera() {
 }
 
 void Scene::InitializeWorld() {
-  std::shared_ptr<Texture> earth_texture =
-      std::make_shared<ImageTexture>(std::filesystem::current_path().append("resources/textures/earth_map.png"));
-  world.AddCollidable(std::make_shared<Sphere>(Point3D(0, 0, 0),
-                                               2,
-                                               std::make_shared<Lambertian>(earth_texture)));
+  std::shared_ptr<Material> red = std::make_shared<Lambertian>(Color(0.65, 0.05, 0.05));
+  std::shared_ptr<Material> white = std::make_shared<Lambertian>(Color(0.73, 0.73, 0.73));
+  std::shared_ptr<Material> green = std::make_shared<Lambertian>(Color(0.12, 0.45, 0.15));
+  std::shared_ptr<Material> light = std::make_shared<DiffuseLight>(Color(15, 15, 15));
+
+  world.AddCollidable(std::make_shared<RectangleYZ>(0, 555, 0, 555, 555, green));
+  world.AddCollidable(std::make_shared<RectangleYZ>(0, 555, 0, 555, 0, red));
+  world.AddCollidable(std::make_shared<RectangleXZ>(0, 555, 0, 555, 0, white));
+  world.AddCollidable(std::make_shared<RectangleXZ>(0, 555, 0, 555, 555, white));
+  world.AddCollidable(std::make_shared<RectangleXY>(0, 555, 0, 555, 555, white));
+  world.AddCollidable(std::make_shared<RectangleXZ>(213, 343, 227, 332, 554, light));
 }

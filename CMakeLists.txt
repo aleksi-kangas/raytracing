@@ -16,6 +16,7 @@ set(SOURCE_FILES
         src/perlin.cpp src/perlin.h
         src/random.cpp src/random.h
         src/ray.cpp src/ray.h
+        src/rectangle.cpp src/rectangle.h
         src/renderer.cpp src/renderer.h
         src/scene.cpp src/scene.h
         src/sphere.cpp src/sphere.h

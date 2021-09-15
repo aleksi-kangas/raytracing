@@ -23,6 +23,7 @@ struct Scene {
   int image_height = 0;
   int samples_per_pixel = 0;
   static constexpr int kMaxChildRays = 50;
+  Color background_color{0, 0, 0};
   std::unique_ptr<Camera> camera = nullptr;
   Collidables world;
 };

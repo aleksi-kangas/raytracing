@@ -58,5 +58,5 @@ class Renderer {
 
   void RunThread();
 
-  static Color ComputeColor(const Ray &ray, const Collidables &world);
+  static Color ComputeColor(const Ray &ray, const Collidables &world, const Color &background_color);
 };

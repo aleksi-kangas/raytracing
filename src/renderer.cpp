@@ -65,7 +65,7 @@ void Renderer::RenderRow(int row_index) {
       double u = (column + RandomDouble()) / (scene_.image_width - 1);
       double v = (row_index + RandomDouble()) / (scene_.image_height - 1);
       Ray ray = scene_.camera->GetRay(u, v);
-      pixel += ComputeColor(ray, scene_.world);
+      pixel += ComputeColor(ray, scene_.world, scene_.background_color);
     }
     row.emplace_back(pixel);
   }
@@ -87,34 +87,35 @@ void Renderer::RunThread() {
   }
 }
 
-Color Renderer::ComputeColor(const Ray &ray, const Collidables &world) {
+Color Renderer::ComputeColor(const Ray &ray, const Collidables &world, const Color &background_color) {
   int child_rays = Scene::kMaxChildRays;
 
-  Color computed_color(1, 1, 1);  // Output.
+  Color computed_color(0, 0, 0);  // Output.
 
   // "Recursion" variables.
+  Color current_attenuation(1, 1, 1);
   Ray current_ray = ray;
 
   while (child_rays--) {
     Collision collision;
     const bool collided = world.Collide(current_ray, 0.001, utils::kInfinity, collision);
     if (!collided) {
-      // Background color.
-      Vector3D unit_direction = ray.Direction().UnitVector();
-      double t = 0.5 * (unit_direction.Y() + 1.0);
-      computed_color *= (1.0 - t) * Color(1.0, 1.0, 1.0) + t * Color(0.5, 0.7, 1.0);
+      return background_color;
+    }
+
+    // Update output.
+    Color emitted_color = collision.material->Emit(collision.u, collision.v, collision.point);
+    computed_color += emitted_color * current_attenuation;
+
+    Color attenuation;
+    Ray scattered_ray;
+
+    const bool scattered = collision.material->Scatter(current_ray, collision, attenuation, scattered_ray);
+    if (!scattered) {
       return computed_color;
     }
 
-    Color current_attenuation;
-    Ray scattered_ray;
-
-    const bool scattered = collision.material->Scatter(current_ray, collision, current_attenuation, scattered_ray);
-    if (!scattered) {
-      return {0, 0, 0};
-    }
-
-    computed_color *= current_attenuation;
+    current_attenuation *= attenuation;
     current_ray = scattered_ray;
   }
   return {0, 0, 0};  // All child rays have been consumed.

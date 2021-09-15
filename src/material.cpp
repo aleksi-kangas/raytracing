@@ -56,3 +56,11 @@ double Dielectric::ComputeReflectance(double cosine, double refraction_ratio) {
   r0 = r0 * r0;
   return r0 + (1.0 - r0) * std::pow((1.0 - cosine), 5);
 }
+
+DiffuseLight::DiffuseLight(const Color &albedo) : emit_(std::make_shared<SolidColorTexture>(albedo)) {}
+
+DiffuseLight::DiffuseLight(std::shared_ptr<Texture> albedo) : emit_(std::move(albedo)) {}
+
+Color DiffuseLight::Emit(double u, double v, const Point3D &point) const {
+  return emit_->SampleColor(u, v, point);
+}
