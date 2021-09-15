@@ -34,4 +34,12 @@ class Sphere : public Collidable {
   Point3D center_;
   double radius_;
   std::shared_ptr<Material> material_;
+
+  /**
+   * Compute U and V coordinates from a sphere.
+   * @param point point on the sphere of radius one, centered at origin
+   * @param u receives angle [0, 1] around the Y-axis from X = -1
+   * @param v receives angle [0, 1] from Y = -1 to Y = 1
+   */
+  static void GetUVCoordinates(const Point3D &point, double &u, double &v);
 };

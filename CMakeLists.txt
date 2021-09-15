@@ -18,6 +18,7 @@ set(SOURCE_FILES
         src/renderer.cpp src/renderer.h
         src/scene.cpp src/scene.h
         src/sphere.cpp src/sphere.h
+        src/texture.cpp src/texture.h
         src/utils.cpp src/utils.h
         src/vector3d.cpp src/vector3d.h)
 

@@ -1,7 +1,10 @@
 #pragma once
 
+#include <memory>
+
 #include "collidable.h"
 #include "ray.h"
+#include "texture.h"
 #include "vector3d.h"
 
 /**
@@ -26,6 +29,8 @@ class Lambertian : public Material {
  public:
   explicit Lambertian(const Color &albedo);
 
+  explicit Lambertian(std::shared_ptr<Texture> albedo);
+
   /**
    * Compute scattered ray and attenuation from an inbound ray and collision information.
    * @param[in] ray inbound ray
@@ -40,7 +45,7 @@ class Lambertian : public Material {
                Ray &scattered_ray) const override;
 
  private:
-  Color albedo_;
+  std::shared_ptr<Texture> albedo_;
 };
 
 /**

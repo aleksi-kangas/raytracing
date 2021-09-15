@@ -3,6 +3,8 @@
 #include <cmath>
 #include <utility>
 
+#include "utils.h"
+
 Sphere::Sphere(const Point3D &center, double radius, std::shared_ptr<Material> material)
     : center_(center), radius_(radius), material_(std::move(material)) {}
 
@@ -31,6 +33,7 @@ bool Sphere::Collide(const Ray &ray, double t_min, double t_max, Collision &coll
   Vector3D outward_normal = (collision.point - center_) / radius_;
   collision.SetFaceNormal(ray, outward_normal);
   collision.material = material_.get();
+  GetUVCoordinates(outward_normal, collision.u, collision.v);
   return true;
 }
 
@@ -40,4 +43,11 @@ bool Sphere::BoundingBox(double time0, double time1, AxisAlignedBoundingBox &bou
       center_ + Vector3D(radius_, radius_, radius_)
   );
   return true;
+}
+
+void Sphere::GetUVCoordinates(const Point3D &point, double &u, double &v) {
+  double theta = acos(-point.Y());
+  double phi = atan2(-point.Z(), point.X()) + utils::kPI;
+  u = phi / (2 * utils::kPI);
+  v = theta / utils::kPI;
 }

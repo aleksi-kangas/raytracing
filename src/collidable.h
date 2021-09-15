@@ -15,6 +15,8 @@ struct Collision {
   Vector3D normal;
   Material *material = nullptr;  // Raw pointer to increase performance.
   double t = 0.0;
+  double u = 0.0;
+  double v = 0.0;
   bool is_front_face = false;
 
   void SetFaceNormal(const Ray &ray, const Vector3D &outward_normal) {

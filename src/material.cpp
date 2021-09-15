@@ -2,10 +2,13 @@
 
 #include <algorithm>
 #include <cmath>
+#include <utility>
 
 #include "random.h"
 
-Lambertian::Lambertian(const Color &albedo) : albedo_(albedo) {}
+Lambertian::Lambertian(const Color &albedo) : albedo_(std::make_shared<SolidColorTexture>(albedo)) {}
+
+Lambertian::Lambertian(std::shared_ptr<Texture> albedo) : albedo_(std::move(albedo)) {}
 
 bool Lambertian::Scatter(const Ray &ray, const Collision &collision, Color &attenuation, Ray &scattered_ray) const {
   Vector3D scatter_direction = collision.normal + Vector3D::RandomUnitVector();
@@ -13,7 +16,7 @@ bool Lambertian::Scatter(const Ray &ray, const Collision &collision, Color &atte
     scatter_direction = collision.normal;
   }
   scattered_ray = Ray(collision.point, scatter_direction, ray.Time());
-  attenuation = albedo_;
+  attenuation = albedo_->SampleColor(collision.u, collision.v, collision.point);
   return true;
 }
 
