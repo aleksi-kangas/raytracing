@@ -1,7 +1,5 @@
 #include "utils.h"
 
-#include <cmath>
-
 #include <algorithm>
 #include <iostream>
 
@@ -15,15 +13,19 @@ std::array<unsigned char, 3> ColorToRGB(const Color &color, int samples_per_pixe
   double blue = color.Z();
 
   double scale = 1.0 / samples_per_pixel;
-  red = sqrt (scale * red);
-  green = sqrt (scale * green);
-  blue = sqrt (scale * blue);
+  red = sqrt(scale * red);
+  green = sqrt(scale * green);
+  blue = sqrt(scale * blue);
 
   std::array<unsigned char, 3> rgb{};
   rgb[0] = static_cast<unsigned char>(256 * std::clamp(red, 0.0, 0.999));
   rgb[1] = static_cast<unsigned char>(256 * std::clamp(green, 0.0, 0.999));
   rgb[2] = static_cast<unsigned char>(256 * std::clamp(blue, 0.0, 0.999));
   return rgb;
+}
+
+double DegreesToRadians(double degrees) {
+  return degrees * kPI / 180.0;
 }
 
 std::optional<std::vector<std::vector<Color>>> ReadPNG(const std::filesystem::path &path,

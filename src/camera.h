@@ -8,7 +8,11 @@
  */
 class Camera {
  public:
-  Camera(const Point3D &position, double aspect_ratio, double viewport_height, double focal_length);
+  Camera(const Point3D &position,
+         const Point3D &target,
+         double aspect_ratio,
+         double vertical_fov_degrees,
+         Vector3D view_up_direction = Vector3D(0, 1, 0));
 
   /**
    * Shoot a ray to u and v coordinates of the view plane.

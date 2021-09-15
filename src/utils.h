@@ -1,4 +1,5 @@
 #include <array>
+#include <cmath>
 #include <filesystem>
 #include <limits>
 #include <optional>
@@ -9,8 +10,16 @@
 namespace utils {
 constexpr double kInfinity = std::numeric_limits<double>::max();
 constexpr double kNegativeInfinity = std::numeric_limits<double>::lowest();
+const double kPI = std::atan(1.0) * 4;
 
 std::array<unsigned char, 3> ColorToRGB(const Color &color, int samples_per_pixel);
+
+/**
+ * Convert degrees into radians.
+ * @param degrees to convert
+ * @return radians
+ */
+double DegreesToRadians(double degrees);
 
 /**
  * Read a .png-file from disk.
