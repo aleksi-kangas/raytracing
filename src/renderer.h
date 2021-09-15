@@ -58,5 +58,8 @@ class Renderer {
 
   void RunThread();
 
-  static Color ComputeColor(const Ray &ray, const Collidables &world, const Color &background_color);
+  static Color ComputeColor(const Ray &ray,
+                            const Collidables &world,
+                            const std::shared_ptr<Collidable> &light,
+                            const Color &background_color);
 };

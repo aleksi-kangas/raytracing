@@ -26,4 +26,5 @@ struct Scene {
   Color background_color{0, 0, 0};
   std::unique_ptr<Camera> camera = nullptr;
   Collidables world;
+  std::shared_ptr<Collidable> light = nullptr;
 };

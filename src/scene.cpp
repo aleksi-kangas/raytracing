@@ -35,7 +35,7 @@ void Scene::InitializeWorld() {
   std::shared_ptr<Material> red = std::make_shared<Lambertian>(Color(0.65, 0.05, 0.05));
   std::shared_ptr<Material> green = std::make_shared<Lambertian>(Color(0.12, 0.45, 0.15));
   std::shared_ptr<Material> white = std::make_shared<Lambertian>(Color(0.73, 0.73, 0.73));
-  std::shared_ptr<Material> light = std::make_shared<DiffuseLight>(Color(15, 15, 15));
+  std::shared_ptr<Material> light_material = std::make_shared<DiffuseLight>(Color(15, 15, 15));
 
   world.AddCollidable(std::make_shared<RectangleYZ>(0, 555, 0, 555, 555, green));
   world.AddCollidable(std::make_shared<RectangleYZ>(0, 555, 0, 555, 0, red));
@@ -43,7 +43,7 @@ void Scene::InitializeWorld() {
   world.AddCollidable(std::make_shared<RectangleXZ>(0, 555, 0, 555, 0, white));
   world.AddCollidable(std::make_shared<RectangleXY>(0, 555, 0, 555, 555, white));
   world.AddCollidable(std::make_shared<FlipFace>(
-      std::make_shared<RectangleXZ>(213, 343, 227, 332, 554, light)));
+      std::make_shared<RectangleXZ>(213, 343, 227, 332, 554, light_material)));
 
   {
     std::shared_ptr<Collidable> box = std::make_shared<Box>(Point3D(0, 0, 0), Point3D(165, 330, 165), white);
@@ -57,4 +57,6 @@ void Scene::InitializeWorld() {
     box = std::make_shared<Translate>(box, Vector3D(130, 0, 65));
     world.AddCollidable(box);
   }
+
+  light = std::make_shared<RectangleXZ>(213, 343, 227, 332, 554, std::make_shared<Material>());
 }

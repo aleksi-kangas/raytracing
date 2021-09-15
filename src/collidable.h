@@ -50,4 +50,23 @@ class Collidable {
    * @return true if an AABB exists, false otherwise
    */
   virtual bool BoundingBox(double time0, double time1, AxisAlignedBoundingBox &bounding_box) const = 0;
+
+  /**
+   * Compute value of probability density function from the given point and direction.
+   * @param[in] origin point
+   * @param[in] vector direction
+   * @return value of probability density function
+   */
+  [[nodiscard]] virtual double PDFValue(const Point3D &origin, const Vector3D &vector) const {
+    return 0.0;
+  }
+
+  /**
+   * Generate a Random direction towards the collidable object from the given point.
+   * @param[in] origin point
+   * @return random direction
+   */
+  [[nodiscard]] virtual Vector3D Random(const Vector3D &origin) const {
+    return {1, 0, 0};
+  }
 };

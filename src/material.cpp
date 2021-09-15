@@ -27,7 +27,7 @@ bool Lambertian::Scatter(const Ray &ray,
 
 double Lambertian::ScatteringPDF(const Ray &ray, const Collision &collision, const Ray &scattered_ray) const {
   double cosine = Vector3D::DotProduct(collision.normal, scattered_ray.Direction().UnitVector());
-  return cosine < 0 ? 0 : cosine / utils::kPI;
+  return std::max(cosine, 0.0) / utils::kPI;
 }
 
 Metal::Metal(const Color &albedo, double fuzziness) : albedo_(albedo), fuzziness_(std::clamp(fuzziness, 0.0, 1.0)) {}

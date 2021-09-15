@@ -59,6 +59,21 @@ class RectangleXZ : public Collidable {
    */
   bool BoundingBox(double time0, double time1, AxisAlignedBoundingBox &bounding_box) const override;
 
+  /**
+   * Compute value of probability density function given a point and direction.
+   * @param[in] origin point
+   * @param[in] vector direction
+   * @return value of probability density function
+   */
+  [[nodiscard]] double PDFValue(const Point3D &origin, const Vector3D &vector) const override;
+
+  /**
+   * Generate a Random direction towards the collidable object from the given point.
+   * @param[in] origin point
+   * @return random direction
+   */
+  [[nodiscard]] Vector3D Random(const Point3D &origin) const override;
+
  private:
   double x0_, x1_, z0_, z1_, k_;
   std::shared_ptr<Material> material_;

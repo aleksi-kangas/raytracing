@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include "material.h"
+#include "pdf.h"
 #include "random.h"
 #include "utils.h"
 
@@ -65,7 +66,7 @@ void Renderer::RenderRow(int row_index) {
       double u = (column + RandomDouble()) / (scene_.image_width - 1);
       double v = (row_index + RandomDouble()) / (scene_.image_height - 1);
       Ray ray = scene_.camera->GetRay(u, v);
-      pixel += ComputeColor(ray, scene_.world, scene_.background_color);
+      pixel += ComputeColor(ray, scene_.world, scene_.light, scene_.background_color);
     }
     row.emplace_back(pixel);
   }
@@ -87,7 +88,10 @@ void Renderer::RunThread() {
   }
 }
 
-Color Renderer::ComputeColor(const Ray &ray, const Collidables &world, const Color &background_color) {
+Color Renderer::ComputeColor(const Ray &ray,
+                             const Collidables &world,
+                             const std::shared_ptr<Collidable> &light,
+                             const Color &background_color) {
   int child_rays = Scene::kMaxChildRays;
 
   Color computed_color(0, 0, 0);  // Output.
@@ -119,24 +123,13 @@ Color Renderer::ComputeColor(const Ray &ray, const Collidables &world, const Col
     if (!scattered) {
       return computed_color;
     }
-    // Sampling light.
-    Point3D light_point = Point3D(RandomDouble(213, 343), 554, RandomDouble(227, 332));
-    Vector3D towards_light = light_point - collision.point;
-    double distance_squared = towards_light.LengthSquared();
-    towards_light = towards_light.UnitVector();
 
-    if (Vector3D::DotProduct(towards_light, collision.normal) < 0) {
-      return computed_color;
-    }
+    std::shared_ptr<ProbabilityDensityFunction> light_pdf = std::make_shared<CollidablePDF>(light, collision.point);
+    std::shared_ptr<ProbabilityDensityFunction> cosine_pdf = std::make_shared<CosinePDF>(collision.normal);
+    MixturePDF mixture_pdf(light_pdf, cosine_pdf);
 
-    double light_area = (343 - 213) * (332 - 227);
-    double light_cosine = std::abs(towards_light.Y());
-    if (light_cosine < 0.000001) {
-      return computed_color;
-    }
-
-    scattered_ray = Ray(collision.point, towards_light, ray.Time());
-    pdf = distance_squared / (light_cosine * light_area);
+    scattered_ray = Ray(collision.point, mixture_pdf.Generate(), ray.Time());
+    pdf = mixture_pdf.Value(scattered_ray.Direction());
 
     current_attenuation *= attenuation * collision.material->ScatteringPDF(current_ray, collision, scattered_ray) / pdf;
     current_ray = scattered_ray;

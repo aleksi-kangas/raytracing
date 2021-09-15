@@ -67,6 +67,22 @@ bool RectangleXZ::BoundingBox(double time0, double time1, AxisAlignedBoundingBox
   return true;
 }
 
+double RectangleXZ::PDFValue(const Point3D &origin, const Vector3D &vector) const {
+  Collision collision;
+  if (!Collide(Ray(origin, vector), 0.001, utils::kInfinity, collision)) {
+    return 0.0;
+  }
+  double area = (x1_ - x0_) * (z1_ - z0_);
+  double distance_squared = collision.t * collision.t * vector.LengthSquared();
+  double cosine = std::abs(Vector3D::DotProduct(vector, collision.normal) / vector.Length());
+  return distance_squared / (cosine * area);
+}
+
+Vector3D RectangleXZ::Random(const Point3D &origin) const {
+  Point3D random_point = Point3D(RandomDouble(x0_, x1_), k_, RandomDouble(z0_, z1_));
+  return random_point - origin;
+}
+
 RectangleYZ::RectangleYZ(double y0, double y1, double z0, double z1, double k, std::shared_ptr<Material> material)
     : y0_(y0), y1_(y1), z0_(z0), z1_(z1), k_(k), material_(std::move(material)) {}
 

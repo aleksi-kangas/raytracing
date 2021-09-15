@@ -9,7 +9,7 @@ int main() {
   constexpr double kAspectRatio = 1.0;
   constexpr int kImageWidth = 600;
   constexpr int kImageHeight = static_cast<int>(kImageWidth / kAspectRatio);
-  constexpr int kSamplesPerPixel = 10;
+  constexpr int kSamplesPerPixel = 1000;
 
   Scene scene(kImageWidth, kImageHeight, kSamplesPerPixel);
   scene.InitializeCamera();
