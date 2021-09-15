@@ -1,5 +1,7 @@
 #include "utils.h"
 
+#include <cmath>
+
 #include <algorithm>
 #include <iostream>
 
@@ -13,9 +15,9 @@ std::array<unsigned char, 3> ColorToRGB(const Color &color, int samples_per_pixe
   double blue = color.Z();
 
   double scale = 1.0 / samples_per_pixel;
-  red *= scale;
-  green *= scale;
-  blue *= scale;
+  red = sqrt (scale * red);
+  green = sqrt (scale * green);
+  blue = sqrt (scale * blue);
 
   std::array<unsigned char, 3> rgb{};
   rgb[0] = static_cast<unsigned char>(256 * std::clamp(red, 0.0, 0.999));

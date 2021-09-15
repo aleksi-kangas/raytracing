@@ -48,6 +48,7 @@ class Vector3D {
   Vector3D operator-() const;
   Vector3D &operator+=(const Vector3D &vector);
   Vector3D &operator*=(double c);
+  Vector3D &operator*=(const Vector3D &vector);
   Vector3D &operator/=(double c);
 
   /**
@@ -93,6 +94,32 @@ class Vector3D {
    * @return unit vector
    */
   static Vector3D UnitVector(const Vector3D &vector);
+
+  /**
+   * Generate a random 3D-vector with coordinates in range [0, 1].
+   * @return generated vector
+   */
+  static Vector3D Random();
+
+  /**
+   * Generate a random 3D-vector with coordinates in range [min, max].
+   * @param min lower bound for coordinates
+   * @param max upper bound for coordinates
+   * @return generated vector
+   */
+  static Vector3D Random(double min, double max);
+
+  /**
+   * Generate a random 3D-vector inside unit sphere.
+   * @return generated vector
+   */
+  static Vector3D RandomInUnitSphere();
+
+  /**
+   * Generate a random unit vector.
+   * @return generated vector
+   */
+  static Vector3D RandomUnitVector();
 
  private:
   std::array<double, 3> elements_;

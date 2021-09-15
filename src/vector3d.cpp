@@ -2,6 +2,7 @@
 
 #include <cmath>
 
+#include "random.h"
 #include "utils.h"
 
 Vector3D::Vector3D() : elements_{0, 0, 0} {}
@@ -59,6 +60,13 @@ Vector3D &Vector3D::operator*=(double c) {
   return *this;
 }
 
+Vector3D &Vector3D::operator*=(const Vector3D &vector) {
+  elements_[0] *= vector.X();
+  elements_[1] *= vector.Y();
+  elements_[2] *= vector.Z();
+  return *this;
+}
+
 Vector3D &Vector3D::operator/=(double c) {
   return *this *= 1 / c;
 }
@@ -90,6 +98,27 @@ Vector3D Vector3D::CrossProduct(const Vector3D &u, const Vector3D &v) {
       u.Z() * v.X() - u.X() * v.Z(),
       u.X() * v.Y() - u.Y() * v.X()
   };
+}
+Vector3D Vector3D::Random() {
+  return {RandomDouble(), RandomDouble(), RandomDouble()};
+}
+
+Vector3D Vector3D::Random(double min, double max) {
+  return {RandomDouble(min, max), RandomDouble(min, max), RandomDouble(min, max)};
+}
+
+Vector3D Vector3D::RandomInUnitSphere() {
+  while (true) {
+    auto vector = Random(-1, 1);
+    if (vector.LengthSquared() >= 1) {
+      continue;
+    }
+    return vector;
+  }
+}
+
+Vector3D Vector3D::RandomUnitVector() {
+  return RandomInUnitSphere().UnitVector();
 }
 
 Vector3D Vector3D::UnitVector(const Vector3D &vector) {

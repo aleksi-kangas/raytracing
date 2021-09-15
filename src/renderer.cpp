@@ -87,11 +87,27 @@ void Renderer::RunThread() {
 }
 
 Color Renderer::ComputeColor(const Ray &ray, const Collidables &world) {
-  Collision collision;
-  if (world.Collide(ray, 0, utils::kInfinity, collision)) {
-    return 0.5 * (collision.normal + Color(1, 1, 1));
+  int child_rays = Scene::kMaxChildRays;
+
+  Color computed_color(1, 1, 1);  // Output.
+
+  // "Recursion" variables.
+  Ray current_ray = ray;
+
+  while (child_rays > 0) {
+    Collision collision;
+    bool collided = world.Collide(current_ray, 0.001, utils::kInfinity, collision);
+    if (!collided) {
+      // Background color.
+      Vector3D unit_direction = ray.Direction().UnitVector();
+      double t = 0.5 * (unit_direction.Y() + 1.0);
+      computed_color *= (1.0 - t) * Color(1.0, 1.0, 1.0) + t * Color(0.5, 0.7, 1.0);
+      return computed_color;
+    }
+    Point3D target = collision.point + collision.normal + Vector3D::RandomUnitVector();
+    current_ray = Ray(collision.point, target - collision.point);
+    computed_color *= 0.5;
+    --child_rays;
   }
-  Vector3D unit_direction = ray.Direction().UnitVector();
-  double t = 0.5 * (unit_direction.Y() + 1.0);
-  return (1.0 - t) * Color(1.0, 1.0, 1.0) + t * Color(0.5, 0.7, 1.0);
+  return {0, 0, 0};  // All child rays have been consumed.
 }

@@ -42,7 +42,7 @@ class TaskQueue {
 
 class Renderer {
  public:
-  explicit Renderer(const Scene &scene, int nr_thread = static_cast<int>(std::thread::hardware_concurrency()));
+  explicit Renderer(const Scene &scene, int nr_threads = static_cast<int>(std::thread::hardware_concurrency()));
 
   std::vector<std::vector<Color>> Render();
 
