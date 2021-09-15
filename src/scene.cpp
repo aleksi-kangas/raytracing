@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include "bvh.h"
 #include "material.h"
 #include "moving_sphere.h"
 #include "random.h"
@@ -23,8 +24,10 @@ void Scene::InitializeCamera() {
 }
 
 void Scene::InitializeWorld() {
+  Collidables collidables;
+
   std::shared_ptr<Material> ground = std::make_shared<Lambertian>(Color(0.5, 0.5, 0.5));
-  world.AddCollidable(std::make_shared<Sphere>(Point3D(0, -1000, 0), 1000, ground));
+  collidables.AddCollidable(std::make_shared<Sphere>(Point3D(0, -1000, 0), 1000, ground));
 
   for (int i = -11; i < 11; ++i) {
     for (int j = -11; j < 11; ++j) {
@@ -38,28 +41,30 @@ void Scene::InitializeWorld() {
           Color albedo = Color::Random() * Color::Random();
           material = std::make_shared<Lambertian>(albedo);
           Point3D center2 = center + Vector3D(0, RandomDouble(0.0, 0.5), 0);
-          world.AddCollidable(std::make_shared<MovingSphere>(center, center2, 0.0, 1.0, 0.2, material));
+          collidables.AddCollidable(std::make_shared<MovingSphere>(center, center2, 0.0, 1.0, 0.2, material));
         } else if (random_double < 0.95) {
           // Metal
           Color albedo = Color::Random(0.5, 1.0);
           double fuzziness = RandomDouble(0.0, 0.5);
           material = std::make_shared<Metal>(albedo, fuzziness);
-          world.AddCollidable(std::make_shared<Sphere>(center, 0.2, material));
+          collidables.AddCollidable(std::make_shared<Sphere>(center, 0.2, material));
         } else {
           // Dielectric
           material = std::make_shared<Dielectric>(1.5);
-          world.AddCollidable(std::make_shared<Sphere>(center, 0.2, material));
+          collidables.AddCollidable(std::make_shared<Sphere>(center, 0.2, material));
         }
       }
     }
   }
 
   std::shared_ptr<Material> glass = std::make_shared<Dielectric>(1.5);
-  world.AddCollidable(std::make_shared<Sphere>(Point3D(0.0, 1.0, 0.0), 1.0, glass));
+  collidables.AddCollidable(std::make_shared<Sphere>(Point3D(0.0, 1.0, 0.0), 1.0, glass));
 
   std::shared_ptr<Material> lambertian = std::make_shared<Lambertian>(Color(0.4, 0.2, 0.1));
-  world.AddCollidable(std::make_shared<Sphere>(Point3D(-4.0, 1.0, 0.0), 1.0, lambertian));
+  collidables.AddCollidable(std::make_shared<Sphere>(Point3D(-4.0, 1.0, 0.0), 1.0, lambertian));
 
   std::shared_ptr<Material> metal = std::make_shared<Metal>(Color(0.7, 0.6, 0.5), 0.0);
-  world.AddCollidable(std::make_shared<Sphere>(Point3D(4.0, 1.0, 0.0), 1.0, metal));
+  collidables.AddCollidable(std::make_shared<Sphere>(Point3D(4.0, 1.0, 0.0), 1.0, metal));
+
+  world.AddCollidable(std::make_shared<BoundingVolumeHierarchyNode>(collidables, 0.0, 1.0));
 }

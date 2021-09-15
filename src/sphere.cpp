@@ -33,3 +33,11 @@ bool Sphere::Collide(const Ray &ray, double t_min, double t_max, Collision &coll
   collision.material = material_.get();
   return true;
 }
+
+bool Sphere::BoundingBox(double time0, double time1, AxisAlignedBoundingBox &bounding_box) const {
+  bounding_box = AxisAlignedBoundingBox(
+      center_ - Vector3D(radius_, radius_, radius_),
+      center_ + Vector3D(radius_, radius_, radius_)
+  );
+  return true;
+}

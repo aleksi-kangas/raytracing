@@ -5,6 +5,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 
 set(SOURCE_FILES
+        src/aabb.cpp src/aabb.h
+        src/bvh.cpp src/bvh.h
         src/camera.cpp src/camera.h
         src/collidable.h
         src/collidables.cpp src/collidables.h

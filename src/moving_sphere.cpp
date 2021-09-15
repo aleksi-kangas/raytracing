@@ -50,3 +50,16 @@ bool MovingSphere::Collide(const Ray &ray, double t_min, double t_max, Collision
   collision.SetFaceNormal(ray, outward_normal);
   return true;
 }
+
+bool MovingSphere::BoundingBox(double time0, double time1, AxisAlignedBoundingBox &bounding_box) const {
+  AxisAlignedBoundingBox box0(
+      CenterAt(time0) - Vector3D(radius_, radius_, radius_),
+      CenterAt(time0) + Vector3D(radius_, radius_, radius_)
+  );
+  AxisAlignedBoundingBox box1(
+      CenterAt(time1) - Vector3D(radius_, radius_, radius_),
+      CenterAt(time1) + Vector3D(radius_, radius_, radius_)
+  );
+  bounding_box = AxisAlignedBoundingBox::SurroundingBox(box0, box1);
+  return true;
+}

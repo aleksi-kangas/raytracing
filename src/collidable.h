@@ -1,5 +1,6 @@
 #pragma once
 
+#include "aabb.h"
 #include "ray.h"
 #include "vector3d.h"
 
@@ -31,11 +32,20 @@ class Collidable {
 
   /**
    * Compute collision of a ray and the collidable object.
-   * @param ray inbound ray
-   * @param t_min minimum threshold
-   * @param t_max maximum threshold
-   * @param collision receives collision information
+   * @param[in] ray inbound ray
+   * @param[in] t_min minimum threshold
+   * @param[in] t_max maximum threshold
+   * @param[out] collision receives collision information
    * @return true if collision happened, false otherwise
    */
   virtual bool Collide(const Ray &ray, double t_min, double t_max, Collision &collision) const = 0;
+
+  /**
+   * Compute a minimum AABB that surrounds the collidable object.
+   * @param[in] time0 minimum threshold
+   * @param[in] time1 maximum threshold
+   * @param[out] bounding_box receives the computed AABB
+   * @return true if an AABB exists, false otherwise
+   */
+  virtual bool BoundingBox(double time0, double time1, AxisAlignedBoundingBox &bounding_box) const = 0;
 };
