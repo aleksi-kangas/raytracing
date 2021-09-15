@@ -3,13 +3,16 @@
 #include <filesystem>
 #include <memory>
 
+#include "box.h"
 #include "bvh.h"
 #include "material.h"
 #include "moving_sphere.h"
 #include "random.h"
 #include "rectangle.h"
+#include "rotate.h"
 #include "sphere.h"
 #include "texture.h"
+#include "translate.h"
 #include "utils.h"
 
 Scene::Scene(int image_width, int image_height, int samples_per_pixel)
@@ -38,4 +41,17 @@ void Scene::InitializeWorld() {
   world.AddCollidable(std::make_shared<RectangleXZ>(0, 555, 0, 555, 555, white));
   world.AddCollidable(std::make_shared<RectangleXY>(0, 555, 0, 555, 555, white));
   world.AddCollidable(std::make_shared<RectangleXZ>(213, 343, 227, 332, 554, light));
+
+  {
+    std::shared_ptr<Collidable> box = std::make_shared<Box>(Point3D(0, 0, 0), Point3D(165, 330, 165), white);
+    box = std::make_shared<RotateY>(box, 15.0);
+    box = std::make_shared<Translate>(box, Vector3D(265, 0, 295));
+    world.AddCollidable(box);
+  }
+  {
+    std::shared_ptr<Collidable> box = std::make_shared<Box>(Point3D(0, 0, 0), Point3D(165, 165, 165), white);
+    box = std::make_shared<RotateY>(box, -18.0);
+    box = std::make_shared<Translate>(box, Vector3D(130, 0, 65));
+    world.AddCollidable(box);
+  }
 }

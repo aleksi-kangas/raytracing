@@ -6,6 +6,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 
 set(SOURCE_FILES
         src/aabb.cpp src/aabb.h
+        src/box.cpp src/box.h
         src/bvh.cpp src/bvh.h
         src/camera.cpp src/camera.h
         src/collidable.h
@@ -18,9 +19,11 @@ set(SOURCE_FILES
         src/ray.cpp src/ray.h
         src/rectangle.cpp src/rectangle.h
         src/renderer.cpp src/renderer.h
+        src/rotate.cpp src/rotate.h
         src/scene.cpp src/scene.h
         src/sphere.cpp src/sphere.h
         src/texture.cpp src/texture.h
+        src/translate.cpp src/translate.h
         src/utils.cpp src/utils.h
         src/vector3d.cpp src/vector3d.h)
 

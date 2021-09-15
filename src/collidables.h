@@ -31,10 +31,10 @@ class Collidables : public Collidable {
 
   /**
    * Compute collision of a ray and the collection of collidable objects.
-   * @param ray inbound ray
-   * @param t_min minimum threshold
-   * @param t_max maximum threshold
-   * @param collision receives collision information
+   * @param[in] ray inbound ray
+   * @param[in] t_min minimum threshold
+   * @param[in] t_max maximum threshold
+   * @param[out] collision receives collision information
    * @return true if collision happened, false otherwise
    */
   bool Collide(const Ray &ray, double t_min, double t_max, Collision &collision) const override;
