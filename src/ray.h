@@ -8,7 +8,7 @@
 class Ray {
  public:
   Ray() = default;
-  Ray(const Point3D &origin, const Vector3D &direction);
+  Ray(const Point3D &origin, const Vector3D &direction, double time = 0.0);
 
   Ray(Ray &&) = default;
   Ray &operator=(Ray &&) = default;
@@ -28,6 +28,12 @@ class Ray {
   [[nodiscard]] Vector3D Direction() const;
 
   /**
+   * Get time of the ray.
+   * @return time of the ray
+   */
+  [[nodiscard]] double Time() const;
+
+  /**
    * Get a point along the ray at a specific time.
    * @param time specific time
    * @return point at the given time
@@ -37,4 +43,5 @@ class Ray {
  private:
   Point3D origin_;
   Vector3D direction_;
+  double time_ = 0.0;
 };

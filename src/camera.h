@@ -14,6 +14,8 @@ class Camera {
          double vertical_fov_degrees,
          double aperture,
          double focus_distance,
+         double time0 = 0.0,
+         double time1 = 0.0,
          Vector3D view_up_direction = Vector3D(0, 1, 0));
 
   /**
@@ -29,5 +31,6 @@ class Camera {
   Point3D lower_left_corner_;
   Vector3D horizontal_, vertical_;
   Vector3D v_, u_, w_;
+  double time0_, time1_;
   double lens_radius_;
 };

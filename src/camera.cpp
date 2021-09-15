@@ -2,6 +2,7 @@
 
 #include <cmath>
 
+#include "random.h"
 #include "utils.h"
 
 Camera::Camera(const Point3D &position,
@@ -10,8 +11,10 @@ Camera::Camera(const Point3D &position,
                double vertical_fov_degrees,
                double aperture,
                double focus_distance,
+               double time0,
+               double time1,
                Vector3D view_up_direction)
-    : position_(position), lens_radius_(aperture / 2.0) {
+    : position_(position), time0_(time0), time1_(time1), lens_radius_(aperture / 2.0) {
   double theta = utils::DegreesToRadians(vertical_fov_degrees);
   double h = tan(theta / 2);
   double viewport_height = 2.0 * h;
@@ -31,6 +34,7 @@ Ray Camera::GetRay(double u, double v) const {
   Vector3D offset = u_ * random_direction.X() + v_ * random_direction.Y();
   return {
       position_ + offset,
-      lower_left_corner_ + u * horizontal_ + v * vertical_ - position_ - offset
+      lower_left_corner_ + u * horizontal_ + v * vertical_ - position_ - offset,
+      RandomDouble(time0_, time1_)
   };
 }

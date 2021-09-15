@@ -12,7 +12,7 @@ bool Lambertian::Scatter(const Ray &ray, const Collision &collision, Color &atte
   if (scatter_direction.IsNearZero()) {
     scatter_direction = collision.normal;
   }
-  scattered_ray = Ray(collision.point, scatter_direction);
+  scattered_ray = Ray(collision.point, scatter_direction, ray.Time());
   attenuation = albedo_;
   return true;
 }
@@ -21,7 +21,7 @@ Metal::Metal(const Color &albedo, double fuzziness) : albedo_(albedo), fuzziness
 
 bool Metal::Scatter(const Ray &ray, const Collision &collision, Color &attenuation, Ray &scattered_ray) const {
   Vector3D reflected = Vector3D::Reflect(ray.Direction().UnitVector(), collision.normal);
-  scattered_ray = Ray(collision.point, reflected + fuzziness_ * Vector3D::RandomInUnitSphere());
+  scattered_ray = Ray(collision.point, reflected + fuzziness_ * Vector3D::RandomInUnitSphere(), ray.Time());
   attenuation = albedo_;
   return Vector3D::DotProduct(scattered_ray.Direction(), collision.normal) > 0;
 }
@@ -43,7 +43,7 @@ bool Dielectric::Scatter(const Ray &ray, const Collision &collision, Color &atte
   } else {
     direction = Vector3D::Reflect(unit_direction, collision.normal);
   }
-  scattered_ray = Ray(collision.point, direction);
+  scattered_ray = Ray(collision.point, direction, ray.Time());
   return true;
 }
 

@@ -10,6 +10,7 @@ set(SOURCE_FILES
         src/collidables.cpp src/collidables.h
         src/main.cpp
         src/material.cpp src/material.h
+        src/moving_sphere.cpp src/moving_sphere.h
         src/random.cpp src/random.h
         src/ray.cpp src/ray.h
         src/renderer.cpp src/renderer.h

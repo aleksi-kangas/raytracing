@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "material.h"
+#include "moving_sphere.h"
 #include "random.h"
 #include "sphere.h"
 #include "utils.h"
@@ -17,7 +18,8 @@ void Scene::InitializeCamera() {
   constexpr double kVerticalFOVDegrees = 20.0f;
   constexpr double kAperture = 0.1f;
   constexpr double kFocusDistance = 10.0f;
-  camera = std::make_unique<Camera>(kPosition, kTarget, kAspectRatio, kVerticalFOVDegrees, kAperture, kFocusDistance);
+  camera = std::make_unique<Camera>(
+      kPosition, kTarget, kAspectRatio, kVerticalFOVDegrees, kAperture, kFocusDistance, 0.0, 1.0);
 }
 
 void Scene::InitializeWorld() {
@@ -35,16 +37,19 @@ void Scene::InitializeWorld() {
           // Lambertian
           Color albedo = Color::Random() * Color::Random();
           material = std::make_shared<Lambertian>(albedo);
+          Point3D center2 = center + Vector3D(0, RandomDouble(0.0, 0.5), 0);
+          world.AddCollidable(std::make_shared<MovingSphere>(center, center2, 0.0, 1.0, 0.2, material));
         } else if (random_double < 0.95) {
           // Metal
           Color albedo = Color::Random(0.5, 1.0);
           double fuzziness = RandomDouble(0.0, 0.5);
           material = std::make_shared<Metal>(albedo, fuzziness);
+          world.AddCollidable(std::make_shared<Sphere>(center, 0.2, material));
         } else {
           // Dielectric
           material = std::make_shared<Dielectric>(1.5);
+          world.AddCollidable(std::make_shared<Sphere>(center, 0.2, material));
         }
-        world.AddCollidable(std::make_shared<Sphere>(center, 0.2, material));
       }
     }
   }

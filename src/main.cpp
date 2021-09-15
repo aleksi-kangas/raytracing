@@ -6,10 +6,10 @@
 #include "vector3d.h"
 
 int main() {
-  constexpr double kAspectRatio = 3.0 / 2.0;
-  constexpr int kImageWidth = 1200;
+  constexpr double kAspectRatio = 16.0 / 9.0;
+  constexpr int kImageWidth = 400;
   constexpr int kImageHeight = static_cast<int>(kImageWidth / kAspectRatio);
-  constexpr int kSamplesPerPixel = 500;
+  constexpr int kSamplesPerPixel = 100;
 
   Scene scene(kImageWidth, kImageHeight, kSamplesPerPixel);
   scene.InitializeCamera();
