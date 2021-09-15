@@ -4,6 +4,7 @@
 #include <cmath>
 #include <utility>
 
+#include "onb.h"
 #include "random.h"
 #include "utils.h"
 
@@ -16,13 +17,11 @@ bool Lambertian::Scatter(const Ray &ray,
                          Color &attenuation,
                          Ray &scattered_ray,
                          double &pdf) const {
-  Vector3D scatter_direction = Vector3D::RandomInHemisphere(collision.normal);
-//  if (scatter_direction.IsNearZero()) {
-//    scatter_direction = collision.normal;
-//  }
+  OrthonormalBasis onb(collision.normal);
+  Vector3D scatter_direction = onb.Local(Vector3D::RandomCosineDirection());
   scattered_ray = Ray(collision.point, scatter_direction, ray.Time());
   attenuation = albedo_->SampleColor(collision.u, collision.v, collision.point);
-  pdf = 0.5 / utils::kPI;
+  pdf = Vector3D::DotProduct(onb.W(), scattered_ray.Direction()) / utils::kPI;
   return true;
 }
 
