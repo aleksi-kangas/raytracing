@@ -3,6 +3,7 @@
 #include <memory>
 #include <vector>
 
+#include "perlin.h"
 #include "vector3d.h"
 
 class Texture {
@@ -34,4 +35,15 @@ class CheckerTexture : public Texture {
 
  private:
   std::shared_ptr<Texture> even_, odd_;
+};
+
+class NoiseTexture : public Texture {
+ public:
+  explicit NoiseTexture(double scale = 1.0);
+
+  [[nodiscard]] Color SampleColor(double u, double v, const Point3D &point) const override;
+
+ private:
+  Perlin perlin_;
+  double scale_;
 };

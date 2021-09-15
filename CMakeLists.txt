@@ -13,6 +13,7 @@ set(SOURCE_FILES
         src/main.cpp
         src/material.cpp src/material.h
         src/moving_sphere.cpp src/moving_sphere.h
+        src/perlin.cpp src/perlin.h
         src/random.cpp src/random.h
         src/ray.cpp src/ray.h
         src/renderer.cpp src/renderer.h
