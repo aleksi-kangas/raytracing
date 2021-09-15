@@ -135,6 +135,12 @@ class Vector3D {
   static Vector3D RandomInHemisphere(const Vector3D &normal);
 
   /**
+   * Generate a random cosine direction.
+   * @return generated vector
+   */
+  static Vector3D RandomCosineDirection();
+
+  /**
    * Compute a reflected vector from an inbound vector and surface normal vector.
    * @param vector inbound vector
    * @param normal surface normal vector

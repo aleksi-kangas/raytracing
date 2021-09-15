@@ -145,6 +145,16 @@ Vector3D Vector3D::RandomInHemisphere(const Vector3D &normal) {
   return DotProduct(in_unit_sphere, normal) > 0.0 ? in_unit_sphere : -in_unit_sphere;
 }
 
+Vector3D Vector3D::RandomCosineDirection() {
+  double random1 = RandomDouble();
+  double random2 = RandomDouble();
+  double z = sqrt(1.0 - random2);
+  double phi = 2.0 * utils::kPI * random1;
+  double x = cos(phi) * sqrt(random2);
+  double y = sin(phi) * sqrt(random2);
+  return {x, y, z};
+}
+
 Vector3D Vector3D::Reflect(const Vector3D &vector, const Vector3D &normal) {
   return vector - 2 * DotProduct(vector, normal) * normal;
 }
