@@ -33,8 +33,11 @@ experimenting with this and deemed the initial approach as sufficient.
 
 ## Results
 
-| Processor       | Threads | Image                                    | Samples | Elapsed Time |
-|-----------------|---------|------------------------------------------|---------|--------------|
-| AMD Ryzen 2700X | 16      | [Part 1-13](/renders/part1/part1-13.png) | 500     | 15 minutes   |
+| Processor       | Threads | Image                                                | Samples | Render Time       |
+|-----------------|---------|------------------------------------------------------|---------|-------------------|
+| AMD Ryzen 2700X | 16      | [In One Weekend (1-13)](/renders/part1/part1-13.png) | 500     | 15 minutes        |
+| AMD Ryzen 2700X | 16      | [The Next Week (2-10)](/renders/part2/part2-10.png)  | 10000   | 1 hour 14 minutes |
 
-![Part 1 Final Render](/renders/part1/part1-13.png)
+![In One Weekend - Final Render](/renders/part1/part1-13.png)
+
+![The Next Week - Final Render](/renders/part2/part2-10.png)
