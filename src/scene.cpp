@@ -6,6 +6,7 @@
 #include "box.h"
 #include "bvh.h"
 #include "constant_medium.h"
+#include "flip_face.h"
 #include "material.h"
 #include "moving_sphere.h"
 #include "random.h"
@@ -41,7 +42,8 @@ void Scene::InitializeWorld() {
   world.AddCollidable(std::make_shared<RectangleXZ>(0, 555, 0, 555, 555, white));
   world.AddCollidable(std::make_shared<RectangleXZ>(0, 555, 0, 555, 0, white));
   world.AddCollidable(std::make_shared<RectangleXY>(0, 555, 0, 555, 555, white));
-  world.AddCollidable(std::make_shared<RectangleXZ>(213, 343, 227, 332, 554, light));
+  world.AddCollidable(std::make_shared<FlipFace>(
+      std::make_shared<RectangleXZ>(213, 343, 227, 332, 554, light)));
 
   {
     std::shared_ptr<Collidable> box = std::make_shared<Box>(Point3D(0, 0, 0), Point3D(165, 330, 165), white);

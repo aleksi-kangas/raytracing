@@ -104,7 +104,11 @@ Color Renderer::ComputeColor(const Ray &ray, const Collidables &world, const Col
     }
 
     // Update output.
-    Color emitted_color = collision.material->Emit(collision.u, collision.v, collision.point);
+    Color emitted_color = collision.material->Emit(current_ray,
+                                                   collision,
+                                                   collision.u,
+                                                   collision.v,
+                                                   collision.point);
     computed_color += emitted_color * current_attenuation;
 
     Color attenuation;
@@ -115,6 +119,24 @@ Color Renderer::ComputeColor(const Ray &ray, const Collidables &world, const Col
     if (!scattered) {
       return computed_color;
     }
+    // Sampling light.
+    Point3D light_point = Point3D(RandomDouble(213, 343), 554, RandomDouble(227, 332));
+    Vector3D towards_light = light_point - collision.point;
+    double distance_squared = towards_light.LengthSquared();
+    towards_light = towards_light.UnitVector();
+
+    if (Vector3D::DotProduct(towards_light, collision.normal) < 0) {
+      return computed_color;
+    }
+
+    double light_area = (343 - 213) * (332 - 227);
+    double light_cosine = std::abs(towards_light.Y());
+    if (light_cosine < 0.000001) {
+      return computed_color;
+    }
+
+    scattered_ray = Ray(collision.point, towards_light, ray.Time());
+    pdf = distance_squared / (light_cosine * light_area);
 
     current_attenuation *= attenuation * collision.material->ScatteringPDF(current_ray, collision, scattered_ray) / pdf;
     current_ray = scattered_ray;

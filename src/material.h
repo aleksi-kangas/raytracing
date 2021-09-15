@@ -15,14 +15,20 @@ class Material {
   virtual ~Material() = default;
 
   /**
-  * Compute emitted color of a material.
-  * If a material doesn't define emission, black is returned.
-  * @param[in] u horizontal coordinate
-  * @param[in] v vertical coordinate
-  * @param[in] point sampling point
-  * @return emitted color
-  */
-  [[nodiscard]] virtual Color Emit(double u, double v, const Point3D &point) const {
+   * Compute emitted color of a material.
+   * If a material doesn't define emission, black is returned.
+   * @param ray inbound ray
+   * @param collision contains collision information
+   * @param u horizontal coordinate
+   * @param v vertical coordinate
+   * @param point sampling point
+   * @return emitted color
+   */
+  [[nodiscard]] virtual Color Emit(const Ray &ray,
+                                   const Collision &collision,
+                                   double u,
+                                   double v,
+                                   const Point3D &point) const {
     return {0, 0, 0};  // Black as default.
   }
 
@@ -50,7 +56,9 @@ class Material {
    * @param[in] scattered_ray ray created from scattering event
    * @return value of scattering probability density function
    */
-  virtual double ScatteringPDF(const Ray &ray, const Collision &collision, const Ray &scattered_ray) const {
+  [[nodiscard]] virtual double ScatteringPDF(const Ray &ray,
+                                             const Collision &collision,
+                                             const Ray &scattered_ray) const {
     return 0.0;
   }
 };
@@ -83,7 +91,9 @@ class Lambertian : public Material {
    * @param[in] scattered_ray ray created from scattering event
    * @return value of scattering probability density function
    */
-  double ScatteringPDF(const Ray &ray, const Collision &collision, const Ray &scattered_ray) const override;
+  [[nodiscard]] double ScatteringPDF(const Ray &ray,
+                                     const Collision &collision,
+                                     const Ray &scattered_ray) const override;
 
  private:
   std::shared_ptr<Texture> albedo_;
@@ -157,7 +167,11 @@ class DiffuseLight : public Material {
    * @param[in] point sampling point
    * @return emitted color
    */
-  [[nodiscard]] Color Emit(double u, double v, const Point3D &point) const override;
+  [[nodiscard]] Color Emit(const Ray &ray,
+                           const Collision &collision,
+                           double u,
+                           double v,
+                           const Point3D &point) const override;
  private:
   std::shared_ptr<Texture> emit_;
 };

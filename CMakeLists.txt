@@ -12,6 +12,7 @@ set(SOURCE_FILES
         src/collidable.h
         src/collidables.cpp src/collidables.h
         src/constant_medium.cpp src/constant_medium.h
+        src/flip_face.cpp src/flip_face.h
         src/main.cpp
         src/material.cpp src/material.h
         src/moving_sphere.cpp src/moving_sphere.h

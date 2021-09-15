@@ -79,8 +79,9 @@ DiffuseLight::DiffuseLight(const Color &albedo) : emit_(std::make_shared<SolidCo
 
 DiffuseLight::DiffuseLight(std::shared_ptr<Texture> albedo) : emit_(std::move(albedo)) {}
 
-Color DiffuseLight::Emit(double u, double v, const Point3D &point) const {
-  return emit_->SampleColor(u, v, point);
+Color DiffuseLight::Emit(const Ray &ray, const Collision &collision, double u, double v, const Point3D &point) const {
+  // Unidirectional light.
+  return collision.is_front_face ? emit_->SampleColor(u, v, point) : Color(0, 0, 0);
 }
 
 Isotropic::Isotropic(std::shared_ptr<Texture> albedo) : albedo_(std::move(albedo)) {}
