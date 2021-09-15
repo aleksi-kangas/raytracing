@@ -10,11 +10,13 @@ Scene::Scene(int image_width, int image_height, int samples_per_pixel)
     : image_width(image_width), image_height(image_height), samples_per_pixel(samples_per_pixel) {}
 
 void Scene::InitializeCamera() {
-  const Point3D kOrigin{-2, 2, 1};
+  const Point3D kPosition{3, 3, 2};
   const Point3D kTarget{0, 0, -1};
   const double kAspectRatio = static_cast<double>(image_width) / static_cast<double>(image_height);
   constexpr double kVerticalFOVDegrees = 20.0f;
-  camera = std::make_unique<Camera>(kOrigin, kTarget, kAspectRatio, kVerticalFOVDegrees);
+  constexpr double kAperture = 2.0f;
+  const double kFocusDistance = (kTarget - kPosition).Length();
+  camera = std::make_unique<Camera>(kPosition, kTarget, kAspectRatio, kVerticalFOVDegrees, kAperture, kFocusDistance);
 }
 
 void Scene::InitializeWorld() {

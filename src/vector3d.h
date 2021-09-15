@@ -122,6 +122,12 @@ class Vector3D {
   static Vector3D RandomUnitVector();
 
   /**
+   * Generate a random 3D-vector in unit disk (2D-space).
+   * @return generated vector
+   */
+  static Vector3D RandomInUnitDisk();
+
+  /**
    * Compute a reflected vector from an inbound vector and surface normal vector.
    * @param vector inbound vector
    * @param normal surface normal vector

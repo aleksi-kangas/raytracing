@@ -12,6 +12,8 @@ class Camera {
          const Point3D &target,
          double aspect_ratio,
          double vertical_fov_degrees,
+         double aperture,
+         double focus_distance,
          Vector3D view_up_direction = Vector3D(0, 1, 0));
 
   /**
@@ -25,6 +27,7 @@ class Camera {
  private:
   Point3D position_;
   Point3D lower_left_corner_;
-  Vector3D horizontal_;
-  Vector3D vertical_;
+  Vector3D horizontal_, vertical_;
+  Vector3D v_, u_, w_;
+  double lens_radius_;
 };

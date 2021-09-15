@@ -126,6 +126,20 @@ Vector3D Vector3D::RandomUnitVector() {
   return RandomInUnitSphere().UnitVector();
 }
 
+Vector3D Vector3D::RandomInUnitDisk() {
+  while (true) {
+    Vector3D vector(
+        RandomDouble(-1.0, 1.0),
+        RandomDouble(-1.0, 1.0),
+        0.0
+    );
+    if (vector.LengthSquared() >= 1) {
+      continue;
+    }
+    return vector;
+  }
+}
+
 Vector3D Vector3D::Reflect(const Vector3D &vector, const Vector3D &normal) {
   return vector - 2 * DotProduct(vector, normal) * normal;
 }
