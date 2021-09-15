@@ -19,12 +19,13 @@ void Scene::InitializeCamera() {
 void Scene::InitializeWorld() {
 
   std::shared_ptr<Material> ground = std::make_shared<Lambertian>(Color(0.8, 0.8, 0.0));
-  std::shared_ptr<Material> center = std::make_shared<Lambertian>(Color(0.7, 0.3, 0.3));
-  std::shared_ptr<Material> left = std::make_shared<Metal>(Color(0.8, 0.8, 0.8), 0.3);
+  std::shared_ptr<Material> center = std::make_shared<Lambertian>(Color(0.1, 0.2, 0.5));
+  std::shared_ptr<Material> left = std::make_shared<Dielectric>(1.5);
   std::shared_ptr<Material> right = std::make_shared<Metal>(Color(0.8, 0.6, 0.2), 1.0);
 
   world.AddCollidable(std::make_shared<Sphere>(Point3D(0, -100.5, -1), 100, ground));
   world.AddCollidable(std::make_shared<Sphere>(Point3D(0, 0, -1), 0.5, center));
   world.AddCollidable(std::make_shared<Sphere>(Point3D(-1, 0, -1), 0.5, left));
+  world.AddCollidable(std::make_shared<Sphere>(Point3D(-1, 0, -1), -0.4, left));
   world.AddCollidable(std::make_shared<Sphere>(Point3D(1, 0, -1), 0.5, right));
 }

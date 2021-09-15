@@ -1,6 +1,9 @@
 #include "material.h"
 
 #include <algorithm>
+#include <cmath>
+
+#include "random.h"
 
 Lambertian::Lambertian(const Color &albedo) : albedo_(albedo) {}
 
@@ -21,4 +24,32 @@ bool Metal::Scatter(const Ray &ray, const Collision &collision, Color &attenuati
   scattered_ray = Ray(collision.point, reflected + fuzziness_ * Vector3D::RandomInUnitSphere());
   attenuation = albedo_;
   return Vector3D::DotProduct(scattered_ray.Direction(), collision.normal) > 0;
+}
+
+Dielectric::Dielectric(double refraction_ratio) : refraction_ratio_(refraction_ratio) {}
+
+bool Dielectric::Scatter(const Ray &ray, const Collision &collision, Color &attenuation, Ray &scattered_ray) const {
+  attenuation = Color(1.0, 1.0, 1.0);
+  double refraction_ratio = collision.is_front_face ? (1.0 / refraction_ratio_) : refraction_ratio_;
+  Vector3D unit_direction = ray.Direction().UnitVector();
+
+  double cos_theta = std::min(Vector3D::DotProduct(-unit_direction, collision.normal), 1.0);
+  double sin_theta = sqrt(1.0 - cos_theta * cos_theta);
+
+  bool can_refract = refraction_ratio * sin_theta <= 1.0;
+  Vector3D direction;
+  if (can_refract && ComputeReflectance(cos_theta, refraction_ratio) <= RandomDouble()) {
+    direction = Vector3D::Refract(unit_direction, collision.normal, refraction_ratio);
+  } else {
+    direction = Vector3D::Reflect(unit_direction, collision.normal);
+  }
+  scattered_ray = Ray(collision.point, direction);
+  return true;
+}
+
+double Dielectric::ComputeReflectance(double cosine, double refraction_ratio) {
+  // Schlick's approximation https://en.wikipedia.org/wiki/Schlick%27s_approximation.
+  double r0 = (1.0 - refraction_ratio) / (1.0 + refraction_ratio);
+  r0 = r0 * r0;
+  return r0 + (1.0 - r0) * std::pow((1.0 - cosine), 5);
 }

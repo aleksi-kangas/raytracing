@@ -129,6 +129,15 @@ class Vector3D {
    */
   static Vector3D Reflect(const Vector3D &vector, const Vector3D &normal);
 
+  /**
+   * Compute a refracted vector from an inbound vector, surface normal vector and refraction ratio.
+   * @param vector inbound vector
+   * @param normal surface normal vector
+   * @param refraction_ratio ratio of refractive indices https://en.wikipedia.org/wiki/Refractive_index
+   * @return refracted vector
+   */
+  static Vector3D Refract(const Vector3D &vector, const Vector3D &normal, double refraction_ratio);
+
  private:
   std::array<double, 3> elements_;
 };

@@ -130,6 +130,13 @@ Vector3D Vector3D::Reflect(const Vector3D &vector, const Vector3D &normal) {
   return vector - 2 * DotProduct(vector, normal) * normal;
 }
 
+Vector3D Vector3D::Refract(const Vector3D &vector, const Vector3D &normal, double refraction_ratio) {
+  double cos_theta = std::min(Vector3D::DotProduct(-vector, normal), 1.0);
+  Vector3D perpendicular = refraction_ratio * (vector + cos_theta * normal);
+  Vector3D parallel = -sqrt(std::abs(1.0 - perpendicular.LengthSquared())) * normal;
+  return perpendicular + parallel;
+}
+
 Vector3D operator+(const Vector3D &u, const Vector3D &v) {
   return {u.X() + v.X(), u.Y() + v.Y(), u.Z() + v.Z()};
 }
