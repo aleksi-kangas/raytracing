@@ -2,10 +2,11 @@
 
 > Custom C++ implementation of an image raytracer introduced in the [Ray Tracing](https://raytracing.github.io/) -book series.
 
-In order to learn about the essential math and things related to raytracing, I decided to follow Peter Shirley's great
-books about raytracing and implement my version of the raytracer. I tried to follow the general logic and structure of
-the books, but took some artistic freedom in certain areas. The key differences are that my version includes a
-multi-threaded C++ renderer, various structural changes and some performance improvements.
+In order to learn about the essential math and things related to raytracing, I decided to follow the
+great [Ray Tracing](https://raytracing.github.io/) -book series and implement my own version of the raytracer. I
+tried to follow the general logic and structure of the books, but took some artistic freedom in certain areas. The key
+differences are that my version includes a multi-threaded C++ renderer, various structural changes and some performance
+improvements.
 
 ## C++ Renderer
 
