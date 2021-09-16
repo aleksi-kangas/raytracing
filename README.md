@@ -1,13 +1,11 @@
 # Raytracing in C++
 
-> Custom C++ and CUDA implementations of an image raytracer introduced in the [Ray Tracing](https://raytracing.github.io/) -book series.
+> Custom C++ implementation of an image raytracer introduced in the [Ray Tracing](https://raytracing.github.io/) -book series.
 
 In order to learn about the essential math and things related to raytracing, I decided to follow Peter Shirley's great
 books about raytracing and implement my version of the raytracer. I tried to follow the general logic and structure of
-the books, but took some artistic freedom in certain areas. The key differences are that my versions include a
-multi-threaded C++ renderer ([*master*](https://github.com/aleksi-kangas/raytracing) -branch), a ported CUDA
-renderer ([*CUDA*](https://github.com/aleksi-kangas/raytracing/tree/CUDA) -branch), various structural changes and some
-performance improvements.
+the books, but took some artistic freedom in certain areas. The key differences are that my version includes a
+multi-threaded C++ renderer, various structural changes and some performance improvements.
 
 ## C++ Renderer
 
@@ -33,11 +31,14 @@ experimenting with this and deemed the initial approach as sufficient.
 
 ## Results
 
-| Processor       | Threads | Image                                                | Samples | Render Time       |
-|-----------------|---------|------------------------------------------------------|---------|-------------------|
-| AMD Ryzen 2700X | 16      | [In One Weekend (1-13)](/renders/part1/part1-13.png) | 500     | 15 minutes        |
-| AMD Ryzen 2700X | 16      | [The Next Week (2-10)](/renders/part2/part2-10.png)  | 10000   | 1 hour 14 minutes |
+| Processor       | Threads | Image                                                         | Samples | Render Time       |
+|-----------------|---------|---------------------------------------------------------------|---------|-------------------|
+| AMD Ryzen 2700X | 16      | [In One Weekend (1-13)](/renders/part1/part1-13.png)          | 500     | 15 minutes        |
+| AMD Ryzen 2700X | 16      | [The Next Week (2-10)](/renders/part2/part2-10.png)           | 10000   | 1 hour 14 minutes |
+| AMD Ryzen 2700X | 16      | [The Rest of Your Life (3-12)](/renders/part3/part3-12-4.png) | 10000   | 24 minutes        |
 
 ![In One Weekend - Final Render](/renders/part1/part1-13.png)
 
 ![The Next Week - Final Render](/renders/part2/part2-10.png)
+
+![The Rest of Your Life - Final Render](/renders/part3/part3-12-4.png)
