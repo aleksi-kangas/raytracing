@@ -3,6 +3,7 @@
 #include <cmath>
 #include <utility>
 
+#include "onb.h"
 #include "utils.h"
 
 Sphere::Sphere(const Point3D &center, double radius, std::shared_ptr<Material> material)
@@ -50,4 +51,21 @@ void Sphere::GetUVCoordinates(const Point3D &point, double &u, double &v) {
   double phi = atan2(-point.Z(), point.X()) + utils::kPI;
   u = phi / (2 * utils::kPI);
   v = theta / utils::kPI;
+}
+
+double Sphere::PDFValue(const Point3D &origin, const Vector3D &vector) const {
+  Collision collision;
+  if (!Collide(Ray(origin, vector), 0.001, utils::kInfinity, collision)) {
+    return 0;
+  }
+  double cos_theta_max = sqrt(1.0 - radius_ * radius_ / (center_ - origin).LengthSquared());
+  double solid_angle = 2.0 * utils::kPI * (1.0 - cos_theta_max);
+  return 1.0 / solid_angle;
+}
+
+Vector3D Sphere::Random(const Point3D &origin) const {
+  Vector3D direction = center_ - origin;
+  double distance_squared = direction.LengthSquared();
+  OrthonormalBasis onb(direction);
+  return onb.Local(Vector3D::RandomToSphere(radius_, distance_squared));
 }

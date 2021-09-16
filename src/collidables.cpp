@@ -2,6 +2,8 @@
 
 #include <algorithm>
 
+#include "random.h"
+
 void Collidables::AddCollidable(const std::shared_ptr<Collidable> &object) {
   objects_.emplace_back(object);
 }
@@ -42,4 +44,17 @@ bool Collidables::BoundingBox(double time0, double time1, AxisAlignedBoundingBox
     first_box = false;
   }
   return true;
+}
+
+double Collidables::PDFValue(const Point3D &origin, const Vector3D &vector) const {
+  double weight = 1.0 / static_cast<double>(objects_.size());
+  double sum = 0.0;
+  std::for_each(objects_.begin(), objects_.end(), [&](const auto &object) {
+    sum += weight * object->PDFValue(origin, vector);
+  });
+  return sum;
+}
+
+Vector3D Collidables::Random(const Point3D &origin) const {
+  return objects_[RandomInt(0, static_cast<int>(objects_.size()) - 1)]->Random(origin);
 }

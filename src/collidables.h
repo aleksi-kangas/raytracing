@@ -27,7 +27,7 @@ class Collidables : public Collidable {
    * Get the underlying collection of collidable objects.
    * @return vector of collidable objects
    */
-  std::vector<std::shared_ptr<Collidable>> CollidableObjects() const;
+  [[nodiscard]] std::vector<std::shared_ptr<Collidable>> CollidableObjects() const;
 
   /**
    * Compute collision of a ray and the collection of collidable objects.
@@ -47,6 +47,21 @@ class Collidables : public Collidable {
    * @return true if an AABB exists, false otherwise
    */
   bool BoundingBox(double time0, double time1, AxisAlignedBoundingBox &bounding_box) const override;
+
+  /**
+   * Compute value of probability density function given a point and direction.
+   * @param[in] origin point
+   * @param[in] vector direction
+   * @return value of probability density function
+   */
+  [[nodiscard]] double PDFValue(const Point3D &origin, const Vector3D &vector) const override;
+
+  /**
+   * Generate a Random direction towards the collection of collidable objects from the given point.
+   * @param[in] origin point
+   * @return random direction
+   */
+  [[nodiscard]] Vector3D Random(const Point3D &origin) const override;
 
  private:
   std::vector<std::shared_ptr<Collidable>> objects_;

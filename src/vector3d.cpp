@@ -155,6 +155,16 @@ Vector3D Vector3D::RandomCosineDirection() {
   return {x, y, z};
 }
 
+Vector3D Vector3D::RandomToSphere(double radius, double distance_squared) {
+  double random1 = RandomDouble();
+  double random2 = RandomDouble();
+  double z = 1.0 + random2 * (sqrt(1.0 - radius * radius / distance_squared) - 1.0);
+  double phi = 2.0 * utils::kPI * random1;
+  double x = cos(phi) * sqrt(1.0 - z * z);
+  double y = sin(phi) * sqrt(1.0 - z * z);
+  return {x, y, z};
+}
+
 Vector3D Vector3D::Reflect(const Vector3D &vector, const Vector3D &normal) {
   return vector - 2 * DotProduct(vector, normal) * normal;
 }

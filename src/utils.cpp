@@ -12,6 +12,17 @@ std::array<unsigned char, 3> ColorToRGB(const Color &color, int samples_per_pixe
   double green = color.Y();
   double blue = color.Z();
 
+  // Fix NaNs.
+  if (red != red) {
+    red = 0.0;
+  }
+  if (green != green) {
+    green = 0.0;
+  }
+  if (blue != blue) {
+    blue = 0.0;
+  }
+
   double scale = 1.0 / samples_per_pixel;
   red = sqrt(scale * red);
   green = sqrt(scale * green);

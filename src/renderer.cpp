@@ -66,7 +66,7 @@ void Renderer::RenderRow(int row_index) {
       double u = (column + RandomDouble()) / (scene_.image_width - 1);
       double v = (row_index + RandomDouble()) / (scene_.image_height - 1);
       Ray ray = scene_.camera->GetRay(u, v);
-      pixel += ComputeColor(ray, scene_.world, scene_.light, scene_.background_color);
+      pixel += ComputeColor(ray, scene_.world, scene_.lights, scene_.background_color);
     }
     row.emplace_back(pixel);
   }
@@ -90,7 +90,7 @@ void Renderer::RunThread() {
 
 Color Renderer::ComputeColor(const Ray &ray,
                              const Collidables &world,
-                             const std::shared_ptr<Collidable> &light,
+                             const std::shared_ptr<Collidable> &lights,
                              const Color &background_color) {
   int child_rays = Scene::kMaxChildRays;
 
@@ -115,23 +115,26 @@ Color Renderer::ComputeColor(const Ray &ray,
                                                    collision.point);
     computed_color += emitted_color * current_attenuation;
 
-    Color attenuation;
-    Ray scattered_ray;
-    double pdf;
+    ScatterEvent scatter_event;
 
-    const bool scattered = collision.material->Scatter(current_ray, collision, attenuation, scattered_ray, pdf);
+    const bool scattered = collision.material->Scatter(current_ray, collision, scatter_event);
     if (!scattered) {
       return computed_color;
     }
 
-    std::shared_ptr<ProbabilityDensityFunction> light_pdf = std::make_shared<CollidablePDF>(light, collision.point);
-    std::shared_ptr<ProbabilityDensityFunction> cosine_pdf = std::make_shared<CosinePDF>(collision.normal);
-    MixturePDF mixture_pdf(light_pdf, cosine_pdf);
+    if (scatter_event.specular_ray) {
+      current_attenuation *= scatter_event.attenuation;
+      current_ray = *scatter_event.specular_ray;
+      continue;
+    }
 
-    scattered_ray = Ray(collision.point, mixture_pdf.Generate(), ray.Time());
-    pdf = mixture_pdf.Value(scattered_ray.Direction());
+    std::shared_ptr<ProbabilityDensityFunction> light_pdf = std::make_shared<CollidablePDF>(lights, collision.point);
+    MixturePDF mixture_pdf(light_pdf, scatter_event.pdf);
 
-    current_attenuation *= attenuation * collision.material->ScatteringPDF(current_ray, collision, scattered_ray) / pdf;
+    Ray scattered_ray = Ray(collision.point, mixture_pdf.Generate(), ray.Time());
+    double pdf_value = mixture_pdf.Value(scattered_ray.Direction());
+
+    current_attenuation *= scatter_event.attenuation * collision.material->ScatteringPDF(current_ray, collision, scattered_ray) / pdf_value;
     current_ray = scattered_ray;
   }
   return {0, 0, 0};  // All child rays have been consumed.

@@ -6,7 +6,9 @@
 #include "utils.h"
 
 ConstantMedium::ConstantMedium(std::shared_ptr<Collidable> boundary, double density, std::shared_ptr<Texture> albedo)
-    : boundary_(std::move(boundary)), density_(density), phase_function_(std::make_shared<Isotropic>(albedo)) {}
+    : boundary_(std::move(boundary)),
+      density_(density),
+      phase_function_(std::make_shared<Isotropic>(std::move(albedo))) {}
 
 ConstantMedium::ConstantMedium(std::shared_ptr<Collidable> boundary, double density, Color albedo)
     : boundary_(std::move(boundary)), density_(density), phase_function_(std::make_shared<Isotropic>(albedo)) {}

@@ -1,11 +1,22 @@
 #pragma once
 
 #include <memory>
+#include <optional>
 
 #include "collidable.h"
+#include "pdf.h"
 #include "ray.h"
 #include "texture.h"
 #include "vector3d.h"
+
+/**
+ * Contains information about a scattering event.
+ */
+struct ScatterEvent {
+  std::optional<Ray> specular_ray = std::nullopt;
+  Color attenuation;
+  std::shared_ptr<ProbabilityDensityFunction> pdf = nullptr;
+};
 
 /**
  * Represents the material of an object in 3D space.
@@ -36,16 +47,10 @@ class Material {
    * Compute scattered ray and attenuation from an inbound ray and collision information.
    * @param[in] ray inbound ray
    * @param[in] collision contains collision information
-   * @param[out] attenuation receives computed attenuation
-   * @param[out] scattered_ray receives computed scattered ray
-   * @param[out] pdf receives the value of probability density function
+   * @param[out] scatter_event receives information about the scattering event
    * @return true if scattering happened, false otherwise
    */
-  virtual bool Scatter(const Ray &ray,
-                       const Collision &collision,
-                       Color &attenuation,
-                       Ray &scattered_ray,
-                       double &pdf) const {
+  virtual bool Scatter(const Ray &ray, const Collision &collision, ScatterEvent &scatter_event) const {
     return false;
   }
 
@@ -73,16 +78,10 @@ class Lambertian : public Material {
    * Compute scattered ray and attenuation from an inbound ray and collision information.
    * @param[in] ray inbound ray
    * @param[in] collision contains collision information
-   * @param[out] attenuation receives computed attenuation
-   * @param[out] scattered_ray receives computed scattered ray
-   * @param[out] pdf receives the value of probability density function
+   * @param[out] scatter_event receives information about the scattering event
    * @return true if scattering happened, false otherwise
    */
-  bool Scatter(const Ray &ray,
-               const Collision &collision,
-               Color &attenuation,
-               Ray &scattered_ray,
-               double &pdf) const override;
+  bool Scatter(const Ray &ray, const Collision &collision, ScatterEvent &scatter_event) const override;
 
   /**
    * Compute the value of the scattering probability density function.
@@ -110,16 +109,10 @@ class Metal : public Material {
    * Compute scattered ray and attenuation from an inbound ray and collision information.
    * @param[in] ray inbound ray
    * @param[in] collision contains collision information
-   * @param[out] attenuation receives computed attenuation
-   * @param[out] scattered_ray receives computed scattered ray
-   * @param[out] pdf receives the value of probability density function
+   * @param[out] scatter_event receives information about the scattering event
    * @return true if scattering happened, false otherwise
    */
-  bool Scatter(const Ray &ray,
-               const Collision &collision,
-               Color &attenuation,
-               Ray &scattered_ray,
-               double &pdf) const override;
+  bool Scatter(const Ray &ray, const Collision &collision, ScatterEvent &scatter_event) const override;
 
  private:
   Color albedo_;
@@ -137,16 +130,10 @@ class Dielectric : public Material {
    * Compute scattered ray and attenuation from an inbound ray and collision information.
    * @param[in] ray inbound ray
    * @param[in] collision contains collision information
-   * @param[out] attenuation receives computed attenuation
-   * @param[out] scattered_ray receives computed scattered ray
-   * @param[out] pdf receives the value of probability density function
+   * @param[out] scatter_event receives information about the scattering event
    * @return true if scattering happened, false otherwise
    */
-  bool Scatter(const Ray &ray,
-               const Collision &collision,
-               Color &attenuation,
-               Ray &scattered_ray,
-               double &pdf) const override;
+  bool Scatter(const Ray &ray, const Collision &collision, ScatterEvent &scatter_event) const override;
 
  private:
   double refraction_ratio_;
@@ -186,16 +173,10 @@ class Isotropic : public Material {
    * Compute scattered ray and attenuation from an inbound ray and collision information.
    * @param[in] ray inbound ray
    * @param[in] collision contains collision information
-   * @param[out] attenuation receives computed attenuation
-   * @param[out] scattered_ray receives computed scattered ray
-   * @param[out] pdf receives the value of probability density function
+   * @param[out] scatter_event receives information about the scattering event
    * @return true if scattering happened, false otherwise
    */
-  bool Scatter(const Ray &ray,
-               const Collision &collision,
-               Color &attenuation,
-               Ray &scattered_ray,
-               double &pdf) const override;
+  bool Scatter(const Ray &ray, const Collision &collision, ScatterEvent &scatter_event) const override;
 
  private:
   std::shared_ptr<Texture> albedo_;

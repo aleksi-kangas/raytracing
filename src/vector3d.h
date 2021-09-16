@@ -140,6 +140,8 @@ class Vector3D {
    */
   static Vector3D RandomCosineDirection();
 
+  static Vector3D RandomToSphere(double radius, double distance_squared);
+
   /**
    * Compute a reflected vector from an inbound vector and surface normal vector.
    * @param vector inbound vector

@@ -51,12 +51,12 @@ void Scene::InitializeWorld() {
     box = std::make_shared<Translate>(box, Vector3D(265, 0, 295));
     world.AddCollidable(box);
   }
-  {
-    std::shared_ptr<Collidable> box = std::make_shared<Box>(Point3D(0, 0, 0), Point3D(165, 165, 165), white);
-    box = std::make_shared<RotateY>(box, -18.0);
-    box = std::make_shared<Translate>(box, Vector3D(130, 0, 65));
-    world.AddCollidable(box);
-  }
 
-  light = std::make_shared<RectangleXZ>(213, 343, 227, 332, 554, std::make_shared<Material>());
+  world.AddCollidable(std::make_shared<Sphere>(Point3D(190, 90, 190), 90, std::make_shared<Dielectric>(1.5)));
+
+  std::shared_ptr<Collidables> collidable_lights = std::make_shared<Collidables>();
+  collidable_lights->AddCollidable(std::make_shared<RectangleXZ>(
+      213, 343, 227, 332, 554, std::make_shared<Material>()));
+  collidable_lights->AddCollidable(std::make_shared<Sphere>(Point3D(190, 90, 190), 90, std::make_shared<Material>()));
+  lights = std::move(collidable_lights);
 }

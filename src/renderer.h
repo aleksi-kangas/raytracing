@@ -60,6 +60,6 @@ class Renderer {
 
   static Color ComputeColor(const Ray &ray,
                             const Collidables &world,
-                            const std::shared_ptr<Collidable> &light,
+                            const std::shared_ptr<Collidable> &lights,
                             const Color &background_color);
 };
