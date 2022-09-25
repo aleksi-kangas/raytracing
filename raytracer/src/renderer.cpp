@@ -1,6 +1,7 @@
 #include "renderer.h"
 
 #include <chrono>
+#include <limits>
 
 namespace rt {
 void Renderer::OnResize(int32_t width, int32_t height) {
@@ -14,11 +15,12 @@ void Renderer::OnResize(int32_t width, int32_t height) {
   image_data_.resize(width * height);
 }
 
-float Renderer::Render() {
+float Renderer::Render(SceneType scene_type) {
   using namespace std::chrono;
   high_resolution_clock::time_point start_time = high_resolution_clock::now();
 
-  RenderChuck({0, image_->Height()}, {0, image_->Width()});
+  Scene scene{scene_type};
+  RenderChuck({0, image_->Height()}, {0, image_->Width()}, scene);
 
   high_resolution_clock::time_point end_time = high_resolution_clock::now();
 
@@ -31,7 +33,7 @@ std::shared_ptr<Image> Renderer::GetResult() const {
   return image_;
 }
 
-void Renderer::RenderChuck(glm::i32vec2 rows, glm::i32vec2 columns) {
+void Renderer::RenderChuck(glm::i32vec2 rows, glm::i32vec2 columns, const Scene& scene) {
   // TODO Need a proper camera system
   constexpr glm::vec3 kOrigin{0, 0, 0};
   constexpr float kFocalLength = 1.0f;
@@ -46,15 +48,16 @@ void Renderer::RenderChuck(glm::i32vec2 rows, glm::i32vec2 columns) {
       coordinate = coordinate * 2.0f - 1.0f;  // Map [0, 1] -> [-1, 1]
       coordinate.x *= image_->AspectRatio();
       const Ray ray{kOrigin, {coordinate.x, coordinate.y, -kFocalLength}};
-      image_data_[row * image_->Width() + column] = RenderPixel(ray);
+      image_data_[row * image_->Width() + column] = RenderPixel(ray, scene);
     }
   }
 }
 
-uint32_t Renderer::RenderPixel(const Ray& ray) {
+uint32_t Renderer::RenderPixel(const Ray& ray, const Scene& scene) {
   glm::vec3 color{};
-  if (CollideSphere({0, 0, -1}, 0.5f, ray)) {
-    color = {1, 0, 0};
+  Collision collision{};
+  if (scene.Collide(ray, 0.0f, std::numeric_limits<float>::max(), collision)) {
+    color = 0.5f * (collision.normal + 1.0f);
   } else {
     const glm::vec3 unit_direction = glm::normalize(ray.Direction());
     const float t = 0.5f * (unit_direction.y + 1.0f);
@@ -67,24 +70,6 @@ uint32_t Renderer::RenderPixel(const Ray& ray) {
   constexpr uint8_t kAlpha = 0xff;
 
   return (kAlpha << 24) | (b << 16) | (g << 8) | (r << 0);
-}
-
-bool Renderer::CollideSphere(const glm::vec3& center, float radius, const Ray& ray) {
-  // Quadratic equation:
-  // a * t ^ 2 + b * t + c = 0
-  // Let:
-  // a = (d.x ^ 2 + d.y ^ 2 + d.z ^ 2), where d = ray direction
-  // b = 2 * (p.x * d.x + p.y * d.y + p.z * d.z), where p = point in space, d = ray direction
-  // c = (p.x ^ 2 + p.y ^ 2 + p.z ^ 2 - r ^ 2), where p = point in space, r = circle radius
-  const glm::vec3 p = ray.Origin() - center;
-  const float a = glm::dot(ray.Direction(), ray.Direction());
-  const float b = 2.0f * glm::dot(p, ray.Direction());
-  const float c = glm::dot(p, p) - radius * radius;
-
-  // Quadratic equation discriminant:
-  // b ^ 2 - 4 * a * c
-  const float discriminant = b * b - 4.0f * a * c;
-  return discriminant >= 0;
 }
 
 }  // namespace rt

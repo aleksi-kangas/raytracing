@@ -65,15 +65,18 @@ void Raytracer::Run() {
 void Raytracer::RenderUI() {
   {
     static bool real_time = false;
+    static int selected_scene = 0;
+
     ImGui::Begin("Settings");
+    ImGui::ListBox("Scene", &selected_scene, kSceneNames, IM_ARRAYSIZE(kSceneNames), 3);
     ImGui::Text("Rendering Time: %.1f ms", render_time_ms_);
     ImGui::Checkbox("Real-Time", &real_time);
     if (real_time) {
-      Render();
+      Render(static_cast<SceneType>(selected_scene));
     }
     ImGui::BeginDisabled(real_time);
     if (ImGui::Button("Render")) {
-      Render();
+      Render(static_cast<SceneType>(selected_scene));
     }
     ImGui::EndDisabled();
     ImGui::End();
@@ -94,8 +97,8 @@ void Raytracer::RenderUI() {
   }
 }
 
-void Raytracer::Render() {
+void Raytracer::Render(SceneType scene_type) {
   renderer_.OnResize(viewport_width_, viewport_height_);
-  render_time_ms_ = renderer_.Render();
+  render_time_ms_ = renderer_.Render(scene_type);
 }
 }  // namespace rt

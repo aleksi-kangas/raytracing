@@ -4,6 +4,7 @@
 
 #include "image.h"
 #include "renderer.h"
+#include "scene.h"
 
 namespace rt {
 class Raytracer {
@@ -17,6 +18,6 @@ class Raytracer {
   float render_time_ms_ = 0.0f;
 
   void RenderUI();
-  void Render();
+  void Render(SceneType scene_type);
 };
 }  // namespace rt

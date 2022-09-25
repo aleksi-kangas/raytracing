@@ -2,11 +2,15 @@ cmake_minimum_required(VERSION 3.24)
 project(raytracer)
 
 add_library(${PROJECT_NAME}
+        include/collidable.h
+        include/collision.h
         include/image.h         src/image.cpp
         include/random.h        src/random.cpp
         include/ray.h           src/ray.cpp
         include/raytracer.h     src/raytracer.cpp
-        include/renderer.h      src/renderer.cpp)
+        include/renderer.h      src/renderer.cpp
+        include/scene.h         src/scene.cpp
+        include/sphere.h        src/sphere.cpp)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC glfw glad imgui glm)
 target_include_directories(${PROJECT_NAME} PUBLIC include)
