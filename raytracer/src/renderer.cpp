@@ -1,5 +1,7 @@
 #include "renderer.h"
 
+#include <chrono>
+
 namespace rt {
 void Renderer::OnResize(int32_t width, int32_t height) {
   if (image_) {
@@ -12,9 +14,17 @@ void Renderer::OnResize(int32_t width, int32_t height) {
   image_data_.resize(width * height);
 }
 
-void Renderer::Render() {
+float Renderer::Render() {
+  using namespace std::chrono;
+  high_resolution_clock::time_point start_time = high_resolution_clock::now();
+
   RenderChuck({0, image_->Height()}, {0, image_->Width()});
+
+  high_resolution_clock::time_point end_time = high_resolution_clock::now();
+
   image_->Update(image_data_);
+
+  return static_cast<float>(duration_cast<milliseconds>(end_time - start_time).count());
 }
 
 std::shared_ptr<Image> Renderer::GetResult() const {
@@ -40,10 +50,16 @@ void Renderer::RenderChuck(glm::i32vec2 rows, glm::i32vec2 columns) {
     }
   }
 }
+
 uint32_t Renderer::RenderPixel(const Ray& ray) {
-  const glm::vec3 unit_direction = glm::normalize(ray.Direction());
-  const float t = 0.5f * (unit_direction.y + 1.0f);
-  const glm::vec3 color = (1.0f - t) * glm::vec3{1, 1, 1} + t * glm::vec3{0.5, 0.7, 1.0};
+  glm::vec3 color{};
+  if (CollideSphere({0, 0, -1}, 0.5f, ray)) {
+    color = {1, 0, 0};
+  } else {
+    const glm::vec3 unit_direction = glm::normalize(ray.Direction());
+    const float t = 0.5f * (unit_direction.y + 1.0f);
+    color = (1.0f - t) * glm::vec3{1, 1, 1} + t * glm::vec3{0.5, 0.7, 1.0};
+  }
 
   const auto r = static_cast<uint8_t>(255.999f * color.r);
   const auto g = static_cast<uint8_t>(255.999f * color.g);
@@ -51,6 +67,24 @@ uint32_t Renderer::RenderPixel(const Ray& ray) {
   constexpr uint8_t kAlpha = 0xff;
 
   return (kAlpha << 24) | (b << 16) | (g << 8) | (r << 0);
+}
+
+bool Renderer::CollideSphere(const glm::vec3& center, float radius, const Ray& ray) {
+  // Quadratic equation:
+  // a * t ^ 2 + b * t + c = 0
+  // Let:
+  // a = (d.x ^ 2 + d.y ^ 2 + d.z ^ 2), where d = ray direction
+  // b = 2 * (p.x * d.x + p.y * d.y + p.z * d.z), where p = point in space, d = ray direction
+  // c = (p.x ^ 2 + p.y ^ 2 + p.z ^ 2 - r ^ 2), where p = point in space, r = circle radius
+  const glm::vec3 p = ray.Origin() - center;
+  const float a = glm::dot(ray.Direction(), ray.Direction());
+  const float b = 2.0f * glm::dot(p, ray.Direction());
+  const float c = glm::dot(p, p) - radius * radius;
+
+  // Quadratic equation discriminant:
+  // b ^ 2 - 4 * a * c
+  const float discriminant = b * b - 4.0f * a * c;
+  return discriminant >= 0;
 }
 
 }  // namespace rt

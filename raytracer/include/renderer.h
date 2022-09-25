@@ -16,7 +16,7 @@ class Renderer {
 
   void OnResize(int32_t width, int32_t height);
 
-  void Render();
+  float Render();
 
   [[nodiscard]] std::shared_ptr<Image> GetResult() const;
 
@@ -27,6 +27,8 @@ class Renderer {
   void RenderChuck(glm::i32vec2 rows, glm::i32vec2 columns);
 
   static uint32_t RenderPixel(const Ray& ray);
+
+  static bool CollideSphere(const glm::vec3& center, float radius, const Ray &ray);
 };
 
 }  // namespace rt

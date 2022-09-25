@@ -95,12 +95,7 @@ void Raytracer::RenderUI() {
 }
 
 void Raytracer::Render() {
-  using namespace std::chrono;
-  high_resolution_clock::time_point start_time = high_resolution_clock::now();
-
   renderer_.OnResize(viewport_width_, viewport_height_);
-  renderer_.Render();
-
-  render_time_ms_ = static_cast<float>(duration_cast<milliseconds>(high_resolution_clock::now() - start_time).count());
+  render_time_ms_ = renderer_.Render();
 }
 }  // namespace rt
