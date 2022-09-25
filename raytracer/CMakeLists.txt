@@ -4,6 +4,7 @@ project(raytracer)
 add_library(${PROJECT_NAME}
         include/image.h         src/image.cpp
         include/random.h        src/random.cpp
+        include/ray.h           src/ray.cpp
         include/raytracer.h     src/raytracer.cpp
         include/renderer.h      src/renderer.cpp)
 

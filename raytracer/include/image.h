@@ -16,6 +16,7 @@ class Image {
 
   [[nodiscard]] int32_t Width() const;
   [[nodiscard]] int32_t Height() const;
+  [[nodiscard]] float AspectRatio() const;
 
   void Resize(int32_t width, int32_t height);
 

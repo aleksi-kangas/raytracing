@@ -7,6 +7,7 @@
 #include "glm/glm.hpp"
 
 #include "image.h"
+#include "ray.h"
 
 namespace rt {
 class Renderer {
@@ -25,7 +26,7 @@ class Renderer {
 
   void RenderChuck(glm::i32vec2 rows, glm::i32vec2 columns);
 
-  uint32_t RenderPixel(const glm::vec2& coordinate);
+  static uint32_t RenderPixel(const Ray& ray);
 };
 
 }  // namespace rt

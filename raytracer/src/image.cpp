@@ -31,6 +31,10 @@ int32_t Image::Width() const { return width_; }
 
 int32_t Image::Height() const { return height_; }
 
+float Image::AspectRatio() const {
+  return static_cast<float>(width_) / static_cast<float>(height_);
+}
+
 void Image::Resize(int32_t width, int32_t height) {
   if (texture_ && width_ == width && height_ == height) return;
   width_ = width;
