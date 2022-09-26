@@ -96,9 +96,9 @@ void Renderer::RenderRow(int32_t row, const Camera& camera, const Scene& scene) 
       coordinate = coordinate * 2.0f - 1.0f;  // Map [0, 1] -> [-1, 1]
       coordinate.x *= preview_->AspectRatio();
       const Ray ray = camera.ShootRay(coordinate);
-      color += RenderPixel(ray, scene);
+      color += RenderPixel(ray, scene, settings_.child_rays);
     }
-    color /= settings_.samples_per_pixel;
+    color = ColorCorrection(settings_.samples_per_pixel, color);
     image_data_[row * preview_->Width() + column] = utils::ColorToRGBA(color);
   }
 }
@@ -115,25 +115,38 @@ void Renderer::RenderChuck(glm::i32vec2 rows, glm::i32vec2 columns, const Camera
         coordinate = coordinate * 2.0f - 1.0f;  // Map [0, 1] -> [-1, 1]
         coordinate.x *= preview_->AspectRatio();
         const Ray ray = camera.ShootRay(coordinate);
-        color += RenderPixel(ray, scene);
+        color += RenderPixel(ray, scene, settings_.child_rays);
       }
-      color /= settings_.samples_per_pixel;
+      color = ColorCorrection(settings_.samples_per_pixel, color);
       image_data_[row * preview_->Width() + column] = utils::ColorToRGBA(color);
     }
   }
 }
 
-glm::vec4 Renderer::RenderPixel(const Ray& ray, const Scene& scene) {
-  glm::vec3 color{};
-  Collision collision{};
-  if (scene.Collide(ray, 0.0f, std::numeric_limits<float>::max(), collision)) {
-    color = 0.5f * (collision.normal + 1.0f);
-  } else {
-    const glm::vec3 unit_direction = glm::normalize(ray.Direction());
-    const float t = 0.5f * (unit_direction.y + 1.0f);
-    color = (1.0f - t) * glm::vec3{1, 1, 1} + t * glm::vec3{0.5, 0.7, 1.0};
+glm::vec4 Renderer::RenderPixel(const Ray& ray, const Scene& scene, int32_t child_rays) {
+  glm::vec3 color{1, 1, 1};
+  Ray current_ray = ray;
+  while (child_rays--) {
+    Collision collision{};
+    if (scene.Collide(current_ray, 0.001f, std::numeric_limits<float>::max(), collision)) {
+      const glm::vec3 target = collision.point + collision.normal + random::UnitVec3();
+      current_ray = Ray{collision.point, target - collision.point};
+      color *= 0.5f;
+    } else {
+      const glm::vec3 unit_direction = glm::normalize(ray.Direction());
+      const float t = 0.5f * (unit_direction.y + 1.0f);
+      color *= (1.0f - t) * glm::vec3{1, 1, 1} + t * glm::vec3{0.5, 0.7, 1.0};
+      return {color, 1.0f};
+    }
   }
-  return {color, 1.0f};
+  return {0.0f, 0.0f, 0.0f, 1.0f};
+}
+
+glm::vec4 Renderer::ColorCorrection(int32_t samples_per_pixel, const glm::vec4& color) {
+  glm::vec3 corrected = color;
+  corrected *= 1.0f / static_cast<float>(samples_per_pixel);
+  corrected = glm::sqrt(corrected);
+  return {corrected, 1.0f};
 }
 
 }  // namespace rt

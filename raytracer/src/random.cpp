@@ -25,4 +25,24 @@ float Float(float min, float max) {
   return distribution(generator);
 }
 
+glm::vec3 Vec3() {
+  return {Float(), Float(), Float()};
+}
+
+glm::vec3 Vec3(float min, float max) {
+  return {Float(min, max), Float(min, max), Float(min, max)};
+}
+
+glm::vec3 InUnitSphere() {
+  while (true) {
+    auto p = Vec3(-1.0f, 1.0f);
+    if (glm::dot(p, p) >= 1.0f) continue;
+    return p;
+  }
+}
+
+glm::vec3 UnitVec3() {
+  return glm::normalize(InUnitSphere());
+}
+
 }  // namespace rt::random

@@ -5,7 +5,7 @@ add_library(${PROJECT_NAME}
         include/camera.h        src/camera.cpp
         include/collidable.h
         include/collision.h
-        include/image.h src/image.cpp
+        include/image.h         src/image.cpp
         include/random.h        src/random.cpp
         include/ray.h           src/ray.cpp
         include/raytracer.h     src/raytracer.cpp

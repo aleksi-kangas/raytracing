@@ -21,6 +21,7 @@ struct RendererSettings {
   int32_t mode = RenderMode::ChunkByChunk;
   int32_t chunk_size = 64;
   int32_t samples_per_pixel = 100;
+  int32_t child_rays = 50;
 };
 
 struct RendererStatistics {
@@ -59,7 +60,9 @@ class Renderer {
 
   void RenderChuck(glm::i32vec2 rows, glm::i32vec2 columns, const Camera& camera, const Scene& scene);
 
-  static glm::vec4 RenderPixel(const Ray& ray, const Scene& scene);
+  static glm::vec4 RenderPixel(const Ray& ray, const Scene& scene, int32_t child_rays);
+
+  static glm::vec4 ColorCorrection(int32_t samples_per_pixel, const glm::vec4& color);
 };
 
 }  // namespace rt

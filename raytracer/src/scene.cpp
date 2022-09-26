@@ -7,6 +7,7 @@ Scene::Scene(SceneType scene_type) {
   switch (scene_type) {
     case SceneType::Part1Section6:
     case SceneType::Part1Section7:  // No changes from the previous section.
+    case SceneType::Part1Section8:  // No changes from the previous section.
       InitializePart1Section6();
       break;
     default:
