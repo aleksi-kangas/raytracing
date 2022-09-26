@@ -7,11 +7,12 @@
 
 namespace rt {
 
-enum class SceneType {
+enum SceneType {
   Part1Section6 = 0,
+  Part1Section7 = 1,
 };
 
-static const char* kSceneNames[] = {"Part 1-6"};
+static const char* kSceneNames[] = {"Part 1-6 | Surface Normals and Multiple Objects", "Part 1-7 | Antialiasing"};
 
 class Scene {
  public:

@@ -1,13 +1,16 @@
 #include "scene.h"
 
+#include <stdexcept>
+
 namespace rt {
 Scene::Scene(SceneType scene_type) {
   switch (scene_type) {
     case SceneType::Part1Section6:
+    case SceneType::Part1Section7:  // No changes from the previous section.
       InitializePart1Section6();
       break;
     default:
-      break;
+      throw std::runtime_error{"Unknown scene."};
   }
 }
 

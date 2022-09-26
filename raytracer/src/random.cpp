@@ -4,14 +4,25 @@
 
 namespace rt::random {
 static std::mt19937 generator{std::random_device{}()};
-static std::uniform_int_distribution<std::mt19937::result_type> distribution;
 
 uint32_t UInt32() {
+  static std::uniform_int_distribution<uint32_t> distribution;
   return distribution(generator);
 }
 
 uint32_t UInt32(uint32_t min, uint32_t max) {
-  return min + distribution(generator) % (max - min + 1);
+  std::uniform_int_distribution<uint32_t> distribution{min, max};
+  return distribution(generator);
+}
+
+float Float() {
+  static std::uniform_real_distribution<float> distribution(0.0f, 1.0f);
+  return distribution(generator);
+}
+
+float Float(float min, float max) {
+  std::uniform_real_distribution<float> distribution(min, max);
+  return distribution(generator);
 }
 
 }  // namespace rt::random

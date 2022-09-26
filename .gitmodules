@@ -1,3 +1,6 @@
 [submodule "libs/imgui/imgui"]
 	path = libs/imgui/imgui
 	url = https://github.com/ocornut/imgui.git
+[submodule "libs/thread-pool/thread-pool"]
+	path = libs/thread-pool/thread-pool
+	url = https://github.com/bshoshany/thread-pool

@@ -13,11 +13,15 @@ class Raytracer {
 
  private:
   Renderer renderer_;
+  RendererSettings renderer_settings_;
+
   int32_t viewport_width_ = 0, viewport_height_ = 0;
 
-  float render_time_ms_ = 0.0f;
-
   void RenderUI();
-  void Render(SceneType scene_type);
+  void RenderUISettings();
+  void RenderUIStatistics();
+  void RenderPreview();
+
+  void OnRender();
 };
 }  // namespace rt

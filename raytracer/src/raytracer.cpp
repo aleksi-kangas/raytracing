@@ -1,7 +1,5 @@
 #include "raytracer.h"
 
-#include <chrono>
-
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 #include "imgui.h"
@@ -63,42 +61,67 @@ void Raytracer::Run() {
 }
 
 void Raytracer::RenderUI() {
-  {
-    static bool real_time = false;
-    static int selected_scene = 0;
+  RenderUISettings();
+  RenderUIStatistics();
+  RenderPreview();
+}
 
+void Raytracer::RenderUISettings() {
+  {
     ImGui::Begin("Settings");
-    ImGui::ListBox("Scene", &selected_scene, kSceneNames, IM_ARRAYSIZE(kSceneNames), 3);
-    ImGui::Text("Rendering Time: %.1f ms", render_time_ms_);
-    ImGui::Checkbox("Real-Time", &real_time);
-    if (real_time) {
-      Render(static_cast<SceneType>(selected_scene));
-    }
-    ImGui::BeginDisabled(real_time);
+
+    const bool is_rendering = renderer_.State() == Renderer::RenderState::Running;
+    ImGui::BeginDisabled(is_rendering);
+
+    ImGui::ListBox("Scene", &renderer_settings_.scene_type, kSceneNames, IM_ARRAYSIZE(kSceneNames), 3);
+
+    ImGui::InputInt("Samples per Pixel", &renderer_settings_.samples_per_pixel, 10, 100);
+
+    ImGui::RadioButton("Chunk by Chunk", &renderer_settings_.mode, RenderMode::ChunkByChunk);
+    ImGui::SameLine();
+    ImGui::RadioButton("Row by Row", &renderer_settings_.mode, RenderMode::RowByRow);
+
+    ImGui::BeginDisabled(renderer_settings_.mode != RenderMode::ChunkByChunk);
+    ImGui::InputInt("Chunk Size", &renderer_settings_.chunk_size, 1, 10);
+    ImGui::EndDisabled();
+
     if (ImGui::Button("Render")) {
-      Render(static_cast<SceneType>(selected_scene));
+      OnRender();
     }
     ImGui::EndDisabled();
+
     ImGui::End();
-  }
-  {
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {0.0f, 0.0f});
-    ImGui::Begin("Result");
-    viewport_width_ = static_cast<int32_t>(ImGui::GetContentRegionAvail().x);
-    viewport_height_ = static_cast<int32_t>(ImGui::GetContentRegionAvail().y);
-    auto render_result = renderer_.GetResult();
-    if (render_result) {
-      ImGui::Image(reinterpret_cast<ImTextureID>(render_result->Texture()),
-                   {static_cast<float>(render_result->Width()), static_cast<float>(render_result->Height())},
-                   {0, 1}, {1, 0});
-    }
-    ImGui::End();
-    ImGui::PopStyleVar();
   }
 }
 
-void Raytracer::Render(SceneType scene_type) {
+void Raytracer::RenderUIStatistics() {
+  const RendererStatistics statistics = renderer_.Statistics();
+  ImGui::Begin("Statistics");
+  ImGui::Text("Resolution: %d x %d", statistics.width, statistics.height);
+  if (statistics.render_time_ms != 0.0f) {
+    ImGui::Text("Rendering Time: %.1f ms", statistics.render_time_ms);
+  }
+  ImGui::End();
+}
+
+void Raytracer::RenderPreview() {
+  ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {0.0f, 0.0f});
+  ImGui::Begin("Result");
+  viewport_width_ = static_cast<int32_t>(ImGui::GetContentRegionAvail().x);
+  viewport_height_ = static_cast<int32_t>(ImGui::GetContentRegionAvail().y);
+  auto render_result = renderer_.Result();
+  if (render_result) {
+    render_result->Update();
+    ImGui::Image(reinterpret_cast<ImTextureID>(render_result->Texture()),
+                 {static_cast<float>(render_result->Width()), static_cast<float>(render_result->Height())},
+                 {0, 1}, {1, 0});
+  }
+  ImGui::End();
+  ImGui::PopStyleVar();
+}
+
+void Raytracer::OnRender() {
   renderer_.OnResize(viewport_width_, viewport_height_);
-  render_time_ms_ = renderer_.Render(scene_type);
+  renderer_.Render(renderer_settings_);
 }
 }  // namespace rt

@@ -29,3 +29,7 @@ FetchContent_MakeAvailable(glm)
 ########################## ImGui ##########################
 
 add_subdirectory(imgui)
+
+########################## Thread-pool ##########################
+
+add_subdirectory(thread-pool)
