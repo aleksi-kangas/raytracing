@@ -9,12 +9,10 @@
 namespace rt {
 
 enum SceneType {
-  Part1Section9 = 0,
-  Part1Section9Fuzzy = 1,
+  Part1Section10 = 0,
 };
 
-static const char* kSceneNames[] = {"Part 1-9 | Metal",
-                                    "Part 1-9 | Metal Fuzziness"};
+static const char* kSceneNames[] = {"Part 1-10 | Dielectrics"};
 
 class Scene {
  public:
@@ -26,7 +24,6 @@ class Scene {
   std::vector<std::shared_ptr<Material>> materials_;
   std::vector<Sphere> spheres_;
 
-  void InitializePart1Section9();
-  void InitializePart1Section9Fuzzy();
+  void InitializePart1Section10();
 };
 }  // namespace rt

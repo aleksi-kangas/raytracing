@@ -5,6 +5,7 @@ add_library(${PROJECT_NAME}
         include/camera.h        src/camera.cpp
         include/collidable.h
         include/collision.h
+        include/dielectric.h    src/dielectric.cpp
         include/material.h
         include/metal.h         src/metal.cpp
         include/lambertian.h    src/lambertian.cpp
