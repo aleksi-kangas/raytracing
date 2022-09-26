@@ -10,14 +10,10 @@
 namespace rt {
 
 enum SceneType {
-  Part1Section11Subsection1 = 0,
-  Part1Section11Subsection2Far = 1,
-  Part1Section11Subsection2Close = 2,
+  Part1Section12 = 0,
 };
 
-static const char* kSceneNames[] = {"Part 1-11-1 | Positionable Camera",
-                                    "Part 1-11-2 | Positionable Camera (Far)",
-                                    "Part 1-11-2 | Positionable Camera (Close)"};
+static const char* kSceneNames[] = {"Part 1-12 | Defocus Blur"};
 
 class Scene {
  public:
@@ -34,8 +30,6 @@ class Scene {
   std::vector<std::shared_ptr<Material>> materials_;
   std::vector<Sphere> spheres_;
 
-  void InitializePart1Section11Subsection1(float aspect_ratio);
-  void InitializePart1Section11Subsection2Far(float aspect_ratio);
-  void InitializePart1Section11Subsection2Close(float aspect_ratio);
+  void InitializePart1Section12(float aspect_ratio);
 };
 }  // namespace rt

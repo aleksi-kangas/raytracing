@@ -41,6 +41,14 @@ glm::vec3 InUnitSphere() {
   }
 }
 
+glm::vec3 InUnitDisk() {
+  while (true) {
+    auto p = glm::vec3{Float(-1.0f, 1.0f), Float(-1.0f, 1.0f), 0.0f};
+    if (glm::dot(p, p) >= 1.0f) continue;
+    return p;
+  }
+}
+
 glm::vec3 UnitVec3() {
   return glm::normalize(InUnitSphere());
 }

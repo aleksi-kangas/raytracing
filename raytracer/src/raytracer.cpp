@@ -76,7 +76,6 @@ void Raytracer::RenderUISettings() {
     ImGui::ListBox("Scene", &renderer_settings_.scene_type, kSceneNames, IM_ARRAYSIZE(kSceneNames), 3);
 
     ImGui::InputInt("Samples per Pixel", &renderer_settings_.samples_per_pixel, 10, 100);
-    ImGui::InputInt("Child Rays", &renderer_settings_.child_rays, 1, 10);
 
     ImGui::RadioButton("Chunk by Chunk", &renderer_settings_.mode, RenderMode::ChunkByChunk);
     ImGui::SameLine();

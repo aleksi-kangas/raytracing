@@ -19,6 +19,8 @@ glm::vec3 Vec3(float min, float max);
 
 glm::vec3 InUnitSphere();
 
+glm::vec3 InUnitDisk();
+
 glm::vec3 UnitVec3();
 
 }  // namespace rt::random
