@@ -8,7 +8,7 @@ Metal::Metal(glm::vec3 albedo, float fuzziness)
 
 bool Metal::Scatter(const Ray& ray, const Collision& collision, glm::vec3& attenuation, Ray& scattered) const {
   const glm::vec3 reflected = glm::reflect(ray.Direction(), collision.normal);
-  scattered = Ray{collision.point, reflected + fuzziness_ * random::InUnitSphere()};
+  scattered = Ray{collision.point, reflected + fuzziness_ * random::InUnitSphere(), ray.Time()};
   attenuation = albedo_;
   return glm::dot(scattered.Direction(), collision.normal) > 0;
 }

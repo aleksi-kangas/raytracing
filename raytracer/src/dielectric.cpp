@@ -20,7 +20,7 @@ bool Dielectric::Scatter(const Ray& ray, const Collision& collision, glm::vec3& 
   const glm::vec3 direction = can_refract ?
                               glm::refract(unit_direction, collision.normal, refraction_ratio) :
                               glm::reflect(unit_direction, collision.normal);
-  scattered = Ray{collision.point, direction};
+  scattered = Ray{collision.point, direction, ray.Time()};
   return true;
 }
 

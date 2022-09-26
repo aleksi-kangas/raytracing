@@ -11,7 +11,7 @@ bool Lambertian::Scatter(const Ray& ray, const Collision& collision, glm::vec3& 
   if (utils::IsNearZero(scatter_direction)) {
     scatter_direction = collision.normal;
   }
-  scattered = Ray{collision.point, scatter_direction};
+  scattered = Ray{collision.point, scatter_direction, ray.Time()};
   attenuation = albedo_;
   return true;
 }

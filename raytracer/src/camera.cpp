@@ -9,8 +9,10 @@ Camera::Camera(glm::vec3 origin,
                float vertical_fov,
                float aspect_ratio,
                float aperture,
-               float focus_distance)
-    : origin_{origin}, lens_radius_(aperture / 2.0f) {
+               float focus_distance,
+               float time0,
+               float time1)
+    : origin_{origin}, lens_radius_(aperture / 2.0f), time0_{time0}, time1_{time1} {
   const float theta = glm::radians(vertical_fov);
   const float h = glm::tan(theta / 2.0f);
   const float viewport_height = 2.0f * h;
@@ -29,7 +31,8 @@ Ray Camera::ShootRay(const glm::vec2& coordinate) const {
   const glm::vec3 random_in_lens = lens_radius_ * random::InUnitDisk();
   const glm::vec3 offset = u_ * random_in_lens.x + v_ * random_in_lens.y;
   return {origin_ + offset,
-          lower_left_corner_ + coordinate.x * horizontal_ + coordinate.y * vertical_ - origin_ - offset};
+          lower_left_corner_ + coordinate.x * horizontal_ + coordinate.y * vertical_ - origin_ - offset,
+          random::Float(time0_, time1_)};
 }
 
 }  // namespace rt

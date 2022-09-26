@@ -11,9 +11,11 @@ namespace rt {
 
 enum SceneType {
   Part1Section13 = 0,
+  Part2Section2 = 1
 };
 
-static const char* kSceneNames[] = {"Part 1-13 | Where Next? - Final Render"};
+static const char* kSceneNames[] = {"Part 1-13 | Where Next? - Final Render",
+                                    "Part 2-2 | Motion Blur"};
 
 class Scene {
  public:
@@ -29,7 +31,9 @@ class Scene {
   std::unique_ptr<Camera> camera_;
   std::vector<std::shared_ptr<Material>> materials_;
   std::vector<Sphere> spheres_;
+  std::vector<MovingSphere> moving_spheres_;
 
   void InitializePart1Section13(float aspect_ratio);
+  void InitializePart2Section2(float aspect_ratio);
 };
 }  // namespace rt

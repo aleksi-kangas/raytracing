@@ -18,7 +18,7 @@ enum RenderMode { ChunkByChunk = 0, RowByRow = 1 };
 
 struct RendererSettings {
   int32_t width = 0, height = 0;
-  int32_t scene_type = SceneType::Part1Section13;
+  int32_t scene_type = SceneType::Part2Section2;
   int32_t mode = RenderMode::ChunkByChunk;
   int32_t chunk_size = 64;
   int32_t samples_per_pixel = 100;
