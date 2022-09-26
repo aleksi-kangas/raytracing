@@ -1,5 +1,7 @@
 #include "raytracer.h"
 
+#include <chrono>
+
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 #include "imgui.h"
@@ -62,7 +64,6 @@ void Raytracer::Run() {
 
 void Raytracer::RenderUI() {
   RenderUISettings();
-  RenderUIStatistics();
   RenderPreview();
 }
 
@@ -75,6 +76,13 @@ void Raytracer::RenderUISettings() {
 
     ImGui::ListBox("Scene", &renderer_settings_.scene_type, kSceneNames, IM_ARRAYSIZE(kSceneNames), 3);
 
+    static bool use_preview_window_resolution = true;
+    ImGui::Checkbox("Use Preview Window Resolution", &use_preview_window_resolution);
+    if (!use_preview_window_resolution) {
+      ImGui::InputInt("Width", &renderer_settings_.width, 100, 1000);
+      ImGui::InputInt("Height", &renderer_settings_.height, 100, 1000);
+    }
+
     ImGui::InputInt("Samples per Pixel", &renderer_settings_.samples_per_pixel, 10, 100);
 
     ImGui::RadioButton("Chunk by Chunk", &renderer_settings_.mode, RenderMode::ChunkByChunk);
@@ -86,22 +94,30 @@ void Raytracer::RenderUISettings() {
     ImGui::EndDisabled();
 
     if (ImGui::Button("Render")) {
+      if (use_preview_window_resolution) {
+        renderer_settings_.width = viewport_width_;
+        renderer_settings_.height = viewport_height_;
+      }
       OnRender();
     }
     ImGui::EndDisabled();
 
+    ImGui::Separator();  // --------------------------------------------------
+
+    const RendererStatistics statistics = renderer_.Statistics();
+    ImGui::Text("Resolution: %d x %d", statistics.width, statistics.height);
+    if (statistics.render_time_ms != std::chrono::milliseconds::zero()) {
+      using namespace std::chrono;
+      auto ms = statistics.render_time_ms;
+      auto s = duration_cast<seconds>(ms);
+      ms -= duration_cast<milliseconds>(s);
+      auto m = duration_cast<minutes>(s);
+      s -= duration_cast<seconds>(m);
+      ImGui::Text("Rendering Time: %d min %lld s %lld ms", m.count(), s.count(), ms.count());
+    }
+
     ImGui::End();
   }
-}
-
-void Raytracer::RenderUIStatistics() {
-  const RendererStatistics statistics = renderer_.Statistics();
-  ImGui::Begin("Statistics");
-  ImGui::Text("Resolution: %d x %d", statistics.width, statistics.height);
-  if (statistics.render_time_ms != 0.0f) {
-    ImGui::Text("Rendering Time: %.1f ms", statistics.render_time_ms);
-  }
-  ImGui::End();
 }
 
 void Raytracer::RenderPreview() {
@@ -121,7 +137,7 @@ void Raytracer::RenderPreview() {
 }
 
 void Raytracer::OnRender() {
-  renderer_.OnResize(viewport_width_, viewport_height_);
+  renderer_.OnResize(renderer_settings_.width, renderer_settings_.height);
   renderer_.Render(renderer_settings_);
 }
 }  // namespace rt

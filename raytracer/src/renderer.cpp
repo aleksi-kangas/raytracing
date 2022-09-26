@@ -1,6 +1,5 @@
 #include "renderer.h"
 
-#include <chrono>
 #include <limits>
 #include <random>
 #include <stdexcept>
@@ -28,7 +27,7 @@ void Renderer::Render(const RendererSettings& settings) {
     scene_ = std::make_shared<Scene>(static_cast<SceneType>(settings_.scene_type), preview_->AspectRatio());
 
     state_ = RenderState::Running;
-    statistics_.render_time_ms = 0.0f;
+    statistics_.render_time_ms = std::chrono::milliseconds::zero();
     statistics_.width = preview_->Width();
     statistics_.height = preview_->Height();
     auto start_time = high_resolution_clock::now();
@@ -65,7 +64,7 @@ void Renderer::Render(const RendererSettings& settings) {
     pool_.wait_for_tasks();
     auto end_time = high_resolution_clock::now();
     state_ = RenderState::Stopped;
-    statistics_.render_time_ms = static_cast<float>(duration_cast<milliseconds>(end_time - start_time).count());
+    statistics_.render_time_ms = duration_cast<milliseconds>(end_time - start_time);
   };
 
   main_render_thread_ = std::thread{render_task};

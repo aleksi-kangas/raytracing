@@ -19,7 +19,6 @@ class Raytracer {
 
   void RenderUI();
   void RenderUISettings();
-  void RenderUIStatistics();
   void RenderPreview();
 
   void OnRender();
