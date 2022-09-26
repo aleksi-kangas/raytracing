@@ -2,12 +2,14 @@
 
 #include "glm/glm.hpp"
 
+#include "material.h"
 #include "ray.h"
 
 namespace rt {
 struct Collision {
-  glm::vec3 point;
-  glm::vec3 normal;
+  glm::vec3 point{0, 0, 0};
+  glm::vec3 normal{0, 0, 0};
+  const Material* material = nullptr;
   float t = 0.0f;
   bool outside = false;
 

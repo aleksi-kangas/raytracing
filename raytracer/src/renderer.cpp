@@ -128,15 +128,21 @@ glm::vec4 Renderer::RenderPixel(const Ray& ray, const Scene& scene, int32_t chil
   Ray current_ray = ray;
   while (child_rays--) {
     Collision collision{};
-    if (scene.Collide(current_ray, 0.001f, std::numeric_limits<float>::max(), collision)) {
-      const glm::vec3 target = collision.point + collision.normal + random::UnitVec3();
-      current_ray = Ray{collision.point, target - collision.point};
-      color *= 0.5f;
-    } else {
+    const bool collided = scene.Collide(current_ray, 0.001f, std::numeric_limits<float>::max(), collision);
+    if (!collided) {
       const glm::vec3 unit_direction = glm::normalize(ray.Direction());
       const float t = 0.5f * (unit_direction.y + 1.0f);
       color *= (1.0f - t) * glm::vec3{1, 1, 1} + t * glm::vec3{0.5, 0.7, 1.0};
       return {color, 1.0f};
+    }
+    Ray scattered_ray{};
+    glm::vec3 attenuation{0, 0, 0};
+    const bool scattered = collision.material->Scatter(current_ray, collision, attenuation, scattered_ray);
+    if (scattered) {
+      color *= attenuation;
+      current_ray = scattered_ray;
+    } else {
+      break;
     }
   }
   return {0.0f, 0.0f, 0.0f, 1.0f};

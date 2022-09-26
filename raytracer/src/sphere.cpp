@@ -3,9 +3,10 @@
 #include <cmath>
 
 namespace rt {
-Sphere::Sphere(glm::vec3 center, float radius) : center_{center}, radius_{radius} {}
+Sphere::Sphere(glm::vec3 center, float radius, const Material* material)
+    : center_{center}, radius_{radius}, material_{material} {}
 
-bool Sphere::Collide(const Ray& ray, float t_min, float t_max, Collision& collision) const {
+bool Sphere::CollideImpl(const Ray& ray, float t_min, float t_max, Collision& collision) const {
   // Quadratic equation:
   // a * t ^ 2 + b * t + c = 0
   // Let:
@@ -32,6 +33,7 @@ bool Sphere::Collide(const Ray& ray, float t_min, float t_max, Collision& collis
   collision.point = ray.At(collision.t);
   glm::vec3 outward_normal = (collision.point - center_) / radius_;
   collision.SetNormal(ray, outward_normal);
+  collision.material = material_;
 
   return true;
 }

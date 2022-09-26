@@ -17,7 +17,7 @@ namespace rt {
 enum RenderMode { ChunkByChunk = 0, RowByRow = 1 };
 
 struct RendererSettings {
-  int32_t scene_type = SceneType::Part1Section6;
+  int32_t scene_type = SceneType::Part1Section9;
   int32_t mode = RenderMode::ChunkByChunk;
   int32_t chunk_size = 64;
   int32_t samples_per_pixel = 100;
