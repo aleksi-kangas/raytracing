@@ -25,8 +25,7 @@ void Renderer::Render(const RendererSettings& settings) {
 
   auto render_task = [&]() {
     using namespace std::chrono;
-    Camera camera{{0, 0, 0}};
-    Scene scene{static_cast<SceneType>(settings_.scene_type)};
+    scene_ = std::make_shared<Scene>(static_cast<SceneType>(settings_.scene_type), preview_->AspectRatio());
 
     state_ = RenderState::Running;
     statistics_.render_time_ms = 0.0f;
@@ -37,7 +36,7 @@ void Renderer::Render(const RendererSettings& settings) {
     switch (settings_.mode) {
       case RenderMode::RowByRow: {
         for (int32_t row = 0; row < preview_->Height(); ++row) {
-          pool_.push_task(&Renderer::RenderRow, this, row, camera, scene);
+          pool_.push_task(&Renderer::RenderRow, this, row);
         }
       }
         break;
@@ -54,7 +53,7 @@ void Renderer::Render(const RendererSettings& settings) {
                               std::min(v_chunk * settings_.chunk_size, preview_->Height())};
             glm::i32vec2 columns{(h_chunk - 1) * settings_.chunk_size,
                                  std::min(h_chunk * settings_.chunk_size, preview_->Width())};
-            pool_.push_task(&Renderer::RenderChuck, this, rows, columns, camera, scene);
+            pool_.push_task(&Renderer::RenderChuck, this, rows, columns);
           }
         }
       }
@@ -85,7 +84,7 @@ RendererStatistics Renderer::Statistics() const {
   return statistics_;
 }
 
-void Renderer::RenderRow(int32_t row, const Camera& camera, const Scene& scene) {
+void Renderer::RenderRow(int32_t row) {
   for (int32_t column = 0; column < preview_->Width(); ++column) {
     glm::vec4 color{};
     for (int32_t sample = 1; sample <= settings_.samples_per_pixel; ++sample) {
@@ -93,17 +92,15 @@ void Renderer::RenderRow(int32_t row, const Camera& camera, const Scene& scene) 
           (static_cast<float>(column) + random::Float()) / static_cast<float>(preview_->Width()),
           (static_cast<float>(row) + random::Float()) / static_cast<float>(preview_->Height())
       };
-      coordinate = coordinate * 2.0f - 1.0f;  // Map [0, 1] -> [-1, 1]
-      coordinate.x *= preview_->AspectRatio();
-      const Ray ray = camera.ShootRay(coordinate);
-      color += RenderPixel(ray, scene, settings_.child_rays);
+      const Ray ray = scene_->GetCamera()->ShootRay(coordinate);
+      color += RenderPixel(ray, settings_.child_rays);
     }
     color = ColorCorrection(settings_.samples_per_pixel, color);
     image_data_[row * preview_->Width() + column] = utils::ColorToRGBA(color);
   }
 }
 
-void Renderer::RenderChuck(glm::i32vec2 rows, glm::i32vec2 columns, const Camera& camera, const Scene& scene) {
+void Renderer::RenderChuck(glm::i32vec2 rows, glm::i32vec2 columns) {
   for (int32_t row = rows[0]; row < rows[1]; ++row) {
     for (int32_t column = columns[0]; column < columns[1]; ++column) {
       glm::vec4 color{};
@@ -112,10 +109,8 @@ void Renderer::RenderChuck(glm::i32vec2 rows, glm::i32vec2 columns, const Camera
             (static_cast<float>(column) + random::Float()) / static_cast<float>(preview_->Width()),
             (static_cast<float>(row) + random::Float()) / static_cast<float>(preview_->Height())
         };
-        coordinate = coordinate * 2.0f - 1.0f;  // Map [0, 1] -> [-1, 1]
-        coordinate.x *= preview_->AspectRatio();
-        const Ray ray = camera.ShootRay(coordinate);
-        color += RenderPixel(ray, scene, settings_.child_rays);
+        const Ray ray = scene_->GetCamera()->ShootRay(coordinate);
+        color += RenderPixel(ray, settings_.child_rays);
       }
       color = ColorCorrection(settings_.samples_per_pixel, color);
       image_data_[row * preview_->Width() + column] = utils::ColorToRGBA(color);
@@ -123,12 +118,12 @@ void Renderer::RenderChuck(glm::i32vec2 rows, glm::i32vec2 columns, const Camera
   }
 }
 
-glm::vec4 Renderer::RenderPixel(const Ray& ray, const Scene& scene, int32_t child_rays) {
+glm::vec4 Renderer::RenderPixel(const Ray& ray, int32_t child_rays) {
   glm::vec3 color{1, 1, 1};
   Ray current_ray = ray;
   while (child_rays--) {
     Collision collision{};
-    const bool collided = scene.Collide(current_ray, 0.001f, std::numeric_limits<float>::max(), collision);
+    const bool collided = scene_->Collide(current_ray, 0.001f, std::numeric_limits<float>::max(), collision);
     if (!collided) {
       const glm::vec3 unit_direction = glm::normalize(ray.Direction());
       const float t = 0.5f * (unit_direction.y + 1.0f);
