@@ -10,10 +10,10 @@
 namespace rt {
 
 enum SceneType {
-  Part1Section12 = 0,
+  Part1Section13 = 0,
 };
 
-static const char* kSceneNames[] = {"Part 1-12 | Defocus Blur"};
+static const char* kSceneNames[] = {"Part 1-13 | Where Next? - Final Render"};
 
 class Scene {
  public:
@@ -30,6 +30,6 @@ class Scene {
   std::vector<std::shared_ptr<Material>> materials_;
   std::vector<Sphere> spheres_;
 
-  void InitializePart1Section12(float aspect_ratio);
+  void InitializePart1Section13(float aspect_ratio);
 };
 }  // namespace rt
