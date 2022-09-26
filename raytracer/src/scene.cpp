@@ -51,7 +51,7 @@ void Scene::InitializePart1Section13(float aspect_ratio) {
                                      camera_focus_distance);
 
   auto* ground_material = materials_.emplace_back(new Lambertian({0.5f, 0.5f, 0.5f})).get();
-  spheres_.emplace_back(glm::vec3{0, -1000, 0}, 1000, ground_material);
+  spheres_.emplace_back(glm::vec3{0.0f, -1000.0f, 0.0f}, 1000.0f, ground_material);
 
   for (int32_t i = -11; i < 11; ++i) {
     for (int32_t j = -11; j < 11; ++j) {

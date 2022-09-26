@@ -21,4 +21,4 @@ add_library(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME} PUBLIC glfw glad imgui glm thread_pool)
 target_include_directories(${PROJECT_NAME} PUBLIC include)
 target_include_directories(${PROJECT_NAME} PRIVATE src)
-target_compile_options(${PROJECT_NAME} PRIVATE -Wall)
+target_compile_options(${PROJECT_NAME} PRIVATE /W3 /WX)

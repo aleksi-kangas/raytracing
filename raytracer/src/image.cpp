@@ -13,8 +13,10 @@ Image::Image(int32_t width, int32_t height, void* data)
 }
 
 void Image::Update() const {
-  glBufferData(GL_PIXEL_UNPACK_BUFFER, width_ * height_ * sizeof(uint32_t), nullptr, GL_DYNAMIC_DRAW);
-  glBufferSubData(GL_PIXEL_UNPACK_BUFFER, 0, width_ * height_ * sizeof(uint32_t), data_);
+  const GLsizeiptr kBufferSize =
+      static_cast<GLsizeiptr>(width_) * static_cast<GLsizeiptr>(height_) * static_cast<GLsizeiptr>(sizeof(uint32_t));
+  glBufferData(GL_PIXEL_UNPACK_BUFFER, kBufferSize, nullptr, GL_DYNAMIC_DRAW);
+  glBufferSubData(GL_PIXEL_UNPACK_BUFFER, 0, kBufferSize, data_);
 
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);

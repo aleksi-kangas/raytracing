@@ -12,7 +12,7 @@ uint32_t ColorToRGBA(const glm::vec4& color) {
 }
 
 bool IsNearZero(const glm::vec3& vec) {
-  constexpr float kEpsilon = 1e-8;
+  constexpr float kEpsilon = 1e-8f;
   return glm::all(glm::lessThan(glm::abs(vec), glm::vec3{kEpsilon}));
 }
 
