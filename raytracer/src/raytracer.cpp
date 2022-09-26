@@ -33,6 +33,8 @@ void Raytracer::Run() {
   }
 
   ImGui::CreateContext();
+  ImGuiIO& io = ImGui::GetIO();
+  io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
   ImGui_ImplGlfw_InitForOpenGL(window, true);
   ImGui_ImplOpenGL3_Init(kGlslVersion);
   ImGui::StyleColorsDark();
