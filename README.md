@@ -25,13 +25,15 @@ polymorphism) have been made already in the CPU C++ version.
     - Accelerated rendering using multiple CPU cores via
       a [thread pool](https://github.com/bshoshany/thread-pool).
 
-- **No runtime (dynamic) polymorphism**
+- **No runtime (dynamic) polymorphism for collidable objects**
     - Runtime polymorphism is largely present in the book, and understandably
       so. It does make the code simpler to understand and easier to implement.
     - But it comes with cost of virtual function overhead at runtime.
     - Instead, I've opted to use [*Curiously Recurring Template
       Pattern*](https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern)
       (CRTP) for compile-time polymorphism (CTP).
+    - As of now, materials (e.g. Lambertian) and textures (e.g. Checker) still
+      use runtime polymorphism. I might change that in the future.
 
 ## Results
 
@@ -40,7 +42,7 @@ Without any SIMD or other low-level optimizations the results are as follows:
 | Processor       | Threads | Image                          | Resolution | Samples | Render Time   |
 |-----------------|---------|--------------------------------|------------|---------|---------------|
 | AMD Ryzen 2700X | 16      | In One Weekend (1-13)          | 1200x800   | 500     | 16 min 22 sec |
-| AMD Ryzen 2700X | 16      | In One Weekend (1-13) with BVH | 1200x000   | 500     | 2 min 52 sec  |
+| AMD Ryzen 2700X | 16      | In One Weekend (1-13) with BVH | 1200x000   | 500     | 1 min 51 sec  |
 
 The introduction of BVH was a major improvement. There are probably a lot of
 smaller optimizations and low-hanging fruits waiting to be collected. I have
