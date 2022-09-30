@@ -201,6 +201,9 @@ class BVH : public Collidable<BVH<T>> {
         }
         split_axis = best_axis;
         split_position = best_position;
+        const float parent_area = node.bounding_box.Area();
+        const float parent_cost = node.primitive_count * parent_area;
+        if (best_cost >= parent_cost) return;
       }
         break;
     }
