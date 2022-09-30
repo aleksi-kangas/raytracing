@@ -13,7 +13,7 @@ bool Dielectric::Scatter(const Ray& ray, const Collision& collision, glm::vec3& 
 
   const glm::vec3 unit_direction = glm::normalize(ray.Direction());
   const float cos_theta = std::fmin(glm::dot(-unit_direction, collision.normal), 1.0f);
-  const float sin_theta = std::sqrtf(1.0f - cos_theta * cos_theta);
+  const float sin_theta = sqrtf(1.0f - cos_theta * cos_theta);
 
   const bool can_refract =
       refraction_ratio * sin_theta <= 1.0f && Reflectance(cos_theta, refraction_ratio) <= random::Float();

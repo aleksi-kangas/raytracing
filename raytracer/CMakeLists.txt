@@ -2,9 +2,12 @@ cmake_minimum_required(VERSION 3.24)
 project(raytracer)
 
 add_library(${PROJECT_NAME}
+        include/aabb.h          src/aabb.cpp
+        include/bvh.h
         include/camera.h        src/camera.cpp
         include/collidable.h
         include/collision.h
+        include/crtp.h
         include/dielectric.h    src/dielectric.cpp
         include/material.h
         include/metal.h         src/metal.cpp
@@ -21,4 +24,5 @@ add_library(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME} PUBLIC glfw glad imgui glm thread_pool)
 target_include_directories(${PROJECT_NAME} PUBLIC include)
 target_include_directories(${PROJECT_NAME} PRIVATE src)
-target_compile_options(${PROJECT_NAME} PRIVATE /W3 /WX)
+#target_compile_options(${PROJECT_NAME} PRIVATE /W3 /WX)
+#target_compile_options(${PROJECT_NAME} PRIVATE /W3)

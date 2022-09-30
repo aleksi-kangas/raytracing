@@ -9,6 +9,7 @@
 #include "BS_thread_pool.hpp"
 #include "glm/glm.hpp"
 
+#include "bvh.h"
 #include "image.h"
 #include "ray.h"
 #include "scene.h"
@@ -18,11 +19,13 @@ enum RenderMode { ChunkByChunk = 0, RowByRow = 1 };
 
 struct RendererSettings {
   int32_t width = 0, height = 0;
-  int32_t scene_type = SceneType::Part2Section2;
+  int32_t scene_type = SceneType::Part2Section3;
   int32_t mode = RenderMode::ChunkByChunk;
-  int32_t chunk_size = 64;
+  int32_t chunk_size = 32;
   int32_t samples_per_pixel = 100;
-  int32_t child_rays = 50;
+  int32_t max_child_rays = 50;
+  int32_t bvh_split_strategy = BVHSplitStrategy::SurfaceAreaHeuristic;
+  int32_t bvh_traversal_strategy = BVHTraversalStrategy::Recursive;
 };
 
 struct RendererStatistics {

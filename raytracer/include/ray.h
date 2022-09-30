@@ -12,6 +12,8 @@ class Ray {
 
   [[nodiscard]] glm::vec3 Direction() const;
 
+  [[nodiscard]] glm::vec3 InverseDirection() const;
+
   [[nodiscard]] float Time() const;
 
   [[nodiscard]] glm::vec3 At(float t) const;
@@ -19,6 +21,7 @@ class Ray {
  private:
   glm::vec3 origin_{0, 0, 0};
   glm::vec3 direction_{0, 0, 0};
+  glm::vec3 inverse_direction_{0, 0, 0};
   float time_ = 0.0f;
 };
 }  // namespace rt

@@ -2,11 +2,13 @@
 
 #include <cmath>
 
+#include "utils.h"
+
 namespace rt {
 Sphere::Sphere(glm::vec3 center, float radius, const Material* material)
     : center_{center}, radius_{radius}, material_{material} {}
 
-bool Sphere::CollideImpl(const Ray& ray, float t_min, float t_max, Collision& collision) const {
+bool Sphere::Collide(const Ray& ray, float t_min, float t_max, Collision& collision) const {
   // Quadratic equation:
   // a * t ^ 2 + b * t + c = 0
   // Let:
@@ -23,9 +25,9 @@ bool Sphere::CollideImpl(const Ray& ray, float t_min, float t_max, Collision& co
   const float discriminant = b * b - 4.0f * a * c;
   if (discriminant < 0.0f) return false;
 
-  float root = (-b - std::sqrtf(discriminant)) / (2.0f * a);
+  float root = (-b - sqrtf(discriminant)) / (2.0f * a);
   if (root < t_min || t_max < root) {
-    root = (-b + std::sqrt(discriminant)) / (2.0f * a);
+    root = (-b + sqrt(discriminant)) / (2.0f * a);
     if (root < t_min || t_max < root) return false;
   }
 
@@ -38,6 +40,16 @@ bool Sphere::CollideImpl(const Ray& ray, float t_min, float t_max, Collision& co
   return true;
 }
 
+bool Sphere::BoundingBox(float time0, float time1, AABB& bounding_box) const {
+  bounding_box = AABB{center_ - glm::vec3{radius_, radius_, radius_},
+                      center_ + glm::vec3{radius_, radius_, radius_}};
+  return true;
+}
+
+glm::vec3 Sphere::Centroid() const {
+  return center_;
+}
+
 MovingSphere::MovingSphere(glm::vec3 center0,
                            glm::vec3 center1,
                            float time0,
@@ -46,7 +58,7 @@ MovingSphere::MovingSphere(glm::vec3 center0,
                            const Material* material)
     : center0_{center0}, center1_{center1}, time0_{time0}, time1_{time1}, radius_{radius}, material_{material} {}
 
-bool MovingSphere::CollideImpl(const Ray& ray, float t_min, float t_max, Collision& collision) const {
+bool MovingSphere::Collide(const Ray& ray, float t_min, float t_max, Collision& collision) const {
   // Quadratic equation:
   // a * t ^ 2 + b * t + c = 0
   // Let:
@@ -63,9 +75,9 @@ bool MovingSphere::CollideImpl(const Ray& ray, float t_min, float t_max, Collisi
   const float discriminant = b * b - 4.0f * a * c;
   if (discriminant < 0.0f) return false;
 
-  float root = (-b - std::sqrtf(discriminant)) / (2.0f * a);
+  float root = (-b - sqrtf(discriminant)) / (2.0f * a);
   if (root < t_min || t_max < root) {
-    root = (-b + std::sqrt(discriminant)) / (2.0f * a);
+    root = (-b + sqrt(discriminant)) / (2.0f * a);
     if (root < t_min || t_max < root) return false;
   }
 
@@ -77,7 +89,22 @@ bool MovingSphere::CollideImpl(const Ray& ray, float t_min, float t_max, Collisi
 
   return true;
 }
+
+bool MovingSphere::BoundingBox(float time0, float time1, AABB& bounding_box) const {
+  AABB box0{center0_ - glm::vec3{radius_, radius_, radius_},
+            center0_ + glm::vec3{radius_, radius_, radius_}};
+  AABB box1{center1_ - glm::vec3{radius_, radius_, radius_},
+            center1_ + glm::vec3{radius_, radius_, radius_}};
+  bounding_box = AABB::SurroundingBox(box0, box1);
+  return true;
+}
+
+glm::vec3 MovingSphere::Centroid() const {
+  return center0_ + (center1_ - center0_) / 2.0f;
+}
+
 glm::vec3 MovingSphere::CenterAt(float time) const {
   return center0_ + ((time - time0_) / (time1_ - time0_)) * (center1_ - center0_);
 }
+
 }  // namespace rt

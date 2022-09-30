@@ -24,7 +24,10 @@ void Renderer::Render(const RendererSettings& settings) {
 
   auto render_task = [&]() {
     using namespace std::chrono;
-    scene_ = std::make_shared<Scene>(static_cast<SceneType>(settings_.scene_type), preview_->AspectRatio());
+    scene_ = std::make_shared<Scene>(static_cast<SceneType>(settings_.scene_type),
+                                     preview_->AspectRatio(),
+                                     static_cast<BVHSplitStrategy>(settings_.bvh_split_strategy),
+                                     static_cast<BVHTraversalStrategy>(settings_.bvh_traversal_strategy));
 
     state_ = RenderState::Running;
     statistics_.render_time_ms = std::chrono::milliseconds::zero();
@@ -92,7 +95,7 @@ void Renderer::RenderRow(int32_t row) {
           (static_cast<float>(row) + random::Float()) / static_cast<float>(preview_->Height())
       };
       const Ray ray = scene_->GetCamera()->ShootRay(coordinate);
-      color += RenderPixel(ray, settings_.child_rays);
+      color += RenderPixel(ray, settings_.max_child_rays);
     }
     color = ColorCorrection(settings_.samples_per_pixel, color);
     image_data_[row * preview_->Width() + column] = utils::ColorToRGBA(color);
@@ -109,7 +112,7 @@ void Renderer::RenderChuck(glm::i32vec2 rows, glm::i32vec2 columns) {
             (static_cast<float>(row) + random::Float()) / static_cast<float>(preview_->Height())
         };
         const Ray ray = scene_->GetCamera()->ShootRay(coordinate);
-        color += RenderPixel(ray, settings_.child_rays);
+        color += RenderPixel(ray, settings_.max_child_rays);
       }
       color = ColorCorrection(settings_.samples_per_pixel, color);
       image_data_[row * preview_->Width() + column] = utils::ColorToRGBA(color);

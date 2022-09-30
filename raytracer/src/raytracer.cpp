@@ -86,6 +86,7 @@ void Raytracer::RenderUISettings() {
     }
 
     ImGui::InputInt("Samples per Pixel", &renderer_settings_.samples_per_pixel, 10, 100);
+    ImGui::InputInt("Maximum Child Rays", &renderer_settings_.max_child_rays, 1, 10);
 
     ImGui::RadioButton("Chunk by Chunk", &renderer_settings_.mode, RenderMode::ChunkByChunk);
     ImGui::SameLine();
@@ -95,6 +96,26 @@ void Raytracer::RenderUISettings() {
     ImGui::InputInt("Chunk Size", &renderer_settings_.chunk_size, 1, 10);
     ImGui::EndDisabled();
 
+    ImGui::Separator();  // --------------------------------------------------
+    ImGui::Text("Bounding Volume Hierarchy (BVH)");
+
+    const char* bvh_split_strategy_names[BVHSplitStrategy::SplitStrategyCount]
+        = {"Largest Extent", "Surface Area Heuristic"};
+    ImGui::SliderInt("Split Strategy",
+                     &renderer_settings_.bvh_split_strategy,
+                     0,
+                     BVHSplitStrategy::SplitStrategyCount - 1,
+                     bvh_split_strategy_names[renderer_settings_.bvh_split_strategy]);
+
+    const char* bvh_traversal_strategy_names[BVHSplitStrategy::SplitStrategyCount] =
+        {"Recursive", "Iterative"};
+    ImGui::SliderInt("Traversal Strategy",
+                     &renderer_settings_.bvh_traversal_strategy,
+                     0,
+                     BVHTraversalStrategy::TraversalStrategyCount - 1,
+                     bvh_traversal_strategy_names[renderer_settings_.bvh_traversal_strategy]);
+    ImGui::Separator();  // --------------------------------------------------
+
     if (ImGui::Button("Render")) {
       if (use_preview_window_resolution) {
         renderer_settings_.width = viewport_width_;
@@ -103,8 +124,6 @@ void Raytracer::RenderUISettings() {
       OnRender();
     }
     ImGui::EndDisabled();
-
-    ImGui::Separator();  // --------------------------------------------------
 
     const RendererStatistics statistics = renderer_.Statistics();
     ImGui::Text("Resolution: %d x %d", statistics.width, statistics.height);
