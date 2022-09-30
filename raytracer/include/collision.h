@@ -11,6 +11,8 @@ struct Collision {
   glm::vec3 normal{0, 0, 0};
   const Material* material = nullptr;
   float t = 0.0f;
+  float u = 0.0f;
+  float v = 0.0f;
   bool outside = false;
 
   inline void SetNormal(const Ray& ray, const glm::vec3& outward_normal) {

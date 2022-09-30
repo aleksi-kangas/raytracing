@@ -1,6 +1,7 @@
 #include "sphere.h"
 
 #include <cmath>
+#include <numbers>
 
 #include "utils.h"
 
@@ -35,6 +36,7 @@ bool Sphere::Collide(const Ray& ray, float t_min, float t_max, Collision& collis
   collision.point = ray.At(collision.t);
   glm::vec3 outward_normal = (collision.point - center_) / radius_;
   collision.SetNormal(ray, outward_normal);
+  ComputeUV(outward_normal, collision.u, collision.v);
   collision.material = material_;
 
   return true;
@@ -48,6 +50,13 @@ bool Sphere::BoundingBox(float time0, float time1, AABB& bounding_box) const {
 
 glm::vec3 Sphere::Centroid() const {
   return center_;
+}
+
+void Sphere::ComputeUV(const glm::vec3& point, float& u, float& v) {
+  const float theta = acos(-point.y);
+  const float phi = atan2f(-point.z, point.x) + static_cast<float>(std::numbers::pi);
+  u = phi / (2.0f * static_cast<float>(std::numbers::pi));
+  v = theta / static_cast<float>(std::numbers::pi);
 }
 
 MovingSphere::MovingSphere(glm::vec3 center0,

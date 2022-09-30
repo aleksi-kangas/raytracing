@@ -4,7 +4,7 @@
 #include "utils.h"
 
 namespace rt {
-Lambertian::Lambertian(glm::vec3 albedo) : albedo_{albedo} {}
+Lambertian::Lambertian(const Texture* albedo) : albedo_{albedo} {}
 
 bool Lambertian::Scatter(const Ray& ray, const Collision& collision, glm::vec3& attenuation, Ray& scattered) const {
   glm::vec3 scatter_direction = collision.normal + random::UnitVec3();
@@ -12,7 +12,7 @@ bool Lambertian::Scatter(const Ray& ray, const Collision& collision, glm::vec3& 
     scatter_direction = collision.normal;
   }
   scattered = Ray{collision.point, scatter_direction, ray.Time()};
-  attenuation = albedo_;
+  attenuation = albedo_->Sample(collision.u, collision.v, collision.point);
   return true;
 }
 

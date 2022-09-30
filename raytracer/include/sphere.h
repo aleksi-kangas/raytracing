@@ -23,6 +23,8 @@ class Sphere : public Collidable<Sphere> {
   glm::vec3 center_;
   float radius_;
   const Material* material_;
+
+  static void ComputeUV(const glm::vec3& point, float& u, float& v);
 };
 
 class MovingSphere : public Collidable<MovingSphere> {

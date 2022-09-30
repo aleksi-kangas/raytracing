@@ -19,6 +19,7 @@ add_library(${PROJECT_NAME}
         include/renderer.h      src/renderer.cpp
         include/scene.h         src/scene.cpp
         include/sphere.h        src/sphere.cpp
+        include/texture.h       src/texture.cpp
         include/utils.h         src/utils.cpp)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC glfw glad imgui glm thread_pool)

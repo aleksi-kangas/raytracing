@@ -76,7 +76,7 @@ void Raytracer::RenderUISettings() {
     const bool is_rendering = renderer_.State() == Renderer::RenderState::Running;
     ImGui::BeginDisabled(is_rendering);
 
-    ImGui::ListBox("Scene", &renderer_settings_.scene_type, kSceneNames, IM_ARRAYSIZE(kSceneNames), 3);
+    ImGui::ListBox("Scene", &renderer_settings_.scene_type, kSceneNames, IM_ARRAYSIZE(kSceneNames), 6);
 
     static bool use_preview_window_resolution = true;
     ImGui::Checkbox("Use Preview Window Resolution", &use_preview_window_resolution);
