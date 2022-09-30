@@ -21,7 +21,7 @@ polymorphism) have been made already in the CPU C++ version.
     - Using [ImGui](https://github.com/ocornut/imgui) to as the GUI library
       and [OpenGL](https://www.opengl.org/) as the backend.
 
-- **Multi-Threaded Renderer C++ renderer**
+- **Multi-Threaded C++ Renderer**
     - Accelerated rendering using multiple CPU cores via
       a [thread pool](https://github.com/bshoshany/thread-pool).
 
