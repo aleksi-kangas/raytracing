@@ -1,0 +1,2 @@
+# Exclude external libraries from linguist
+libs/** linguist-vendored
