@@ -8,7 +8,7 @@ namespace rt {
 class AABB;
 
 template<class T>
-class Collidable : CRTP<Collidable<T>> {
+class Collidable : public CRTP<Collidable<T>> {
  public:
   bool Collide(const Ray& ray, float t_min, float t_max, Collision& collision) const {
     return this->Actual().Collide(ray, t_min, t_max, collision);
