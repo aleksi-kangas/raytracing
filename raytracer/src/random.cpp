@@ -3,24 +3,27 @@
 #include <random>
 
 namespace rt::random {
-static std::mt19937 generator{std::random_device{}()};
 
 uint32_t UInt32() {
-  static std::uniform_int_distribution<uint32_t> distribution;
+  static thread_local std::mt19937 generator{std::random_device{}()};
+  static std::uniform_int_distribution<uint32_t> distribution{0, 1};
   return distribution(generator);
 }
 
 uint32_t UInt32(uint32_t min, uint32_t max) {
+  static thread_local std::mt19937 generator{std::random_device{}()};
   std::uniform_int_distribution<uint32_t> distribution{min, max};
   return distribution(generator);
 }
 
 float Float() {
+  static thread_local std::mt19937 generator{std::random_device{}()};
   static std::uniform_real_distribution<float> distribution(0.0f, 1.0f);
   return distribution(generator);
 }
 
 float Float(float min, float max) {
+  static thread_local std::mt19937 generator{std::random_device{}()};
   std::uniform_real_distribution<float> distribution(min, max);
   return distribution(generator);
 }
