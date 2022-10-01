@@ -13,6 +13,7 @@ add_library(${PROJECT_NAME}
         include/metal.h         src/metal.cpp
         include/lambertian.h    src/lambertian.cpp
         include/image.h         src/image.cpp
+        include/perlin.h        src/perlin.cpp
         include/random.h        src/random.cpp
         include/ray.h           src/ray.cpp
         include/raytracer.h     src/raytracer.cpp

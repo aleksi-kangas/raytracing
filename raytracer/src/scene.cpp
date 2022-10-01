@@ -28,6 +28,9 @@ Scene::Scene(SceneType scene_type,
     case SceneType::Part2Section4Subsection4:
       InitializePart2Section4Subsection4();
       break;
+    case SceneType::Part2Section5:
+      InitializePart2Section5();
+      break;
     default:
       throw std::runtime_error{"Unknown scene."};
   }
@@ -239,6 +242,32 @@ void Scene::InitializePart2Section4Subsection4() {
   auto* lambertian = materials_.emplace_back(new Lambertian(checker_texture)).get();
   spheres_.emplace_back(glm::vec3{0.0f, -10.0f, 0.0f}, 10.0f, lambertian);
   spheres_.emplace_back(glm::vec3{0.0f, 10.0f, 0.0f}, 10.0f, lambertian);
+
+  bvh_spheres_ = std::make_unique<BVH<Sphere>>(bvh_split_strategy_, bvh_traversal_strategy_, spheres_, 0.0f, 1.0f);
+}
+
+void Scene::InitializePart2Section5() {
+  constexpr glm::vec3 camera_origin{13, 2, 3};
+  constexpr glm::vec3 camera_target{0, 0, 0};
+  constexpr glm::vec3 camera_vup{0, 1, 0};
+  constexpr float camera_fov = 20.0f;
+  constexpr float camera_aperture = 0.0f;
+  constexpr float camera_focus_distance = 10.0f;
+
+  camera_ = std::make_unique<Camera>(camera_origin,
+                                     camera_target,
+                                     camera_vup,
+                                     camera_fov,
+                                     aspect_ratio_,
+                                     camera_aperture,
+                                     camera_focus_distance,
+                                     0.0f,
+                                     1.0f);
+
+  auto* noise_texture = textures_.emplace_back(new Noise{4.0f}).get();
+  auto* lambertian = materials_.emplace_back(new Lambertian{noise_texture}).get();
+  spheres_.emplace_back(glm::vec3{0.0f, -1000.0f, 0.0f}, 1000.0f, lambertian);
+  spheres_.emplace_back(glm::vec3{0.0f, 2.0f, 0.0f}, 2.0f, lambertian);
 
   bvh_spheres_ = std::make_unique<BVH<Sphere>>(bvh_split_strategy_, bvh_traversal_strategy_, spheres_, 0.0f, 1.0f);
 }
