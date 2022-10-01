@@ -10,8 +10,8 @@ decided to follow the great [Ray Tracing](https://raytracing.github.io/) -book
 series and implement my own version of the raytracer. I followed the general
 logic and structure of the books, but took some liberty in certain areas. I
 might some day transform the code to use CUDA for accelerated computing.
-Keeping that in mind, some architectural changes (namely no runtime
-polymorphism) have been made already in the CPU C++ version.
+Keeping that in mind, some architectural changes (namely aiming for no runtime
+polymorphism) have been made already in the CPU version.
 
 ## Features & Architectural Differences
 
@@ -33,7 +33,7 @@ polymorphism) have been made already in the CPU C++ version.
       Pattern*](https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern)
       (CRTP) for compile-time polymorphism (CTP).
     - As of now, materials (e.g. Lambertian) and textures (e.g. Checker) still
-      use runtime polymorphism. I might change that in the future.
+      use runtime polymorphism. I will need to change that in the future for CUDA compatibility.
 
 ## Results
 
@@ -42,7 +42,7 @@ Without any SIMD or other low-level optimizations the results are as follows:
 | Processor       | Threads | Image                          | Resolution | Samples | Render Time   |
 |-----------------|---------|--------------------------------|------------|---------|---------------|
 | AMD Ryzen 2700X | 16      | In One Weekend (1-13)          | 1200x800   | 500     | 16 min 22 sec |
-| AMD Ryzen 2700X | 16      | In One Weekend (1-13) with BVH | 1200x000   | 500     | 1 min 51 sec  |
+| AMD Ryzen 2700X | 16      | In One Weekend (1-13) with BVH | 1200x800   | 500     | 1 min 51 sec  |
 
 The introduction of BVH was a major improvement. There are probably a lot of
 smaller optimizations and low-hanging fruits waiting to be collected. I have
