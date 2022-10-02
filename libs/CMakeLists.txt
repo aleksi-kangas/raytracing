@@ -33,3 +33,7 @@ add_subdirectory(imgui)
 ########################## Thread-pool ##########################
 
 add_subdirectory(thread-pool)
+
+########################## stbi ##########################
+
+add_subdirectory(stbi)

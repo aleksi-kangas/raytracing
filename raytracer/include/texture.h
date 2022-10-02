@@ -1,5 +1,7 @@
 #pragma once
 
+#include <filesystem>
+
 #include "glm/glm.hpp"
 
 #include "perlin.h"
@@ -44,5 +46,16 @@ class Noise : public Texture {
  private:
   Perlin perlin_;
   float scale_ = 1.0f;
+};
+
+class ImageTexture : public Texture {
+ public:
+  explicit ImageTexture(const std::filesystem::path& path);
+
+  [[nodiscard]] glm::vec3 Sample(float u, float v, const glm::vec3& point) const override;
+
+ private:
+  int32_t width_ = 0, height_ = 0;
+  std::vector<uint8_t> buffer_;
 };
 }  // namespace rt

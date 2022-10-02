@@ -31,6 +31,9 @@ Scene::Scene(SceneType scene_type,
     case SceneType::Part2Section5:
       InitializePart2Section5();
       break;
+    case SceneType::Part2Section6:
+      InitializePart2Section6();
+      break;
     default:
       throw std::runtime_error{"Unknown scene."};
   }
@@ -270,6 +273,29 @@ void Scene::InitializePart2Section5() {
   spheres_.emplace_back(glm::vec3{0.0f, 2.0f, 0.0f}, 2.0f, lambertian);
 
   bvh_spheres_ = std::make_unique<BVH<Sphere>>(bvh_split_strategy_, bvh_traversal_strategy_, spheres_, 0.0f, 1.0f);
+}
+
+void Scene::InitializePart2Section6() {
+  constexpr glm::vec3 camera_origin{13, 2, 3};
+  constexpr glm::vec3 camera_target{0, 0, 0};
+  constexpr glm::vec3 camera_vup{0, 1, 0};
+  constexpr float camera_fov = 20.0f;
+  constexpr float camera_aperture = 0.0f;
+  constexpr float camera_focus_distance = 10.0f;
+
+  camera_ = std::make_unique<Camera>(camera_origin,
+                                     camera_target,
+                                     camera_vup,
+                                     camera_fov,
+                                     aspect_ratio_,
+                                     camera_aperture,
+                                     camera_focus_distance,
+                                     0.0f,
+                                     1.0f);
+
+  auto* earth_texture = textures_.emplace_back(new ImageTexture{"resources/textures/earthmap.png"}).get();
+  auto* earth_surface = materials_.emplace_back(new Lambertian{earth_texture}).get();
+  spheres_.emplace_back(glm::vec3{0.0f, 0.0f, 0.0f}, 2.0f, earth_surface);
 }
 
 }  // namespace rt

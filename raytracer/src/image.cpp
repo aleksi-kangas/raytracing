@@ -1,7 +1,7 @@
 #include "image.h"
 
 namespace rt {
-Image::Image(int32_t width, int32_t height, void* data)
+Image::Image(int32_t width, int32_t height, uint32_t* data)
     : width_{width}, height_{height}, data_{data} {
   glGenBuffers(1, &buffer_);
   glBindBuffer(GL_PIXEL_UNPACK_BUFFER, buffer_);
@@ -35,7 +35,7 @@ void Image::Update() const {
                nullptr);
 }
 
-void Image::Resize(int32_t width, int32_t height, void* data) {
+void Image::Resize(int32_t width, int32_t height, uint32_t* data) {
   if (texture_ && width_ == width && height_ == height) return;
   width_ = width;
   height_ = height;

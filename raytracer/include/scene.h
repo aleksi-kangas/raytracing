@@ -17,13 +17,15 @@ enum SceneType {
   Part2Section4Subsection3 = 2,
   Part2Section4Subsection4 = 3,
   Part2Section5 = 4,
+  Part2Section6 = 5,
 };
 
 static const char* kSceneNames[] = {"Part 1-13 | Where Next? - Final Render",
                                     "Part 1-13 | Where Next? - Final Render (BVH)",
                                     "Part 2-4-3 | Checker Texture",
                                     "Part 2-4-4 | Rendering a Scene with a Checkered Texture",
-                                    "Part 2-5 | Perlin Noise"};
+                                    "Part 2-5 | Perlin Noise",
+                                    "Part 2-6 | Image Texture Mapping"};
 
 class Scene {
  public:
@@ -56,5 +58,6 @@ class Scene {
   void InitializePart2Section4Subsection3();
   void InitializePart2Section4Subsection4();
   void InitializePart2Section5();
+  void InitializePart2Section6();
 };
 }  // namespace rt

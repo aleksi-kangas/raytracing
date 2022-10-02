@@ -23,8 +23,7 @@ add_library(${PROJECT_NAME}
         include/texture.h       src/texture.cpp
         include/utils.h         src/utils.cpp)
 
-target_link_libraries(${PROJECT_NAME} PUBLIC glfw glad imgui glm thread_pool)
+target_link_libraries(${PROJECT_NAME} PUBLIC glfw glad imgui glm thread_pool stbi)
 target_include_directories(${PROJECT_NAME} PUBLIC include)
 target_include_directories(${PROJECT_NAME} PRIVATE src)
-target_compile_options(${PROJECT_NAME} PRIVATE /W3 /WX)
 target_compile_options(${PROJECT_NAME} PRIVATE /W3)

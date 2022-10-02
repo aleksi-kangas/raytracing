@@ -8,6 +8,8 @@
 #include "imgui_impl_opengl3.h"
 #include "imgui_impl_glfw.h"
 
+#include "utils.h"
+
 namespace rt {
 
 void Raytracer::Run() {
@@ -135,6 +137,12 @@ void Raytracer::RenderUISettings() {
       auto m = duration_cast<minutes>(s);
       s -= duration_cast<seconds>(m);
       ImGui::Text("Rendering Time: %d min %lld s %lld ms", m.count(), s.count(), ms.count());
+
+      if (ImGui::Button("Save to Disk")) {
+        auto render_result = renderer_.Result();
+        const std::filesystem::path path{"result.png"};
+        utils::png::Encode(path, *render_result);
+      }
     }
 
     ImGui::End();
