@@ -11,7 +11,7 @@
 namespace rt {
 class Sphere : public Collidable<Sphere> {
  public:
-  Sphere(glm::vec3 center, float radius, const Material* material);
+  Sphere(glm::vec3 center, float radius, material_t material);
 
   bool Collide(const Ray& ray, float t_min, float t_max, Collision& collision) const;
 
@@ -22,14 +22,14 @@ class Sphere : public Collidable<Sphere> {
  private:
   glm::vec3 center_;
   float radius_;
-  const Material* material_;
+  const material_t material_;
 
   static void ComputeUV(const glm::vec3& point, float& u, float& v);
 };
 
 class MovingSphere : public Collidable<MovingSphere> {
  public:
-  MovingSphere(glm::vec3 center0, glm::vec3 center1, float time0, float time1, float radius, const Material* material);
+  MovingSphere(glm::vec3 center0, glm::vec3 center1, float time0, float time1, float radius, material_t material);
 
   bool Collide(const Ray& ray, float t_min, float t_max, Collision& collision) const;
 
@@ -43,6 +43,6 @@ class MovingSphere : public Collidable<MovingSphere> {
   glm::vec3 center0_, center1_;
   float time0_, time1_;
   float radius_;
-  const Material* material_;
+  const material_t material_;
 };
 }  // namespace rt

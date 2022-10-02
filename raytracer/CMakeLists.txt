@@ -8,10 +8,7 @@ add_library(${PROJECT_NAME}
         include/collidable.h
         include/collision.h
         include/crtp.h
-        include/dielectric.h    src/dielectric.cpp
-        include/material.h
-        include/metal.h         src/metal.cpp
-        include/lambertian.h    src/lambertian.cpp
+        include/material.h      src/material.cpp
         include/image.h         src/image.cpp
         include/perlin.h        src/perlin.cpp
         include/random.h        src/random.cpp

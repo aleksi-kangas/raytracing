@@ -9,7 +9,7 @@ namespace rt {
 struct Collision {
   glm::vec3 point{0, 0, 0};
   glm::vec3 normal{0, 0, 0};
-  const Material* material = nullptr;
+  const material_t* material = nullptr;
   float t = 0.0f;
   float u = 0.0f;
   float v = 0.0f;

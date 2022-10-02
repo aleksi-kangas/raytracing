@@ -5,7 +5,6 @@
 
 #include "bvh.h"
 #include "camera.h"
-#include "material.h"
 #include "sphere.h"
 #include "texture.h"
 
@@ -47,7 +46,6 @@ class Scene {
 
   std::unique_ptr<Camera> camera_;
   std::vector<std::shared_ptr<Texture>> textures_;
-  std::vector<std::shared_ptr<Material>> materials_;
   collidable_container_t collidables_;
   std::unique_ptr<BVH<collidable_t>> bvh_;
 

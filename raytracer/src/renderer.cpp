@@ -3,6 +3,7 @@
 #include <limits>
 #include <random>
 #include <stdexcept>
+#include <variant>
 
 #include "random.h"
 #include "utils.h"
@@ -134,7 +135,12 @@ glm::vec4 Renderer::RenderPixel(const Ray& ray, int32_t child_rays) {
     }
     Ray scattered_ray{};
     glm::vec3 attenuation{0, 0, 0};
-    const bool scattered = collision.material->Scatter(current_ray, collision, attenuation, scattered_ray);
+    const bool scattered = std::visit([&](const auto& material) {
+      return material.Scatter(current_ray,
+                              collision,
+                              attenuation,
+                              scattered_ray);
+    }, *collision.material);
     if (scattered) {
       color *= attenuation;
       current_ray = scattered_ray;

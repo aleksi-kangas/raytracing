@@ -6,7 +6,7 @@
 #include "utils.h"
 
 namespace rt {
-Sphere::Sphere(glm::vec3 center, float radius, const Material* material)
+Sphere::Sphere(glm::vec3 center, float radius, material_t material)
     : center_{center}, radius_{radius}, material_{material} {}
 
 bool Sphere::Collide(const Ray& ray, float t_min, float t_max, Collision& collision) const {
@@ -37,7 +37,7 @@ bool Sphere::Collide(const Ray& ray, float t_min, float t_max, Collision& collis
   glm::vec3 outward_normal = (collision.point - center_) / radius_;
   collision.SetNormal(ray, outward_normal);
   ComputeUV(outward_normal, collision.u, collision.v);
-  collision.material = material_;
+  collision.material = &material_;
 
   return true;
 }
@@ -64,7 +64,7 @@ MovingSphere::MovingSphere(glm::vec3 center0,
                            float time0,
                            float time1,
                            float radius,
-                           const Material* material)
+                           material_t material)
     : center0_{center0}, center1_{center1}, time0_{time0}, time1_{time1}, radius_{radius}, material_{material} {}
 
 bool MovingSphere::Collide(const Ray& ray, float t_min, float t_max, Collision& collision) const {
@@ -94,7 +94,7 @@ bool MovingSphere::Collide(const Ray& ray, float t_min, float t_max, Collision& 
   collision.point = ray.At(collision.t);
   glm::vec3 outward_normal = (collision.point - CenterAt(ray.Time())) / radius_;
   collision.SetNormal(ray, outward_normal);
-  collision.material = material_;
+  collision.material = &material_;
 
   return true;
 }

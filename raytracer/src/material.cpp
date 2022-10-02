@@ -1,8 +1,8 @@
-#include "dielectric.h"
+#include "material.h"
 
-#include <cmath>
-
+#include "collision.h"
 #include "random.h"
+#include "utils.h"
 
 namespace rt {
 Dielectric::Dielectric(float refraction_index) : refraction_index_{refraction_index} {}
@@ -29,6 +29,28 @@ float Dielectric::Reflectance(float cosine, float refraction_index) {
   float r0 = (1.0f - refraction_index) / (1.0f + refraction_index);
   r0 *= r0;
   return r0 + (1.0f - r0) * std::pow((1.0f - cosine), 5.0f);
+}
+
+Lambertian::Lambertian(const Texture* albedo) : albedo_{albedo} {}
+
+bool Lambertian::Scatter(const Ray& ray, const Collision& collision, glm::vec3& attenuation, Ray& scattered) const {
+  glm::vec3 scatter_direction = collision.normal + random::UnitVec3();
+  if (utils::IsNearZero(scatter_direction)) {
+    scatter_direction = collision.normal;
+  }
+  scattered = Ray{collision.point, scatter_direction, ray.Time()};
+  attenuation = albedo_->Sample(collision.u, collision.v, collision.point);
+  return true;
+}
+
+Metal::Metal(glm::vec3 albedo, float fuzziness)
+    : albedo_{albedo}, fuzziness_{fuzziness < 1.0f ? fuzziness : 1.0f} {}
+
+bool Metal::Scatter(const Ray& ray, const Collision& collision, glm::vec3& attenuation, Ray& scattered) const {
+  const glm::vec3 reflected = glm::reflect(ray.Direction(), collision.normal);
+  scattered = Ray{collision.point, reflected + fuzziness_ * random::InUnitSphere(), ray.Time()};
+  attenuation = albedo_;
+  return glm::dot(scattered.Direction(), collision.normal) > 0;
 }
 
 }  // namespace rt
