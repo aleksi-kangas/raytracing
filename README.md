@@ -5,9 +5,9 @@
 
 #### Motivation
 
-In order to learn about the essential math and things related to raytracing, I
+In order to learn about the essential math and things related to ray tracing, I
 decided to follow the great [Ray Tracing](https://raytracing.github.io/) -book
-series and implement my own version of the raytracer. I followed the general
+series and implement my own version of the ray tracer. I followed the general
 logic and structure of the books, but took some liberty in certain areas. I
 might some day transform the code to use CUDA for accelerated computing.
 Keeping that in mind, some architectural changes (namely aiming for no runtime
@@ -18,7 +18,7 @@ polymorphism) have been made already in the CPU version.
 - **Graphical User Interface**
     - Allows easy adjustment of the renderer's settings and show a live preview
       of the rendering process.
-    - Using [ImGui](https://github.com/ocornut/imgui) to as the GUI library
+    - Using [ImGui](https://github.com/ocornut/imgui) as the GUI library
       and [OpenGL](https://www.opengl.org/) as the backend.
 
 - **Multi-Threaded C++ Renderer**
