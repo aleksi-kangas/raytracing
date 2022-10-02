@@ -1,5 +1,7 @@
 #include "material.h"
 
+#include <variant>
+
 #include "collision.h"
 #include "random.h"
 #include "utils.h"
@@ -31,7 +33,7 @@ float Dielectric::Reflectance(float cosine, float refraction_index) {
   return r0 + (1.0f - r0) * std::pow((1.0f - cosine), 5.0f);
 }
 
-Lambertian::Lambertian(const Texture* albedo) : albedo_{albedo} {}
+Lambertian::Lambertian(texture_t albedo) : albedo_{albedo} {}
 
 bool Lambertian::Scatter(const Ray& ray, const Collision& collision, glm::vec3& attenuation, Ray& scattered) const {
   glm::vec3 scatter_direction = collision.normal + random::UnitVec3();
@@ -39,7 +41,10 @@ bool Lambertian::Scatter(const Ray& ray, const Collision& collision, glm::vec3& 
     scatter_direction = collision.normal;
   }
   scattered = Ray{collision.point, scatter_direction, ray.Time()};
-  attenuation = albedo_->Sample(collision.u, collision.v, collision.point);
+  attenuation = std::visit([&](const auto& texture) {
+                             return texture.Sample(collision.u, collision.v, collision.point);
+                           },
+                           albedo_);
   return true;
 }
 

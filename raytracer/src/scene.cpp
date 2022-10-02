@@ -5,6 +5,7 @@
 
 #include "material.h"
 #include "random.h"
+#include "texture.h"
 
 namespace rt {
 Scene::Scene(SceneType scene_type,
@@ -74,8 +75,8 @@ void Scene::InitializePart1Section13() {
                                      camera_aperture,
                                      camera_focus_distance);
 
-  auto* ground_texture = textures_.emplace_back(new SolidColor{0.5f, 0.5f, 0.5f}).get();
-  collidables_.emplace_back(Sphere{glm::vec3{0.0f, -1000.0f, 0.0f}, 1000.0f, Lambertian{ground_texture}});
+  collidables_.emplace_back(Sphere{glm::vec3{0.0f, -1000.0f, 0.0f}, 1000.0f,
+                                   Lambertian{SolidColorTexture{0.5f, 0.5f, 0.5f}}});
 
   for (int32_t i = -11; i < 11; ++i) {
     for (int32_t j = -11; j < 11; ++j) {
@@ -88,8 +89,7 @@ void Scene::InitializePart1Section13() {
         const float random_float = random::Float();
         if (random_float < 0.8f) {  // Lambertian
           const glm::vec3 albedo = random::Vec3() * random::Vec3();
-          auto* solid_color_texture = textures_.emplace_back(new SolidColor{albedo}).get();
-          collidables_.emplace_back(Sphere{center, 0.2f, Lambertian{solid_color_texture}});
+          collidables_.emplace_back(Sphere{center, 0.2f, Lambertian{SolidColorTexture{albedo}}});
         } else if (random_float < 0.95f) {  // Metal
           const glm::vec3 albedo = random::Vec3(0.5f, 1.0f);
           const float fuzziness = random::Float(0.0f, 0.5f);
@@ -101,16 +101,10 @@ void Scene::InitializePart1Section13() {
     }
   }
 
-  {
-    collidables_.emplace_back(Sphere{glm::vec3{0.0f, 1.0f, 0.0f}, 1.0f, Dielectric{1.5f}});
-  }
-  {
-    auto* solid_color_texture = textures_.emplace_back(new SolidColor{0.4f, 0.2f, 0.1f}).get();
-    collidables_.emplace_back(Sphere{glm::vec3{-4.0f, 1.0f, 0.0f}, 1.0f, Lambertian{solid_color_texture}});
-  }
-  {
-    collidables_.emplace_back(Sphere{glm::vec3{4.0f, 1.0f, 0.0f}, 1.0f, Metal{{0.7f, 0.6f, 0.5f}, 0.0f}});
-  }
+  collidables_.emplace_back(Sphere{glm::vec3{0.0f, 1.0f, 0.0f}, 1.0f, Dielectric{1.5f}});
+  collidables_.emplace_back(Sphere{glm::vec3{-4.0f, 1.0f, 0.0f}, 1.0f,
+                                   Lambertian{SolidColorTexture{0.4f, 0.2f, 0.1f}}});
+  collidables_.emplace_back(Sphere{glm::vec3{4.0f, 1.0f, 0.0f}, 1.0f, Metal{{0.7f, 0.6f, 0.5f}, 0.0f}});
 }
 
 void Scene::InitializePart1Section13BVH() {
@@ -136,10 +130,8 @@ void Scene::InitializePart2Section4Subsection3() {
                                      0.0f,
                                      1.0f);
 
-  auto* checker_even = textures_.emplace_back(new SolidColor{0.2f, 0.3f, 0.1f}).get();
-  auto* checker_odd = textures_.emplace_back(new SolidColor{0.9f, 0.9f, 0.9f}).get();
-  auto* ground_texture = textures_.emplace_back(new Checker{checker_even, checker_odd}).get();
-  collidables_.emplace_back(Sphere{glm::vec3{0.0f, -1000.0f, 0.0f}, 1000.0f, Lambertian{ground_texture}});
+  collidables_.emplace_back(Sphere{glm::vec3{0.0f, -1000.0f, 0.0f}, 1000.0f, Lambertian{
+      CheckerTexture{SolidColorTexture{0.2f, 0.3f, 0.1f}, SolidColorTexture{0.9f, 0.9f, 0.9f}}}});
 
   for (int32_t i = -11; i < 11; ++i) {
     for (int32_t j = -11; j < 11; ++j) {
@@ -153,8 +145,8 @@ void Scene::InitializePart2Section4Subsection3() {
         if (random_float < 0.8f) {  // Lambertian
           const glm::vec3 albedo = random::Vec3() * random::Vec3();
           const glm::vec3 center2 = center + glm::vec3{0.0f, random::Float(0.0f, 0.5f), 0.0f};
-          auto* solid_color_texture = textures_.emplace_back(new SolidColor{albedo}).get();
-          collidables_.emplace_back(MovingSphere{center, center2, 0.0f, 1.0f, 0.2f, Lambertian{solid_color_texture}});
+          collidables_.emplace_back(MovingSphere{center, center2, 0.0f, 1.0f, 0.2f,
+                                                 Lambertian{SolidColorTexture{albedo}}});
         } else if (random_float < 0.95f) {  // Metal
           const glm::vec3 albedo = random::Vec3(0.5f, 1.0f);
           const float fuzziness = random::Float(0.0f, 0.5f);
@@ -166,16 +158,10 @@ void Scene::InitializePart2Section4Subsection3() {
     }
   }
 
-  {
-    collidables_.emplace_back(Sphere{glm::vec3{0.0f, 1.0f, 0.0f}, 1.0f, Dielectric{0.5f}});
-  }
-  {
-    auto* solid_color_texture = textures_.emplace_back(new SolidColor{0.4f, 0.2f, 0.1f}).get();
-    collidables_.emplace_back(Sphere{glm::vec3{-4.0f, 1.0f, 0.0f}, 1.0f, Lambertian{solid_color_texture}});
-  }
-  {
-    collidables_.emplace_back(Sphere{glm::vec3{4.0f, 1.0f, 0.0f}, 1.0f, Metal{{0.7f, 0.6f, 0.5f}, 0.0f}});
-  }
+  collidables_.emplace_back(Sphere{glm::vec3{0.0f, 1.0f, 0.0f}, 1.0f, Dielectric{0.5f}});
+  collidables_.emplace_back(Sphere{glm::vec3{-4.0f, 1.0f, 0.0f}, 1.0f,
+                                   Lambertian{SolidColorTexture{0.4f, 0.2f, 0.1f}}});
+  collidables_.emplace_back(Sphere{glm::vec3{4.0f, 1.0f, 0.0f}, 1.0f, Metal{{0.7f, 0.6f, 0.5f}, 0.0f}});
 
   bvh_ = std::make_unique<BVH<collidable_t>>(bvh_split_strategy_, bvh_traversal_strategy_, collidables_, 0.0f, 1.0f);
 }
@@ -198,11 +184,10 @@ void Scene::InitializePart2Section4Subsection4() {
                                      0.0f,
                                      1.0f);
 
-  auto* checker_even = textures_.emplace_back(new SolidColor{0.2f, 0.3f, 0.1f}).get();
-  auto* checker_odd = textures_.emplace_back(new SolidColor{0.9f, 0.9f, 0.9f}).get();
-  auto* checker_texture = textures_.emplace_back(new Checker{checker_even, checker_odd}).get();
-  collidables_.emplace_back(Sphere{glm::vec3{0.0f, -10.0f, 0.0f}, 10.0f, Lambertian{checker_texture}});
-  collidables_.emplace_back(Sphere{glm::vec3{0.0f, 10.0f, 0.0f}, 10.0f, Lambertian{checker_texture}});
+  collidables_.emplace_back(Sphere{glm::vec3{0.0f, -10.0f, 0.0f}, 10.0f, Lambertian{
+      CheckerTexture{SolidColorTexture{0.2f, 0.3f, 0.1f}, SolidColorTexture{0.9f, 0.9f, 0.9f}}}});
+  collidables_.emplace_back(Sphere{glm::vec3{0.0f, 10.0f, 0.0f}, 10.0f, Lambertian{
+      CheckerTexture{SolidColorTexture{0.2f, 0.3f, 0.1f}, SolidColorTexture{0.9f, 0.9f, 0.9f}}}});
 
   bvh_ = std::make_unique<BVH<collidable_t>>(bvh_split_strategy_, bvh_traversal_strategy_, collidables_, 0.0f, 1.0f);
 }
@@ -225,9 +210,8 @@ void Scene::InitializePart2Section5() {
                                      0.0f,
                                      1.0f);
 
-  auto* noise_texture = textures_.emplace_back(new Noise{4.0f}).get();
-  collidables_.emplace_back(Sphere{glm::vec3{0.0f, -1000.0f, 0.0f}, 1000.0f, Lambertian{noise_texture}});
-  collidables_.emplace_back(Sphere{glm::vec3{0.0f, 2.0f, 0.0f}, 2.0f, Lambertian{noise_texture}});
+  collidables_.emplace_back(Sphere{glm::vec3{0.0f, -1000.0f, 0.0f}, 1000.0f, Lambertian{NoiseTexture{4.0f}}});
+  collidables_.emplace_back(Sphere{glm::vec3{0.0f, 2.0f, 0.0f}, 2.0f, Lambertian{NoiseTexture{4.0f}}});
 
   bvh_ = std::make_unique<BVH<collidable_t>>(bvh_split_strategy_, bvh_traversal_strategy_, collidables_, 0.0f, 1.0f);
 }
@@ -250,8 +234,8 @@ void Scene::InitializePart2Section6() {
                                      0.0f,
                                      1.0f);
 
-  auto* earth_texture = textures_.emplace_back(new ImageTexture{"resources/textures/earthmap.png"}).get();
-  collidables_.emplace_back(Sphere{glm::vec3{0.0f, 0.0f, 0.0f}, 2.0f, Lambertian{earth_texture}});
+  collidables_.emplace_back(Sphere{glm::vec3{0.0f, 0.0f, 0.0f}, 2.0f,
+                                   Lambertian{ImageTexture{"resources/textures/earthmap.png"}}});
   bvh_ = std::make_unique<BVH<collidable_t>>(bvh_split_strategy_, bvh_traversal_strategy_, collidables_, 0.0f, 1.0f);
 }
 

@@ -43,12 +43,12 @@ class Dielectric : public Material<Dielectric> {
 
 class Lambertian : public Material<Lambertian> {
  public:
-  explicit Lambertian(const Texture* albedo);
+  explicit Lambertian(texture_t albedo);
 
   bool Scatter(const Ray& ray, const Collision& collision, glm::vec3& attenuation, Ray& scattered) const;
 
  private:
-  const Texture* albedo_;
+  texture_t albedo_;
 };
 
 class Metal : public Material<Metal> {

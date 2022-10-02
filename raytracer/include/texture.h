@@ -1,58 +1,82 @@
 #pragma once
 
 #include <filesystem>
+#include <variant>
 
 #include "glm/glm.hpp"
 
+#include "crtp.h"
 #include "perlin.h"
 
 namespace rt {
-class Texture {
+class SolidColorTexture;
+class CheckerTexture;
+class NoiseTexture;
+class ImageTexture;
+using texture_t = std::variant<SolidColorTexture,
+                               CheckerTexture,
+                               NoiseTexture,
+                               ImageTexture>;
+
+template<class T>
+class Texture : public CRTP<Texture<T>> {
  public:
-  virtual ~Texture() = default;
-  [[nodiscard]] virtual glm::vec3 Sample(float u, float v, const glm::vec3& point) const = 0;
+  [[nodiscard]] glm::vec3 Sample(float u, float v, const glm::vec3& point) const {
+    return this->Actual().Sample(u, v, point);
+  }
+
+ private:
+  Texture() = default;
+  friend T;
 };
 
-class SolidColor : public Texture {
+class SolidColorTexture : public Texture<SolidColorTexture> {
  public:
-  SolidColor() = default;
-  explicit SolidColor(glm::vec3 color);
-  SolidColor(float red, float green, float blue);
+  SolidColorTexture() = default;
+  explicit SolidColorTexture(glm::vec3 color);
+  SolidColorTexture(float red, float green, float blue);
 
-  [[nodiscard]] glm::vec3 Sample(float u, float v, const glm::vec3& point) const override;
+  [[nodiscard]] glm::vec3 Sample(float u, float v, const glm::vec3& point) const;
 
  private:
   glm::vec3 color_{0, 0, 0};
 };
 
-class Checker : public Texture {
+class CheckerTexture : public Texture<CheckerTexture> {
  public:
-  Checker(const Texture* even, const Texture* odd);
+  CheckerTexture(SolidColorTexture even, SolidColorTexture odd) : even_{even}, odd_{odd} {}
 
-  [[nodiscard]] glm::vec3 Sample(float u, float v, const glm::vec3& point) const override;
+  [[nodiscard]] glm::vec3 Sample(float u, float v, const glm::vec3& point) const {
+    const float sines = sinf(10.0f * point.x) * sinf(10.0f * point.y) * sinf(10.0f * point.z);
+    if (sines >= 0.0f) {
+      return even_.Sample(u, v, point);
+    } else {
+      return odd_.Sample(u, v, point);
+    }
+  }
 
  private:
-  const Texture* even_;
-  const Texture* odd_;
+  SolidColorTexture even_;
+  SolidColorTexture odd_;
 };
 
-class Noise : public Texture {
+class NoiseTexture : public Texture<NoiseTexture> {
  public:
-  Noise() = default;
-  explicit Noise(float scale);
+  NoiseTexture() = default;
+  explicit NoiseTexture(float scale);
 
-  [[nodiscard]] glm::vec3 Sample(float u, float v, const glm::vec3& point) const override;
+  [[nodiscard]] glm::vec3 Sample(float u, float v, const glm::vec3& point) const;
 
  private:
   Perlin perlin_;
   float scale_ = 1.0f;
 };
 
-class ImageTexture : public Texture {
+class ImageTexture : public Texture<ImageTexture> {
  public:
   explicit ImageTexture(const std::filesystem::path& path);
 
-  [[nodiscard]] glm::vec3 Sample(float u, float v, const glm::vec3& point) const override;
+  [[nodiscard]] glm::vec3 Sample(float u, float v, const glm::vec3& point) const;
 
  private:
   int32_t width_ = 0, height_ = 0;

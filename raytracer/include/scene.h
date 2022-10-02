@@ -6,7 +6,6 @@
 #include "bvh.h"
 #include "camera.h"
 #include "sphere.h"
-#include "texture.h"
 
 namespace rt {
 
@@ -45,7 +44,6 @@ class Scene {
   BVHTraversalStrategy bvh_traversal_strategy_ = BVHTraversalStrategy::Iterative;
 
   std::unique_ptr<Camera> camera_;
-  std::vector<std::shared_ptr<Texture>> textures_;
   collidable_container_t collidables_;
   std::unique_ptr<BVH<collidable_t>> bvh_;
 
