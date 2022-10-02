@@ -87,7 +87,8 @@ class BVH : public Collidable<BVH<T>> {
       if (node->primitive_count) {
         for (uint32_t i = 0; i < node->primitive_count; ++i) {
           const auto& primitive = primitives_[primitive_indices_[node->left_first_primitive + i]];
-          if (primitive.Collide(ray, t_min, closest, collision)) {
+          if (std::visit([&](const auto& collidable) { return collidable.Collide(ray, t_min, closest, collision); },
+                         primitive)) {
             collided = true;
             closest = collision.t;
           }
@@ -114,7 +115,8 @@ class BVH : public Collidable<BVH<T>> {
       float closest = t_max;
       for (uint32_t i = 0; i < node.primitive_count; ++i) {
         const auto& primitive = primitives_[primitive_indices_[node.left_first_primitive + i]];
-        if (primitive.Collide(ray, t_min, closest, collision)) {
+        if (std::visit([&](const auto& collidable) { return collidable.Collide(ray, t_min, closest, collision); },
+                       primitive)) {
           collided = true;
           closest = collision.t;
         }
@@ -142,7 +144,7 @@ class BVH : public Collidable<BVH<T>> {
     for (uint32_t i = 0; i < node.primitive_count; ++i) {
       const auto& primitive = primitives_[primitive_indices_[node.left_first_primitive + i]];
       AABB primitive_bounding_box;
-      primitive.BoundingBox(time0_, time1_, primitive_bounding_box);
+      std::visit([&](const auto& collidable) { collidable.BoundingBox(time0_, time1_, primitive_bounding_box); }, primitive);
       b_box_min = glm::min(b_box_min, primitive_bounding_box.MinPoint());
       b_box_max = glm::max(b_box_max, primitive_bounding_box.MaxPoint());
     }
@@ -155,8 +157,9 @@ class BVH : public Collidable<BVH<T>> {
     for (uint32_t i = 0; i < node.primitive_count; ++i) {
       const auto& primitive = primitives_[primitive_indices_[node.left_first_primitive + i]];
       AABB primitive_bounding_box;
-      primitive.BoundingBox(time0_, time1_, primitive_bounding_box);
-      if (primitive.Centroid()[axis] < position) {
+      std::visit([&](const auto& object) { object.BoundingBox(time0_, time1_, primitive_bounding_box); }, primitive);
+      const glm::vec3 centroid = std::visit([](const auto& collidable) { return collidable.Centroid(); }, primitive);
+      if (centroid[axis] < position) {
         ++left_count;
         left_box = AABB{glm::min(left_box.MinPoint(), primitive_bounding_box.MinPoint()),
                         glm::max(left_box.MaxPoint(), primitive_bounding_box.MaxPoint())};
@@ -190,7 +193,9 @@ class BVH : public Collidable<BVH<T>> {
         for (int32_t axis = 0; axis < 3; ++axis) {
           for (uint32_t i = 0; i < node.primitive_count; ++i) {
             const auto& primitive = primitives_[primitive_indices_[node.left_first_primitive + i]];
-            const float candidate_position = primitive.Centroid()[axis];
+            const glm::vec3
+                centroid = std::visit([](const auto& collidable) { return collidable.Centroid(); }, primitive);
+            const float candidate_position = centroid[axis];
             const float cost = EvaluateSAH(node, axis, candidate_position);
             if (cost < best_cost) {
               best_cost = cost;
@@ -211,7 +216,9 @@ class BVH : public Collidable<BVH<T>> {
     int32_t i = node.left_first_primitive;
     int32_t j = i + node.primitive_count - 1;
     while (i <= j) {
-      if (primitives_[primitive_indices_[i]].Centroid()[split_axis] < split_position) {
+      const auto& primitive = primitives_[primitive_indices_[i]];
+      const glm::vec3 centroid = std::visit([](const auto& collidable) { return collidable.Centroid(); }, primitive);
+      if (centroid[split_axis] < split_position) {
         ++i;
       } else {
         std::swap(primitive_indices_[i], primitive_indices_[j--]);

@@ -1,6 +1,7 @@
 #include "scene.h"
 
 #include <stdexcept>
+#include <variant>
 
 #include "dielectric.h"
 #include "metal.h"
@@ -40,43 +41,19 @@ Scene::Scene(SceneType scene_type,
 }
 
 bool Scene::Collide(const Ray& ray, float t_min, float t_max, Collision& collision) const {
-  bool collided = false;
-  float closest = t_max;
-
-  if (!spheres_.empty()) {
-    if (bvh_spheres_) {
-      const bool collided_bvh = bvh_spheres_->Collide(ray, t_min, closest, collision);
-      if (collided_bvh) {
-        closest = collision.t;
+  if (bvh_) {
+    return bvh_->Collide(ray, t_min, t_max, collision);
+  } else {
+    bool collided = false;
+    float closest = t_max;
+    for (const auto& collidable : collidables_) {
+      if (std::visit([&](const auto& object) { return object.Collide(ray, t_min, closest, collision); }, collidable)) {
         collided = true;
-      }
-    } else {
-      for (const auto& sphere : spheres_) {
-        if (sphere.Collide(ray, t_min, closest, collision)) {
-          closest = collision.t;
-          collided = true;
-        }
+        closest = collision.t;
       }
     }
+    return collided;
   }
-
-  if (!moving_spheres_.empty()) {
-    if (bvh_moving_spheres_) {
-      const bool collided_bvh = bvh_moving_spheres_->Collide(ray, t_min, closest, collision);
-      if (collided_bvh) {
-        closest = collision.t;
-        collided = true;
-      }
-    } else {
-      for (const auto& moving_sphere : moving_spheres_) {
-        if (moving_sphere.Collide(ray, t_min, closest, collision)) {
-          closest = collision.t;
-          collided = true;
-        }
-      }
-    }
-  }
-  return collided;
 }
 
 Camera* Scene::GetCamera() const {
@@ -101,7 +78,7 @@ void Scene::InitializePart1Section13() {
 
   auto* ground_texture = textures_.emplace_back(new SolidColor{0.5f, 0.5f, 0.5f}).get();
   auto* ground_material = materials_.emplace_back(new Lambertian(ground_texture)).get();
-  spheres_.emplace_back(glm::vec3{0.0f, -1000.0f, 0.0f}, 1000.0f, ground_material);
+  collidables_.emplace_back(Sphere{glm::vec3{0.0f, -1000.0f, 0.0f}, 1000.0f, ground_material});
 
   for (int32_t i = -11; i < 11; ++i) {
     for (int32_t j = -11; j < 11; ++j) {
@@ -116,15 +93,15 @@ void Scene::InitializePart1Section13() {
           const glm::vec3 albedo = random::Vec3() * random::Vec3();
           auto* solid_color_texture = textures_.emplace_back(new SolidColor{albedo}).get();
           auto* material = materials_.emplace_back(new Lambertian(solid_color_texture)).get();
-          spheres_.emplace_back(center, 0.2f, material);
+          collidables_.emplace_back(Sphere{center, 0.2f, material});
         } else if (random_float < 0.95f) {  // Metal
           const glm::vec3 albedo = random::Vec3(0.5f, 1.0f);
           const float fuzziness = random::Float(0.0f, 0.5f);
           auto* material = materials_.emplace_back(new Metal(albedo, fuzziness)).get();
-          spheres_.emplace_back(center, 0.2f, material);
+          collidables_.emplace_back(Sphere{center, 0.2f, material});
         } else {  // Dielectric
           auto* material = materials_.emplace_back(new Dielectric(1.5f)).get();
-          spheres_.emplace_back(center, 0.2f, material);
+          collidables_.emplace_back(Sphere{center, 0.2f, material});
         }
       }
     }
@@ -132,22 +109,22 @@ void Scene::InitializePart1Section13() {
 
   {
     auto* material = materials_.emplace_back(new Dielectric(1.5f)).get();
-    spheres_.emplace_back(glm::vec3{0.0f, 1.0f, 0.0f}, 1.0f, material);
+    collidables_.emplace_back(Sphere{glm::vec3{0.0f, 1.0f, 0.0f}, 1.0f, material});
   }
   {
     auto* solid_color_texture = textures_.emplace_back(new SolidColor{0.4f, 0.2f, 0.1f}).get();
     auto* material = materials_.emplace_back(new Lambertian(solid_color_texture)).get();
-    spheres_.emplace_back(glm::vec3{-4.0f, 1.0f, 0.0f}, 1.0f, material);
+    collidables_.emplace_back(Sphere{glm::vec3{-4.0f, 1.0f, 0.0f}, 1.0f, material});
   }
   {
     auto* material = materials_.emplace_back(new Metal({0.7f, 0.6f, 0.5f}, 0.0f)).get();
-    spheres_.emplace_back(glm::vec3{4.0f, 1.0f, 0.0f}, 1.0f, material);
+    collidables_.emplace_back(Sphere{glm::vec3{4.0f, 1.0f, 0.0f}, 1.0f, material});
   }
 }
 
 void Scene::InitializePart1Section13BVH() {
   InitializePart1Section13();
-  bvh_spheres_ = std::make_unique<BVH<Sphere>>(bvh_split_strategy_, bvh_traversal_strategy_, spheres_, 0.0f, 1.0f);
+  bvh_ = std::make_unique<BVH<collidable_t>>(bvh_split_strategy_, bvh_traversal_strategy_, collidables_, 0.0f, 1.0f);
 }
 
 void Scene::InitializePart2Section4Subsection3() {
@@ -172,7 +149,7 @@ void Scene::InitializePart2Section4Subsection3() {
   auto* checker_odd = textures_.emplace_back(new SolidColor{0.9f, 0.9f, 0.9f}).get();
   auto* ground_texture = textures_.emplace_back(new Checker{checker_even, checker_odd}).get();
   auto* ground_material = materials_.emplace_back(new Lambertian(ground_texture)).get();
-  spheres_.emplace_back(glm::vec3{0.0f, -1000.0f, 0.0f}, 1000.0f, ground_material);
+  collidables_.emplace_back(Sphere{glm::vec3{0.0f, -1000.0f, 0.0f}, 1000.0f, ground_material});
 
   for (int32_t i = -11; i < 11; ++i) {
     for (int32_t j = -11; j < 11; ++j) {
@@ -188,15 +165,15 @@ void Scene::InitializePart2Section4Subsection3() {
           const glm::vec3 center2 = center + glm::vec3{0.0f, random::Float(0.0f, 0.5f), 0.0f};
           auto* solid_color_texture = textures_.emplace_back(new SolidColor{albedo}).get();
           auto* material = materials_.emplace_back(new Lambertian(solid_color_texture)).get();
-          moving_spheres_.emplace_back(center, center2, 0.0f, 1.0f, 0.2f, material);
+          collidables_.emplace_back(MovingSphere{center, center2, 0.0f, 1.0f, 0.2f, material});
         } else if (random_float < 0.95f) {  // Metal
           const glm::vec3 albedo = random::Vec3(0.5f, 1.0f);
           const float fuzziness = random::Float(0.0f, 0.5f);
           auto* material = materials_.emplace_back(new Metal(albedo, fuzziness)).get();
-          spheres_.emplace_back(center, 0.2f, material);
+          collidables_.emplace_back(Sphere{center, 0.2f, material});
         } else {  // Dielectric
           auto* material = materials_.emplace_back(new Dielectric(1.5f)).get();
-          spheres_.emplace_back(center, 0.2f, material);
+          collidables_.emplace_back(Sphere{center, 0.2f, material});
         }
       }
     }
@@ -204,21 +181,19 @@ void Scene::InitializePart2Section4Subsection3() {
 
   {
     auto* material = materials_.emplace_back(new Dielectric(1.5f)).get();
-    spheres_.emplace_back(glm::vec3{0.0f, 1.0f, 0.0f}, 1.0f, material);
+    collidables_.emplace_back(Sphere{glm::vec3{0.0f, 1.0f, 0.0f}, 1.0f, material});
   }
   {
     auto* solid_color_texture = textures_.emplace_back(new SolidColor{0.4f, 0.2f, 0.1f}).get();
     auto* material = materials_.emplace_back(new Lambertian(solid_color_texture)).get();
-    spheres_.emplace_back(glm::vec3{-4.0f, 1.0f, 0.0f}, 1.0f, material);
+    collidables_.emplace_back(Sphere{glm::vec3{-4.0f, 1.0f, 0.0f}, 1.0f, material});
   }
   {
     auto* material = materials_.emplace_back(new Metal({0.7f, 0.6f, 0.5f}, 0.0f)).get();
-    spheres_.emplace_back(glm::vec3{4.0f, 1.0f, 0.0f}, 1.0f, material);
+    collidables_.emplace_back(Sphere{glm::vec3{4.0f, 1.0f, 0.0f}, 1.0f, material});
   }
 
-  bvh_spheres_ = std::make_unique<BVH<Sphere>>(bvh_split_strategy_, bvh_traversal_strategy_, spheres_, 0.0f, 1.0f);
-  bvh_moving_spheres_ =
-      std::make_unique<BVH<MovingSphere>>(bvh_split_strategy_, bvh_traversal_strategy_, moving_spheres_, 0.0f, 1.0f);
+  bvh_ = std::make_unique<BVH<collidable_t>>(bvh_split_strategy_, bvh_traversal_strategy_, collidables_, 0.0f, 1.0f);
 }
 
 void Scene::InitializePart2Section4Subsection4() {
@@ -243,10 +218,10 @@ void Scene::InitializePart2Section4Subsection4() {
   auto* checker_odd = textures_.emplace_back(new SolidColor{0.9f, 0.9f, 0.9f}).get();
   auto* checker_texture = textures_.emplace_back(new Checker{checker_even, checker_odd}).get();
   auto* lambertian = materials_.emplace_back(new Lambertian(checker_texture)).get();
-  spheres_.emplace_back(glm::vec3{0.0f, -10.0f, 0.0f}, 10.0f, lambertian);
-  spheres_.emplace_back(glm::vec3{0.0f, 10.0f, 0.0f}, 10.0f, lambertian);
+  collidables_.emplace_back(Sphere{glm::vec3{0.0f, -10.0f, 0.0f}, 10.0f, lambertian});
+  collidables_.emplace_back(Sphere{glm::vec3{0.0f, 10.0f, 0.0f}, 10.0f, lambertian});
 
-  bvh_spheres_ = std::make_unique<BVH<Sphere>>(bvh_split_strategy_, bvh_traversal_strategy_, spheres_, 0.0f, 1.0f);
+  bvh_ = std::make_unique<BVH<collidable_t>>(bvh_split_strategy_, bvh_traversal_strategy_, collidables_, 0.0f, 1.0f);
 }
 
 void Scene::InitializePart2Section5() {
@@ -269,10 +244,10 @@ void Scene::InitializePart2Section5() {
 
   auto* noise_texture = textures_.emplace_back(new Noise{4.0f}).get();
   auto* lambertian = materials_.emplace_back(new Lambertian{noise_texture}).get();
-  spheres_.emplace_back(glm::vec3{0.0f, -1000.0f, 0.0f}, 1000.0f, lambertian);
-  spheres_.emplace_back(glm::vec3{0.0f, 2.0f, 0.0f}, 2.0f, lambertian);
+  collidables_.emplace_back(Sphere{glm::vec3{0.0f, -1000.0f, 0.0f}, 1000.0f, lambertian});
+  collidables_.emplace_back(Sphere{glm::vec3{0.0f, 2.0f, 0.0f}, 2.0f, lambertian});
 
-  bvh_spheres_ = std::make_unique<BVH<Sphere>>(bvh_split_strategy_, bvh_traversal_strategy_, spheres_, 0.0f, 1.0f);
+  bvh_ = std::make_unique<BVH<collidable_t>>(bvh_split_strategy_, bvh_traversal_strategy_, collidables_, 0.0f, 1.0f);
 }
 
 void Scene::InitializePart2Section6() {
@@ -295,7 +270,8 @@ void Scene::InitializePart2Section6() {
 
   auto* earth_texture = textures_.emplace_back(new ImageTexture{"resources/textures/earthmap.png"}).get();
   auto* earth_surface = materials_.emplace_back(new Lambertian{earth_texture}).get();
-  spheres_.emplace_back(glm::vec3{0.0f, 0.0f, 0.0f}, 2.0f, earth_surface);
+  collidables_.emplace_back(Sphere{glm::vec3{0.0f, 0.0f, 0.0f}, 2.0f, earth_surface});
+  bvh_ = std::make_unique<BVH<collidable_t>>(bvh_split_strategy_, bvh_traversal_strategy_, collidables_, 0.0f, 1.0f);
 }
 
 }  // namespace rt

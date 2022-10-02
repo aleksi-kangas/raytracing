@@ -1,10 +1,18 @@
 #pragma once
 
+#include <variant>
+#include <vector>
+
 #include "collision.h"
 #include "crtp.h"
 #include "ray.h"
 
 namespace rt {
+class Sphere;
+class MovingSphere;
+using collidable_t = std::variant<Sphere, MovingSphere>;
+using collidable_container_t = std::vector<collidable_t>;
+
 class AABB;
 
 template<class T>

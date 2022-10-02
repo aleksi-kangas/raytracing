@@ -48,10 +48,8 @@ class Scene {
   std::unique_ptr<Camera> camera_;
   std::vector<std::shared_ptr<Texture>> textures_;
   std::vector<std::shared_ptr<Material>> materials_;
-  std::vector<Sphere> spheres_;
-  std::unique_ptr<BVH<Sphere>> bvh_spheres_;
-  std::vector<MovingSphere> moving_spheres_;
-  std::unique_ptr<BVH<MovingSphere>> bvh_moving_spheres_;
+  collidable_container_t collidables_;
+  std::unique_ptr<BVH<collidable_t>> bvh_;
 
   void InitializePart1Section13();
   void InitializePart1Section13BVH();
