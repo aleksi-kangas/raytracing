@@ -39,8 +39,11 @@ bool AABB::Collide(const Ray& ray, float t_min, float t_max) const {
 }
 
 float AABB::Area() const {
+  constexpr glm::vec3 kNegativeInfinity{std::numeric_limits<float>::lowest()};
+  constexpr glm::vec3 kPositiveInfinity{std::numeric_limits<float>::max()};
+  if (min_point_ == kPositiveInfinity || max_point_ == kNegativeInfinity) return 0.0f;
   const glm::vec3 extent = max_point_ - min_point_;
-  return extent.x * extent.y + extent.y * extent.z + extent.z * extent.x;
+  return 2.0f * (extent.x * extent.y + extent.y * extent.z + extent.z * extent.x);
 }
 
 AABB AABB::SurroundingBox(const AABB& box0, const AABB& box1) {
