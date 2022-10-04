@@ -1,5 +1,7 @@
 #pragma once
 
+#include <variant>
+
 #include "glm/glm.hpp"
 
 #include "aabb.h"
@@ -8,6 +10,11 @@
 #include "material.h"
 
 namespace rt {
+class RectangleXY;
+class RectangleXZ;
+class RectangleYZ;
+using rectangle_t = std::variant<RectangleXY, RectangleXZ, RectangleYZ>;
+
 class RectangleXY : public Collidable<RectangleXY> {
  public:
   RectangleXY(glm::vec2 x, glm::vec2 y, float z, material_t material);

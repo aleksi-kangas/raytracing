@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "aabb.h"
+#include "box.h"
 #include "collidable.h"
 #include "collision.h"
 #include "random.h"

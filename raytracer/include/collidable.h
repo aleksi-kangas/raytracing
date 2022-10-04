@@ -8,12 +8,13 @@
 #include "ray.h"
 
 namespace rt {
-class Sphere;
+class Box;
 class MovingSphere;
 class RectangleXY;
 class RectangleXZ;
 class RectangleYZ;
-using collidable_t = std::variant<Sphere, MovingSphere, RectangleXY, RectangleXZ, RectangleYZ>;
+class Sphere;
+using collidable_t = std::variant<Box, MovingSphere, RectangleXY, RectangleXZ, RectangleYZ, Sphere>;
 using collidable_container_t = std::vector<collidable_t>;
 
 class AABB;

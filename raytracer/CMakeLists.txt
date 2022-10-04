@@ -3,6 +3,7 @@ project(raytracer)
 
 add_library(${PROJECT_NAME}
         include/aabb.h          src/aabb.cpp
+        include/box.h           src/box.cpp
         include/bvh.h
         include/camera.h        src/camera.cpp
         include/collidable.h

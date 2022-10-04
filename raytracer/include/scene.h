@@ -5,6 +5,7 @@
 
 #include "glm/glm.hpp"
 
+#include "box.h"
 #include "bvh.h"
 #include "camera.h"
 #include "rectangle.h"
@@ -21,6 +22,7 @@ enum SceneType {
   Part2Section6 = 5,
   Part2Section7Subsection4 = 6,
   Part2Section7Subsection6 = 7,
+  Part2Section8Subsection0 = 8,
 };
 
 static const char* kSceneNames[] = {"Part 1-13 | Where Next? - Final Render",
@@ -30,7 +32,8 @@ static const char* kSceneNames[] = {"Part 1-13 | Where Next? - Final Render",
                                     "Part 2-5 | Perlin Noise",
                                     "Part 2-6 | Image Texture Mapping",
                                     "Part 2-7-4 | Turning Objects into Lights",
-                                    "Part 2-7-6 | Creating an Empty 'Cornell Box"};
+                                    "Part 2-7-6 | Creating an Empty 'Cornell Box",
+                                    "Part 2-8-0 | Instances"};
 
 class Scene {
  public:
@@ -64,5 +67,6 @@ class Scene {
   void InitializePart2Section6();
   void InitializePart2Section7Subsection4();
   void InitializePart2Section7Subsection6();
+  void InitializePart2Section8Subsection0();
 };
 }  // namespace rt
