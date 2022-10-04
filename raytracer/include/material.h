@@ -11,9 +11,10 @@
 
 namespace rt {
 class Dielectric;
+class DiffuseLight;
 class Lambertian;
 class Metal;
-using material_t = std::variant<Dielectric, Lambertian, Metal>;
+using material_t = std::variant<Dielectric, DiffuseLight, Lambertian, Metal>;
 
 struct Collision;
 
@@ -24,9 +25,26 @@ class Material : public CRTP<Material<T>> {
     return this->Actual().Scatter(ray, collision, attenuation, scattered);
   }
 
+  [[nodiscard]] glm::vec3 Emit(float u, float v, const glm::vec3& point) const {
+    return this->Actual().Emit(u, v, point);
+  }
+
  private:
   Material() = default;
   friend T;
+};
+
+class DiffuseLight : public Material<DiffuseLight> {
+ public:
+  DiffuseLight(glm::vec3 emit);
+  DiffuseLight(texture_t emit);
+
+  bool Scatter(const Ray& ray, const Collision& collision, glm::vec3& attenuation, Ray& scattered) const;
+
+  [[nodiscard]] glm::vec3 Emit(float u, float v, const glm::vec3& point) const;
+
+ private:
+  texture_t emit_;
 };
 
 class Dielectric : public Material<Dielectric> {
@@ -34,6 +52,8 @@ class Dielectric : public Material<Dielectric> {
   explicit Dielectric(float refraction_index);
 
   bool Scatter(const Ray& ray, const Collision& collision, glm::vec3& attenuation, Ray& scattered) const;
+
+  [[nodiscard]] glm::vec3 Emit(float u, float v, const glm::vec3& point) const;
 
  private:
   float refraction_index_;
@@ -47,6 +67,8 @@ class Lambertian : public Material<Lambertian> {
 
   bool Scatter(const Ray& ray, const Collision& collision, glm::vec3& attenuation, Ray& scattered) const;
 
+  [[nodiscard]] glm::vec3 Emit(float u, float v, const glm::vec3& point) const;
+
  private:
   texture_t albedo_;
 };
@@ -56,6 +78,8 @@ class Metal : public Material<Metal> {
   explicit Metal(glm::vec3 albedo, float fuzziness);
 
   bool Scatter(const Ray& ray, const Collision& collision, glm::vec3& attenuation, Ray& scattered) const;
+
+  [[nodiscard]] glm::vec3 Emit(float u, float v, const glm::vec3& point) const;
 
  private:
   glm::vec3 albedo_{0, 0, 0};

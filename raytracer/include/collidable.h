@@ -10,7 +10,10 @@
 namespace rt {
 class Sphere;
 class MovingSphere;
-using collidable_t = std::variant<Sphere, MovingSphere>;
+class RectangleXY;
+class RectangleXZ;
+class RectangleYZ;
+using collidable_t = std::variant<Sphere, MovingSphere, RectangleXY, RectangleXZ, RectangleYZ>;
 using collidable_container_t = std::vector<collidable_t>;
 
 class AABB;

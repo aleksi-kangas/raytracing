@@ -14,6 +14,8 @@
 #include "collision.h"
 #include "random.h"
 #include "ray.h"
+#include "rectangle.h"
+#include "sphere.h"
 
 namespace rt {
 /**
@@ -32,12 +34,11 @@ enum BVHTraversalStrategy { Recursive, Iterative, TraversalStrategyCount };
  * Traversal supports both recursive and iterative forms.
  * @tparam T Primitive type implementing Collidable interface.
  */
-template<class T>
-class BVH : public Collidable<BVH<T>> {
+class BVH : public Collidable<BVH> {
  public:
   BVH(BVHSplitStrategy split_strategy,
       BVHTraversalStrategy traversal_strategy,
-      std::vector<T>& primitives,
+      const collidable_container_t& primitives,
       float time0,
       float time1)
       : split_strategy_{split_strategy},
@@ -62,7 +63,7 @@ class BVH : public Collidable<BVH<T>> {
  private:
   BVHSplitStrategy split_strategy_;
   BVHTraversalStrategy traversal_strategy_;
-  std::vector<T>& primitives_;
+  const collidable_container_t& primitives_;
 
   float time0_ = 0.0f, time1_ = 0.0f;
   struct BVHNode {

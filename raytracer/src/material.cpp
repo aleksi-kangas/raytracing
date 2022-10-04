@@ -1,5 +1,6 @@
 #include "material.h"
 
+#include <utility>
 #include <variant>
 
 #include "collision.h"
@@ -26,6 +27,10 @@ bool Dielectric::Scatter(const Ray& ray, const Collision& collision, glm::vec3& 
   return true;
 }
 
+glm::vec3 Dielectric::Emit(float u, float v, const glm::vec3& point) const {
+  return {0, 0, 0};
+}
+
 float Dielectric::Reflectance(float cosine, float refraction_index) {
   // Schlick's approximation.
   float r0 = (1.0f - refraction_index) / (1.0f + refraction_index);
@@ -33,7 +38,19 @@ float Dielectric::Reflectance(float cosine, float refraction_index) {
   return r0 + (1.0f - r0) * std::pow((1.0f - cosine), 5.0f);
 }
 
-Lambertian::Lambertian(texture_t albedo) : albedo_{albedo} {}
+DiffuseLight::DiffuseLight(glm::vec3 emit) : emit_{SolidColorTexture{emit}} {}
+
+DiffuseLight::DiffuseLight(texture_t emit) : emit_{std::move(emit)} {}
+
+bool DiffuseLight::Scatter(const Ray& ray, const Collision& collision, glm::vec3& attenuation, Ray& scattered) const {
+  return false;
+}
+
+glm::vec3 DiffuseLight::Emit(float u, float v, const glm::vec3& point) const {
+  return std::visit([&](const auto& texture) { return texture.Sample(u, v, point); }, emit_);
+}
+
+Lambertian::Lambertian(texture_t albedo) : albedo_{std::move(albedo)} {}
 
 bool Lambertian::Scatter(const Ray& ray, const Collision& collision, glm::vec3& attenuation, Ray& scattered) const {
   glm::vec3 scatter_direction = collision.normal + random::UnitVec3();
@@ -48,6 +65,10 @@ bool Lambertian::Scatter(const Ray& ray, const Collision& collision, glm::vec3& 
   return true;
 }
 
+glm::vec3 Lambertian::Emit(float u, float v, const glm::vec3& point) const {
+  return {0, 0, 0};
+}
+
 Metal::Metal(glm::vec3 albedo, float fuzziness)
     : albedo_{albedo}, fuzziness_{fuzziness < 1.0f ? fuzziness : 1.0f} {}
 
@@ -56,6 +77,10 @@ bool Metal::Scatter(const Ray& ray, const Collision& collision, glm::vec3& atten
   scattered = Ray{collision.point, reflected + fuzziness_ * random::InUnitSphere(), ray.Time()};
   attenuation = albedo_;
   return glm::dot(scattered.Direction(), collision.normal) > 0;
+}
+
+glm::vec3 Metal::Emit(float u, float v, const glm::vec3& point) const {
+  return {0, 0, 0};
 }
 
 }  // namespace rt

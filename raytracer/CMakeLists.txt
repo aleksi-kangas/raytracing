@@ -14,6 +14,7 @@ add_library(${PROJECT_NAME}
         include/random.h        src/random.cpp
         include/ray.h           src/ray.cpp
         include/raytracer.h     src/raytracer.cpp
+        include/rectangle.h     src/rectangle.cpp
         include/renderer.h      src/renderer.cpp
         include/scene.h         src/scene.cpp
         include/sphere.h        src/sphere.cpp

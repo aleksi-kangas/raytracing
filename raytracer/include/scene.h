@@ -3,8 +3,11 @@
 #include <memory>
 #include <vector>
 
+#include "glm/glm.hpp"
+
 #include "bvh.h"
 #include "camera.h"
+#include "rectangle.h"
 #include "sphere.h"
 
 namespace rt {
@@ -16,6 +19,8 @@ enum SceneType {
   Part2Section4Subsection4 = 3,
   Part2Section5 = 4,
   Part2Section6 = 5,
+  Part2Section7Subsection4 = 6,
+  Part2Section7Subsection6 = 7,
 };
 
 static const char* kSceneNames[] = {"Part 1-13 | Where Next? - Final Render",
@@ -23,7 +28,9 @@ static const char* kSceneNames[] = {"Part 1-13 | Where Next? - Final Render",
                                     "Part 2-4-3 | Checker Texture",
                                     "Part 2-4-4 | Rendering a Scene with a Checkered Texture",
                                     "Part 2-5 | Perlin Noise",
-                                    "Part 2-6 | Image Texture Mapping"};
+                                    "Part 2-6 | Image Texture Mapping",
+                                    "Part 2-7-4 | Turning Objects into Lights",
+                                    "Part 2-7-6 | Creating an Empty 'Cornell Box"};
 
 class Scene {
  public:
@@ -37,15 +44,17 @@ class Scene {
   bool Collide(const Ray& ray, float t_min, float t_max, Collision& collision) const;
 
   [[nodiscard]] Camera* GetCamera() const;
+  [[nodiscard]] glm::vec3 BackgroundColor() const;
 
  private:
   float aspect_ratio_ = 1.0f;
+  glm::vec3 background_color_{0, 0, 0};
   BVHSplitStrategy bvh_split_strategy_ = BVHSplitStrategy::SurfaceAreaHeuristic;
   BVHTraversalStrategy bvh_traversal_strategy_ = BVHTraversalStrategy::Iterative;
 
   std::unique_ptr<Camera> camera_;
   collidable_container_t collidables_;
-  std::unique_ptr<BVH<collidable_t>> bvh_;
+  std::unique_ptr<BVH> bvh_;
 
   void InitializePart1Section13();
   void InitializePart1Section13BVH();
@@ -53,5 +62,7 @@ class Scene {
   void InitializePart2Section4Subsection4();
   void InitializePart2Section5();
   void InitializePart2Section6();
+  void InitializePart2Section7Subsection4();
+  void InitializePart2Section7Subsection6();
 };
 }  // namespace rt

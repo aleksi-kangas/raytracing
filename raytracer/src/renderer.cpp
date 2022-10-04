@@ -122,17 +122,23 @@ void Renderer::RenderChuck(glm::i32vec2 rows, glm::i32vec2 columns) {
 }
 
 glm::vec4 Renderer::RenderPixel(const Ray& ray, int32_t child_rays) {
-  glm::vec3 color{1, 1, 1};
+  glm::vec3 color{0, 0, 0};
+
   Ray current_ray = ray;
+  glm::vec3 current_attenuation{1, 1, 1};
   while (child_rays--) {
     Collision collision{};
     const bool collided = scene_->Collide(current_ray, 0.001f, std::numeric_limits<float>::max(), collision);
     if (!collided) {
-      const glm::vec3 unit_direction = glm::normalize(ray.Direction());
-      const float t = 0.5f * (unit_direction.y + 1.0f);
-      color *= (1.0f - t) * glm::vec3{1, 1, 1} + t * glm::vec3{0.5, 0.7, 1.0};
-      return {color, 1.0f};
+      color += scene_->BackgroundColor() * current_attenuation;
+      break;
     }
+    const glm::vec3 emitted =
+        std::visit([&](const auto& material) {
+          return material.Emit(collision.u, collision.v, collision.point);
+        }, *collision.material);
+    color += emitted * current_attenuation;
+
     Ray scattered_ray{};
     glm::vec3 attenuation{0, 0, 0};
     const bool scattered = std::visit([&](const auto& material) {
@@ -141,14 +147,13 @@ glm::vec4 Renderer::RenderPixel(const Ray& ray, int32_t child_rays) {
                               attenuation,
                               scattered_ray);
     }, *collision.material);
-    if (scattered) {
-      color *= attenuation;
-      current_ray = scattered_ray;
-    } else {
+    if (!scattered) {
       break;
     }
+    current_ray = scattered_ray;
+    current_attenuation *= attenuation;
   }
-  return {0.0f, 0.0f, 0.0f, 1.0f};
+  return {color, 1.0f};
 }
 
 glm::vec4 Renderer::ColorCorrection(int32_t samples_per_pixel, const glm::vec4& color) {
