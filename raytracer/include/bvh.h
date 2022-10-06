@@ -17,6 +17,7 @@
 #include "ray.h"
 #include "rectangle.h"
 #include "sphere.h"
+#include "rotate_translate.h"
 
 namespace rt {
 /**

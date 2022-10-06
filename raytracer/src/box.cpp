@@ -21,7 +21,7 @@ Box::Box(glm::vec3 min_point, glm::vec3 max_point, material_t material)
                           material_}}} {}
 
 bool Box::Collide(const Ray& ray, float t_min, float t_max, Collision& collision) const {
-  bool collided;
+  bool collided = false;
   float closest = t_max;
   for (const auto& collidable : sides_) {
     if (std::visit([&](const auto& rectangle) { return rectangle.Collide(ray, t_min, closest, collision); },

@@ -24,6 +24,6 @@ class Box : public Collidable<Box> {
   glm::vec3 min_point_;
   glm::vec3 max_point_;
   material_t material_;
-  std::array<rectangle_t , 6> sides_;
+  std::array<rectangle_t, 6> sides_;
 };
 }  // namespace rt

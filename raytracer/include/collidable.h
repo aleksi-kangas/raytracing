@@ -14,7 +14,22 @@ class RectangleXY;
 class RectangleXZ;
 class RectangleYZ;
 class Sphere;
-using collidable_t = std::variant<Box, MovingSphere, RectangleXY, RectangleXZ, RectangleYZ, Sphere>;
+using translatable_rotatable_collidable_t = std::variant<Box,
+                                                         MovingSphere,
+                                                         RectangleXY,
+                                                         RectangleXZ,
+                                                         RectangleYZ,
+                                                         Sphere>;
+class RotateTranslate;
+using collidable_t = std::variant<
+    Box,
+    MovingSphere,
+    RectangleXY,
+    RectangleXZ,
+    RectangleYZ,
+    Sphere,
+    RotateTranslate
+>;
 using collidable_container_t = std::vector<collidable_t>;
 
 class AABB;
