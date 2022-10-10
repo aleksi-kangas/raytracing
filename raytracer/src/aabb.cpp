@@ -46,6 +46,23 @@ float AABB::Area() const {
   return 2.0f * (extent.x * extent.y + extent.y * extent.z + extent.z * extent.x);
 }
 
+glm::vec3 AABB::Centroid() const {
+  constexpr glm::vec3 kNegativeInfinity{std::numeric_limits<float>::lowest()};
+  constexpr glm::vec3 kPositiveInfinity{std::numeric_limits<float>::max()};
+  if (min_point_ == kPositiveInfinity || max_point_ == kNegativeInfinity) return glm::vec3{0.0f};
+  return 0.5f * (min_point_ + max_point_);
+}
+
+int32_t AABB::LongestAxis() const {
+  constexpr glm::vec3 kNegativeInfinity{std::numeric_limits<float>::lowest()};
+  constexpr glm::vec3 kPositiveInfinity{std::numeric_limits<float>::max()};
+  if (min_point_ == kPositiveInfinity || max_point_ == kNegativeInfinity) return 0;
+  const glm::vec3 extent = max_point_ - min_point_;
+  if (extent.x > extent.y && extent.x > extent.z) return 0;
+  if (extent.y > extent.z) return 1;
+  return 2;
+}
+
 AABB AABB::SurroundingBox(const AABB& box0, const AABB& box1) {
   const glm::vec3 min_point{glm::min(box0.min_point_, box1.min_point_)};
   const glm::vec3 max_point{glm::max(box0.max_point_, box1.max_point_)};

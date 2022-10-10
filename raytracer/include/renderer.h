@@ -25,7 +25,6 @@ struct RendererSettings {
   int32_t samples_per_pixel = 100;
   int32_t max_child_rays = 50;
   int32_t bvh_split_strategy = BVHSplitStrategy::SurfaceAreaHeuristic;
-  int32_t bvh_traversal_strategy = BVHTraversalStrategy::Recursive;
 };
 
 struct RendererStatistics {

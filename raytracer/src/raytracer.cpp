@@ -102,20 +102,12 @@ void Raytracer::RenderUISettings() {
     ImGui::Text("Bounding Volume Hierarchy (BVH)");
 
     const char* bvh_split_strategy_names[BVHSplitStrategy::SplitStrategyCount]
-        = {"Largest Extent", "Surface Area Heuristic"};
+        = {"Middle", "Equal Counts", "Surface Area Heuristic"};
     ImGui::SliderInt("Split Strategy",
                      &renderer_settings_.bvh_split_strategy,
                      0,
                      BVHSplitStrategy::SplitStrategyCount - 1,
                      bvh_split_strategy_names[renderer_settings_.bvh_split_strategy]);
-
-    const char* bvh_traversal_strategy_names[BVHSplitStrategy::SplitStrategyCount] =
-        {"Recursive", "Iterative"};
-    ImGui::SliderInt("Traversal Strategy",
-                     &renderer_settings_.bvh_traversal_strategy,
-                     0,
-                     BVHTraversalStrategy::TraversalStrategyCount - 1,
-                     bvh_traversal_strategy_names[renderer_settings_.bvh_traversal_strategy]);
     ImGui::Separator();  // --------------------------------------------------
 
     if (ImGui::Button("Render")) {

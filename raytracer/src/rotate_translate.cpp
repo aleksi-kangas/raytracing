@@ -1,5 +1,6 @@
 #include "rotate_translate.h"
 
+#include <array>
 #include <utility>
 #include <variant>
 
@@ -30,9 +31,28 @@ bool RotateTranslate::BoundingBox(float time0, float time1, AABB& bounding_box) 
                   collidable_)) {
     return false;
   }
+  std::array<glm::vec3, 8> aabb_vertices{
+      {
+          {bounding_box.MinPoint().x, bounding_box.MinPoint().y, bounding_box.MinPoint().z},
+          {bounding_box.MaxPoint().x, bounding_box.MinPoint().y, bounding_box.MinPoint().z},
+          {bounding_box.MaxPoint().x, bounding_box.MaxPoint().y, bounding_box.MinPoint().z},
+          {bounding_box.MinPoint().x, bounding_box.MaxPoint().y, bounding_box.MinPoint().z},
+          {bounding_box.MinPoint().x, bounding_box.MinPoint().y, bounding_box.MaxPoint().z},
+          {bounding_box.MaxPoint().x, bounding_box.MinPoint().y, bounding_box.MaxPoint().z},
+          {bounding_box.MaxPoint().x, bounding_box.MaxPoint().y, bounding_box.MaxPoint().z},
+          {bounding_box.MinPoint().x, bounding_box.MaxPoint().y, bounding_box.MaxPoint().z}
+      }};
   const glm::mat4 transform = TransformationMatrix();
-  bounding_box = AABB{transform * glm::vec4{bounding_box.MinPoint(), 1.0f},
-                      transform * glm::vec4{bounding_box.MaxPoint(), 1.0f}};
+  for (auto& vertex : aabb_vertices) {
+    vertex = transform * glm::vec4{vertex, 1.0f};
+  }
+  glm::vec3 min_point{std::numeric_limits<float>::max()};
+  glm::vec3 max_point{std::numeric_limits<float>::lowest()};
+  for (const auto& vertex : aabb_vertices) {
+    min_point = glm::min(min_point, vertex);
+    max_point = glm::max(max_point, vertex);
+  }
+  bounding_box = AABB{min_point, max_point};
   return true;
 }
 

@@ -40,10 +40,7 @@ static const char* kSceneNames[] = {"Part 1-13 | Where Next? - Final Render",
 
 class Scene {
  public:
-  Scene(SceneType scene_type,
-        float aspect_ratio,
-        BVHSplitStrategy bvh_split_strategy,
-        BVHTraversalStrategy bvh_traversal_strategy);
+  Scene(SceneType scene_type, float aspect_ratio, BVHSplitStrategy bvh_split_strategy);
   Scene(const Scene& scene) = delete;
   Scene& operator=(const Scene& scene) = delete;
 
@@ -56,7 +53,6 @@ class Scene {
   float aspect_ratio_ = 1.0f;
   glm::vec3 background_color_{0, 0, 0};
   BVHSplitStrategy bvh_split_strategy_ = BVHSplitStrategy::SurfaceAreaHeuristic;
-  BVHTraversalStrategy bvh_traversal_strategy_ = BVHTraversalStrategy::Iterative;
 
   std::unique_ptr<Camera> camera_;
   collidable_container_t collidables_;

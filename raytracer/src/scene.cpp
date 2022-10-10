@@ -8,13 +8,8 @@
 #include "texture.h"
 
 namespace rt {
-Scene::Scene(SceneType scene_type,
-             float aspect_ratio,
-             BVHSplitStrategy bvh_split_strategy,
-             BVHTraversalStrategy bvh_traversal_strategy)
-    : aspect_ratio_{aspect_ratio},
-      bvh_split_strategy_{bvh_split_strategy},
-      bvh_traversal_strategy_{bvh_traversal_strategy} {
+Scene::Scene(SceneType scene_type, float aspect_ratio, BVHSplitStrategy bvh_split_strategy)
+    : aspect_ratio_{aspect_ratio}, bvh_split_strategy_{bvh_split_strategy} {
   switch (scene_type) {
     case SceneType::Part1Section13:
       InitializePart1Section13();
@@ -127,7 +122,7 @@ void Scene::InitializePart1Section13() {
 
 void Scene::InitializePart1Section13BVH() {
   InitializePart1Section13();
-  bvh_ = std::make_unique<BVH>(bvh_split_strategy_, bvh_traversal_strategy_, collidables_, 0.0f, 1.0f);
+  bvh_ = std::make_unique<BVH>(bvh_split_strategy_, collidables_, 0.0f, 1.0f);
 }
 
 void Scene::InitializePart2Section4Subsection3() {
@@ -183,7 +178,7 @@ void Scene::InitializePart2Section4Subsection3() {
                                    Lambertian{SolidColorTexture{0.4f, 0.2f, 0.1f}}});
   collidables_.emplace_back(Sphere{glm::vec3{4.0f, 1.0f, 0.0f}, 1.0f, Metal{{0.7f, 0.6f, 0.5f}, 0.0f}});
 
-  bvh_ = std::make_unique<BVH>(bvh_split_strategy_, bvh_traversal_strategy_, collidables_, 0.0f, 1.0f);
+  bvh_ = std::make_unique<BVH>(bvh_split_strategy_, collidables_, 0.0f, 1.0f);
 }
 
 void Scene::InitializePart2Section4Subsection4() {
@@ -211,7 +206,7 @@ void Scene::InitializePart2Section4Subsection4() {
   collidables_.emplace_back(Sphere{glm::vec3{0.0f, 10.0f, 0.0f}, 10.0f, Lambertian{
       CheckerTexture{SolidColorTexture{0.2f, 0.3f, 0.1f}, SolidColorTexture{0.9f, 0.9f, 0.9f}}}});
 
-  bvh_ = std::make_unique<BVH>(bvh_split_strategy_, bvh_traversal_strategy_, collidables_, 0.0f, 1.0f);
+  bvh_ = std::make_unique<BVH>(bvh_split_strategy_, collidables_, 0.0f, 1.0f);
 }
 
 void Scene::InitializePart2Section5() {
@@ -237,7 +232,7 @@ void Scene::InitializePart2Section5() {
   collidables_.emplace_back(Sphere{glm::vec3{0.0f, -1000.0f, 0.0f}, 1000.0f, Lambertian{NoiseTexture{4.0f}}});
   collidables_.emplace_back(Sphere{glm::vec3{0.0f, 2.0f, 0.0f}, 2.0f, Lambertian{NoiseTexture{4.0f}}});
 
-  bvh_ = std::make_unique<BVH>(bvh_split_strategy_, bvh_traversal_strategy_, collidables_, 0.0f, 1.0f);
+  bvh_ = std::make_unique<BVH>(bvh_split_strategy_, collidables_, 0.0f, 1.0f);
 }
 
 void Scene::InitializePart2Section6() {
@@ -262,7 +257,7 @@ void Scene::InitializePart2Section6() {
 
   collidables_.emplace_back(Sphere{glm::vec3{0.0f, 0.0f, 0.0f}, 2.0f,
                                    Lambertian{ImageTexture{"resources/textures/earthmap.png"}}});
-  bvh_ = std::make_unique<BVH>(bvh_split_strategy_, bvh_traversal_strategy_, collidables_, 0.0f, 1.0f);
+  bvh_ = std::make_unique<BVH>(bvh_split_strategy_, collidables_, 0.0f, 1.0f);
 }
 
 void Scene::InitializePart2Section7Subsection4() {
@@ -291,7 +286,7 @@ void Scene::InitializePart2Section7Subsection4() {
   collidables_.emplace_back(RectangleXY{glm::vec2{3.0f, 5.0f}, glm::vec2{1.0f, 3.0f}, -2.0f,
                                         DiffuseLight{glm::vec3{4.0f, 4.0f, 4.0f}}});
 
-  bvh_ = std::make_unique<BVH>(bvh_split_strategy_, bvh_traversal_strategy_, collidables_, 0.0f, 1.0f);
+  bvh_ = std::make_unique<BVH>(bvh_split_strategy_, collidables_, 0.0f, 1.0f);
 }
 
 void Scene::InitializePart2Section7Subsection6() {
@@ -328,7 +323,7 @@ void Scene::InitializePart2Section7Subsection6() {
   collidables_.emplace_back(RectangleXZ{glm::vec2{213.0f, 343.0f}, glm::vec2{227.0f, 332.0f}, 554.0f,
                                         DiffuseLight{glm::vec3{15.0f, 15.0f, 15.0f}}});
 
-  bvh_ = std::make_unique<BVH>(bvh_split_strategy_, bvh_traversal_strategy_, collidables_, 0.0f, 1.0f);
+  bvh_ = std::make_unique<BVH>(bvh_split_strategy_, collidables_, 0.0f, 1.0f);
 }
 
 void Scene::InitializePart2Section8Subsection0() {
@@ -370,7 +365,7 @@ void Scene::InitializePart2Section8Subsection0() {
   collidables_.emplace_back(Box{glm::vec3{265.0f, 0.0f, 295.0f}, glm::vec3{430.0f, 330.0f, 460.0f},
                                 Lambertian{SolidColorTexture{0.73f, 0.73f, 0.73f}}});
 
-  bvh_ = std::make_unique<BVH>(bvh_split_strategy_, bvh_traversal_strategy_, collidables_, 0.0f, 1.0f);
+  bvh_ = std::make_unique<BVH>(bvh_split_strategy_, collidables_, 0.0f, 1.0f);
 }
 
 void Scene::InitializePart2Section8Subsection2() {
@@ -415,7 +410,7 @@ void Scene::InitializePart2Section8Subsection2() {
                                                 Lambertian{SolidColorTexture{0.73f, 0.73f, 0.73f}}},
                                             -18.0f, glm::vec3{130.0f, 0.0f, 65.0f}});
 
-  bvh_ = std::make_unique<BVH>(bvh_split_strategy_, bvh_traversal_strategy_, collidables_, 0.0f, 1.0f);
+  bvh_ = std::make_unique<BVH>(bvh_split_strategy_, collidables_, 0.0f, 1.0f);
 }
 
 }  // namespace rt

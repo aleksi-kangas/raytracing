@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <limits>
 
 #include "glm/glm.hpp"
@@ -21,6 +22,8 @@ class AABB {
   [[nodiscard]] bool Collide(const Ray& ray, float t_min, float t_max) const;
 
   [[nodiscard]] float Area() const;
+  [[nodiscard]] glm::vec3 Centroid() const;
+  [[nodiscard]] int32_t LongestAxis() const;
 
   static AABB SurroundingBox(const AABB& box0, const AABB& box1);
 

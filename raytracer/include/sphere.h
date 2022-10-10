@@ -22,7 +22,7 @@ class Sphere : public Collidable<Sphere> {
  private:
   glm::vec3 center_;
   float radius_;
-  const material_t material_;
+  material_t material_;
 
   static void ComputeUV(const glm::vec3& point, float& u, float& v);
 };
@@ -43,6 +43,6 @@ class MovingSphere : public Collidable<MovingSphere> {
   glm::vec3 center0_, center1_;
   float time0_, time1_;
   float radius_;
-  const material_t material_;
+  material_t material_;
 };
 }  // namespace rt

@@ -27,8 +27,7 @@ void Renderer::Render(const RendererSettings& settings) {
     using namespace std::chrono;
     scene_ = std::make_shared<Scene>(static_cast<SceneType>(settings_.scene_type),
                                      preview_->AspectRatio(),
-                                     static_cast<BVHSplitStrategy>(settings_.bvh_split_strategy),
-                                     static_cast<BVHTraversalStrategy>(settings_.bvh_traversal_strategy));
+                                     static_cast<BVHSplitStrategy>(settings_.bvh_split_strategy));
 
     state_ = RenderState::Running;
     statistics_.render_time_ms = std::chrono::milliseconds::zero();
