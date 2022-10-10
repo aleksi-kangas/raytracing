@@ -14,15 +14,24 @@ class RectangleXY;
 class RectangleXZ;
 class RectangleYZ;
 class Sphere;
-using translatable_rotatable_collidable_t = std::variant<Box,
-                                                         MovingSphere,
-                                                         RectangleXY,
-                                                         RectangleXZ,
-                                                         RectangleYZ,
-                                                         Sphere>;
+using primitive_t = std::variant<Box,
+                                 MovingSphere,
+                                 RectangleXY,
+                                 RectangleXZ,
+                                 RectangleYZ,
+                                 Sphere>;
+class ConstantMedium;
+using rotatable_translatable_primitive_t = std::variant<Box,
+                                                        ConstantMedium,
+                                                        MovingSphere,
+                                                        RectangleXY,
+                                                        RectangleXZ,
+                                                        RectangleYZ,
+                                                        Sphere>;
 class RotateTranslate;
 using collidable_t = std::variant<
     Box,
+    ConstantMedium,
     MovingSphere,
     RectangleXY,
     RectangleXZ,

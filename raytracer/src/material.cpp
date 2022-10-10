@@ -50,6 +50,22 @@ glm::vec3 DiffuseLight::Emit(float u, float v, const glm::vec3& point) const {
   return std::visit([&](const auto& texture) { return texture.Sample(u, v, point); }, emit_);
 }
 
+Isotropic::Isotropic(glm::vec3 albedo) : albedo_{SolidColorTexture{albedo}} {}
+
+Isotropic::Isotropic(texture_t albedo) : albedo_{std::move(albedo)} {}
+
+bool Isotropic::Scatter(const Ray& ray, const Collision& collision, glm::vec3& attenuation, Ray& scattered) const {
+  attenuation = std::visit([&](const auto& texture) {
+    return texture.Sample(collision.u, collision.v, collision.point);
+  }, albedo_);
+  scattered = Ray{collision.point, random::InUnitSphere(), ray.Time()};
+  return true;
+}
+
+glm::vec3 Isotropic::Emit(float u, float v, const glm::vec3& point) const {
+  return {0, 0, 0};
+}
+
 Lambertian::Lambertian(texture_t albedo) : albedo_{std::move(albedo)} {}
 
 bool Lambertian::Scatter(const Ray& ray, const Collision& collision, glm::vec3& attenuation, Ray& scattered) const {

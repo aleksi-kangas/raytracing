@@ -4,13 +4,14 @@
 
 #include "box.h"
 #include "collidable.h"
+#include "constant_medium.h"
 #include "rectangle.h"
 #include "sphere.h"
 
 namespace rt {
 class RotateTranslate : public Collidable<RotateTranslate> {
  public:
-  explicit RotateTranslate(translatable_rotatable_collidable_t collidable,
+  explicit RotateTranslate(rotatable_translatable_primitive_t collidable,
                            float rotate_y = 0.0f,
                            glm::vec3 translate = {0.0f, 0.0f, 0.0f});
 
@@ -21,7 +22,7 @@ class RotateTranslate : public Collidable<RotateTranslate> {
   [[nodiscard]] glm::vec3 Centroid() const;
 
  private:
-  translatable_rotatable_collidable_t collidable_;
+  rotatable_translatable_primitive_t collidable_;
   // TODO Support rotation around other axes.
   float rotate_y_;
   glm::vec3 translate_{0.0f, 0.0f, 0.0f};

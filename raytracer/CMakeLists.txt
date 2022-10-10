@@ -8,6 +8,7 @@ add_library(${PROJECT_NAME}
         include/camera.h            src/camera.cpp
         include/collidable.h
         include/collision.h
+        include/constant_medium.h   src/constant_medium.cpp
         include/crtp.h
         include/material.h          src/material.cpp
         include/image.h             src/image.cpp

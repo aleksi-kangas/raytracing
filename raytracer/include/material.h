@@ -12,9 +12,10 @@
 namespace rt {
 class Dielectric;
 class DiffuseLight;
+class Isotropic;
 class Lambertian;
 class Metal;
-using material_t = std::variant<Dielectric, DiffuseLight, Lambertian, Metal>;
+using material_t = std::variant<Dielectric, DiffuseLight, Isotropic, Lambertian, Metal>;
 
 struct Collision;
 
@@ -36,8 +37,8 @@ class Material : public CRTP<Material<T>> {
 
 class DiffuseLight : public Material<DiffuseLight> {
  public:
-  DiffuseLight(glm::vec3 emit);
-  DiffuseLight(texture_t emit);
+  explicit DiffuseLight(glm::vec3 emit);
+  explicit DiffuseLight(texture_t emit);
 
   bool Scatter(const Ray& ray, const Collision& collision, glm::vec3& attenuation, Ray& scattered) const;
 
@@ -59,6 +60,19 @@ class Dielectric : public Material<Dielectric> {
   float refraction_index_;
 
   static float Reflectance(float cosine, float refraction_index);
+};
+
+class Isotropic : public Material<Isotropic> {
+ public:
+  explicit Isotropic(glm::vec3 albedo);
+  explicit Isotropic(texture_t albedo);
+
+  bool Scatter(const Ray& ray, const Collision& collision, glm::vec3& attenuation, Ray& scattered) const;
+
+  [[nodiscard]] glm::vec3 Emit(float u, float v, const glm::vec3& point) const;
+
+ private:
+  texture_t albedo_;
 };
 
 class Lambertian : public Material<Lambertian> {

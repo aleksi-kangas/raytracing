@@ -7,7 +7,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 
 namespace rt {
-RotateTranslate::RotateTranslate(translatable_rotatable_collidable_t collidable, float rotate_y, glm::vec3 translate)
+RotateTranslate::RotateTranslate(rotatable_translatable_primitive_t collidable, float rotate_y, glm::vec3 translate)
     : collidable_{std::move(collidable)},
       rotate_y_{rotate_y},
       translate_{translate} {}

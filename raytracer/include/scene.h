@@ -8,6 +8,7 @@
 #include "box.h"
 #include "bvh.h"
 #include "camera.h"
+#include "constant_medium.h"
 #include "rectangle.h"
 #include "sphere.h"
 #include "rotate_translate.h"
@@ -25,6 +26,7 @@ enum SceneType {
   Part2Section7Subsection6 = 7,
   Part2Section8Subsection0 = 8,
   Part2Section8Subsection2 = 9,
+  Part2Section9 = 10,
 };
 
 static const char* kSceneNames[] = {"Part 1-13 | Where Next? - Final Render",
@@ -36,7 +38,8 @@ static const char* kSceneNames[] = {"Part 1-13 | Where Next? - Final Render",
                                     "Part 2-7-4 | Turning Objects into Lights",
                                     "Part 2-7-6 | Creating an Empty 'Cornell Box",
                                     "Part 2-8-0 | Instances",
-                                    "Part 2-8-2 | Translation and Rotation"};
+                                    "Part 2-8-2 | Translation and Rotation",
+                                    "Part 2-9 | Volumes"};
 
 class Scene {
  public:
@@ -68,5 +71,6 @@ class Scene {
   void InitializePart2Section7Subsection6();
   void InitializePart2Section8Subsection0();
   void InitializePart2Section8Subsection2();
+  void InitializePart2Section9();
 };
 }  // namespace rt
