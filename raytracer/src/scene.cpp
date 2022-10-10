@@ -44,6 +44,9 @@ Scene::Scene(SceneType scene_type, float aspect_ratio, BVHSplitStrategy bvh_spli
     case SceneType::Part2Section9:
       InitializePart2Section9();
       break;
+    case SceneType::Part2Section10:
+      InitializePart2Section10();
+      break;
     default:
       throw std::runtime_error{"Unknown scene."};
   }
@@ -461,6 +464,69 @@ void Scene::InitializePart2Section9() {
                          Lambertian{SolidColorTexture{0.73f, 0.73f, 0.73f}}},
                      0.01f, SolidColorTexture{1.0f, 1.0f, 1.0f}},
       -18.0f, glm::vec3{130.0f, 0.0f, 65.0f}});
+
+  bvh_ = std::make_unique<BVH>(bvh_split_strategy_, collidables_, 0.0f, 1.0f);
+}
+
+void Scene::InitializePart2Section10() {
+  background_color_ = {0.0f, 0.0f, 0.0f};
+
+  constexpr glm::vec3 camera_origin{478, 278, -600};
+  constexpr glm::vec3 camera_target{278, 278, 0};
+  constexpr glm::vec3 camera_vup{0, 1, 0};
+  constexpr float camera_fov = 40.0f;
+  constexpr float camera_aperture = 0.0f;
+  constexpr float camera_focus_distance = 10.0f;
+
+  camera_ = std::make_unique<Camera>(camera_origin,
+                                     camera_target,
+                                     camera_vup,
+                                     camera_fov,
+                                     aspect_ratio_,
+                                     camera_aperture,
+                                     camera_focus_distance,
+                                     0.0f,
+                                     1.0f);
+
+  {  // Ground boxes
+    constexpr uint32_t kBoxesPerSide = 20;
+    for (uint32_t i = 0; i < kBoxesPerSide; ++i) {
+      for (uint32_t j = 0; j < kBoxesPerSide; ++j) {
+        const float w = 100.0f;
+        const float x0 = -1000.0f + static_cast<float>(i) * w;
+        const float z0 = -1000.0f + static_cast<float>(j) * w;
+        const float y0 = 0.0f;
+        const float x1 = x0 + w;
+        const float y1 = random::Float(1.0f, 101.0f);
+        const float z1 = z0 + w;
+        collidables_.emplace_back(Box{glm::vec3{x0, y0, z0}, glm::vec3{x1, y1, z1},
+                                      Lambertian{SolidColorTexture{0.48f, 0.83f, 0.53f}}});
+      }
+    }
+  }
+  collidables_.emplace_back(RectangleXZ{glm::vec2{123.0f, 423.0f}, glm::vec2{147.0f, 412.0f}, 554.0f,
+                                        DiffuseLight{glm::vec3{7.0f, 7.0f, 7.0f}}});
+  collidables_.emplace_back(MovingSphere{glm::vec3{400.0f, 400.0f, 200.0f}, glm::vec3{430.0f, 400.0f, 200.0f}, 0.0f,
+                                         1.0f, 50.0f,
+                                         Lambertian{SolidColorTexture{0.7f, 0.3f, 0.1f}}});
+  collidables_.emplace_back(Sphere{glm::vec3{260.0f, 150.0f, 45.0f}, 50.0f, Dielectric{1.5f}});
+  collidables_.emplace_back(Sphere{glm::vec3{0.0f, 150.0f, 145.0f}, 50.0f, Metal{glm::vec3{0.8f, 0.8f, 0.9f}, 1.0f}});
+  collidables_.emplace_back(Sphere{glm::vec3{360.0f, 150.0f, 145.0f}, 70.0f, Dielectric{1.5f}});
+  collidables_.emplace_back(ConstantMedium{Sphere{glm::vec3{360.0f, 150.0f, 145.0f}, 70.0f, Dielectric{1.5f}},
+                                           0.2f, SolidColorTexture{0.2f, 0.4f, 0.9f}});
+  collidables_.emplace_back(ConstantMedium{Sphere{glm::vec3{0.0f, 0.0f, 0.0f}, 5000.0f, Dielectric{1.5f}},
+                                           0.0001f, SolidColorTexture{1.0f, 1.0f, 1.0f}});
+  collidables_.emplace_back(Sphere{glm::vec3{400.0f, 200.0f, 400.0f}, 100.0f,
+                                   Lambertian{ImageTexture{"resources/textures/earthmap.png"}}});
+  collidables_.emplace_back(Sphere{glm::vec3{220.0f, 280.0f, 300.0f}, 80.0f, Lambertian{NoiseTexture{0.1f}}});
+  {  // White spheres
+    constexpr uint32_t kNumSpheres = 1000;
+    for (uint32_t i = 0; i < kNumSpheres; ++i) {
+      collidables_.emplace_back(RotateTranslate{Sphere{random::Vec3(0.0f, 165.0f), 10.0f,
+                                                       Lambertian{SolidColorTexture{0.73f, 0.73f, 0.73f}}},
+                                                15.0f, glm::vec3(-100.0f, 270.0f, 395.0f)});
+    }
+  }
 
   bvh_ = std::make_unique<BVH>(bvh_split_strategy_, collidables_, 0.0f, 1.0f);
 }
