@@ -17,6 +17,8 @@ glm::vec3 Vec3();
 
 glm::vec3 Vec3(float min, float max);
 
+glm::vec3 CosineDirection();
+
 glm::vec3 InUnitSphere();
 
 glm::vec3 InUnitDisk();

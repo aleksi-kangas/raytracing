@@ -1,5 +1,6 @@
 #include "random.h"
 
+#include <numbers>
 #include <random>
 
 namespace rt::random {
@@ -34,6 +35,16 @@ glm::vec3 Vec3() {
 
 glm::vec3 Vec3(float min, float max) {
   return {Float(min, max), Float(min, max), Float(min, max)};
+}
+
+glm::vec3 CosineDirection() {
+  const auto r1 = Float();
+  const auto r2 = Float();
+  const auto z = glm::sqrt(1.0f - r2);
+  const auto phi = 2.0f * std::numbers::pi_v<float> * r1;
+  const auto x = glm::cos(phi) * glm::sqrt(r2);
+  const auto y = glm::sin(phi) * glm::sqrt(r2);
+  return {x, y, z};
 }
 
 glm::vec3 InUnitSphere() {
