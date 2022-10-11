@@ -5,6 +5,7 @@
 #include "box.h"
 #include "collidable.h"
 #include "constant_medium.h"
+#include "flip.h"
 #include "rectangle.h"
 #include "sphere.h"
 

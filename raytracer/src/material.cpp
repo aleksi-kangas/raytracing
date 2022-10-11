@@ -37,7 +37,7 @@ float Dielectric::ScatteringPDF(const Ray& ray, const Collision& collision, cons
   return 0.0f;
 }
 
-glm::vec3 Dielectric::Emit(float u, float v, const glm::vec3& point) const {
+glm::vec3 Dielectric::Emit(const Ray& ray, const Collision& collision, float u, float v, const glm::vec3& point) const {
   return {0, 0, 0};
 }
 
@@ -64,8 +64,16 @@ float DiffuseLight::ScatteringPDF(const Ray& ray, const Collision& collision, co
   return 0.0f;
 }
 
-glm::vec3 DiffuseLight::Emit(float u, float v, const glm::vec3& point) const {
-  return std::visit([&](const auto& texture) { return texture.Sample(u, v, point); }, emit_);
+glm::vec3 DiffuseLight::Emit(const Ray& ray,
+                             const Collision& collision,
+                             float u,
+                             float v,
+                             const glm::vec3& point) const {
+  if (collision.outside) {
+    return std::visit([&](const auto& texture) { return texture.Sample(u, v, point); }, emit_);
+  } else {
+    return {0, 0, 0};
+  }
 }
 
 Isotropic::Isotropic(glm::vec3 albedo) : albedo_{SolidColorTexture{albedo}} {}
@@ -88,7 +96,7 @@ float Isotropic::ScatteringPDF(const Ray& ray, const Collision& collision, const
   return 0.0f;
 }
 
-glm::vec3 Isotropic::Emit(float u, float v, const glm::vec3& point) const {
+glm::vec3 Isotropic::Emit(const Ray& ray, const Collision& collision, float u, float v, const glm::vec3& point) const {
   return {0, 0, 0};
 }
 
@@ -114,7 +122,7 @@ float Lambertian::ScatteringPDF(const Ray& ray, const Collision& collision, cons
   return cosine < 0.0f ? 0.0f : cosine / std::numbers::pi_v<float>;
 }
 
-glm::vec3 Lambertian::Emit(float u, float v, const glm::vec3& point) const {
+glm::vec3 Lambertian::Emit(const Ray& ray, const Collision& collision, float u, float v, const glm::vec3& point) const {
   return {0, 0, 0};
 }
 
@@ -136,7 +144,7 @@ float Metal::ScatteringPDF(const Ray& ray, const Collision& collision, const Ray
   return 0.0f;
 }
 
-glm::vec3 Metal::Emit(float u, float v, const glm::vec3& point) const {
+glm::vec3 Metal::Emit(const Ray& ray, const Collision& collision, float u, float v, const glm::vec3& point) const {
   return {0, 0, 0};
 }
 

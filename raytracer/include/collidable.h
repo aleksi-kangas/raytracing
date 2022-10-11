@@ -21,17 +21,21 @@ using primitive_t = std::variant<Box,
                                  RectangleYZ,
                                  Sphere>;
 class ConstantMedium;
+class Flip;
 using rotatable_translatable_primitive_t = std::variant<Box,
                                                         ConstantMedium,
+                                                        Flip,
                                                         MovingSphere,
                                                         RectangleXY,
                                                         RectangleXZ,
                                                         RectangleYZ,
                                                         Sphere>;
+
 class RotateTranslate;
 using collidable_t = std::variant<
     Box,
     ConstantMedium,
+    Flip,
     MovingSphere,
     RectangleXY,
     RectangleXZ,

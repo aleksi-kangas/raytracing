@@ -10,6 +10,7 @@ add_library(${PROJECT_NAME}
         include/collision.h
         include/constant_medium.h   src/constant_medium.cpp
         include/crtp.h
+        include/flip.h              src/flip.cpp
         include/material.h          src/material.cpp
         include/image.h             src/image.cpp
         include/onb.h               src/onb.cpp
