@@ -50,6 +50,9 @@ Scene::Scene(SceneType scene_type, float aspect_ratio, BVHSplitStrategy bvh_spli
     case SceneType::Part3Section6:
       InitializePart3Section6();
       break;
+    case SceneType::Part3Section8:
+      InitializePart3Section8();
+      break;
     default:
       throw std::runtime_error{"Unknown scene."};
   }
@@ -535,6 +538,10 @@ void Scene::InitializePart2Section10() {
 }
 
 void Scene::InitializePart3Section6() {
+  InitializePart2Section8Subsection2();
+}
+
+void Scene::InitializePart3Section8() {
   InitializePart2Section8Subsection2();
 }
 

@@ -5,6 +5,7 @@
 #include <variant>
 
 #include "collision.h"
+#include "onb.h"
 #include "random.h"
 #include "utils.h"
 
@@ -98,12 +99,13 @@ bool Lambertian::Scatter(const Ray& ray,
                          glm::vec3& attenuation,
                          Ray& scattered,
                          float& pdf) const {
-  const glm::vec3 scatter_direction = random::InHemisphere(collision.normal);
+  const ONB onb{collision.normal};
+  const glm::vec3 scatter_direction = onb.Local(random::CosineDirection());
   scattered = Ray{collision.point, glm::normalize(scatter_direction), ray.Time()};
   attenuation = std::visit([&](const auto& texture) {
     return texture.Sample(collision.u, collision.v, collision.point);
   }, albedo_);
-  pdf = 0.5f / std::numbers::pi_v<float>;
+  pdf = glm::dot(onb.w, scattered.Direction()) / std::numbers::pi_v<float>;
   return true;
 }
 

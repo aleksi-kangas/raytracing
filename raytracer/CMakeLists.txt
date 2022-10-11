@@ -12,6 +12,7 @@ add_library(${PROJECT_NAME}
         include/crtp.h
         include/material.h          src/material.cpp
         include/image.h             src/image.cpp
+        include/onb.h               src/onb.cpp
         include/perlin.h            src/perlin.cpp
         include/random.h            src/random.cpp
         include/ray.h               src/ray.cpp
