@@ -52,6 +52,11 @@ glm::vec3 InUnitDisk() {
   }
 }
 
+glm::vec3 InHemisphere(const glm::vec3& normal) {
+  const glm::vec3 in_unit_sphere = InUnitSphere();
+  return glm::dot(in_unit_sphere, normal) > 0.0f ? in_unit_sphere : -in_unit_sphere;
+}
+
 glm::vec3 UnitVec3() {
   return glm::normalize(InUnitSphere());
 }

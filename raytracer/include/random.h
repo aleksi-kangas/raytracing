@@ -21,6 +21,8 @@ glm::vec3 InUnitSphere();
 
 glm::vec3 InUnitDisk();
 
+glm::vec3 InHemisphere(const glm::vec3& normal);
+
 glm::vec3 UnitVec3();
 
 }  // namespace rt::random

@@ -140,17 +140,19 @@ glm::vec4 Renderer::RenderPixel(const Ray& ray, int32_t child_rays) {
 
     Ray scattered_ray{};
     glm::vec3 attenuation{0, 0, 0};
+    float pdf = 0.0f;
     const bool scattered = std::visit([&](const auto& material) {
-      return material.Scatter(current_ray,
-                              collision,
-                              attenuation,
-                              scattered_ray);
+      return material.Scatter(current_ray, collision, attenuation, scattered_ray, pdf);
     }, *collision.material);
     if (!scattered) {
       break;
     }
     current_ray = scattered_ray;
-    current_attenuation *= attenuation;
+    current_attenuation *= attenuation * std::visit([&](const auto& material) {
+      return material.ScatteringPDF(current_ray,
+                                    collision,
+                                    scattered_ray);
+    }, *collision.material) / pdf;
   }
   return {color, 1.0f};
 }

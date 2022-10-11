@@ -47,6 +47,9 @@ Scene::Scene(SceneType scene_type, float aspect_ratio, BVHSplitStrategy bvh_spli
     case SceneType::Part2Section10:
       InitializePart2Section10();
       break;
+    case SceneType::Part3Section6:
+      InitializePart3Section6();
+      break;
     default:
       throw std::runtime_error{"Unknown scene."};
   }
@@ -529,6 +532,10 @@ void Scene::InitializePart2Section10() {
   }
 
   bvh_ = std::make_unique<BVH>(bvh_split_strategy_, collidables_, 0.0f, 1.0f);
+}
+
+void Scene::InitializePart3Section6() {
+  InitializePart2Section8Subsection2();
 }
 
 }  // namespace rt

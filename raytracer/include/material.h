@@ -22,8 +22,12 @@ struct Collision;
 template<class T>
 class Material : public CRTP<Material<T>> {
  public:
-  bool Scatter(const Ray& ray, const Collision& collision, glm::vec3& attenuation, Ray& scattered) const {
-    return this->Actual().Scatter(ray, collision, attenuation, scattered);
+  bool Scatter(const Ray& ray, const Collision& collision, glm::vec3& attenuation, Ray& scattered, float& pdf) const {
+    return this->Actual().Scatter(ray, collision, attenuation, scattered, pdf);
+  }
+
+  [[nodiscard]] float ScatteringPDF(const Ray& ray, const Collision& collision, const Ray& scattered) const {
+    return this->Actual().ScatteringPDF(ray, collision, scattered);
   }
 
   [[nodiscard]] glm::vec3 Emit(float u, float v, const glm::vec3& point) const {
@@ -40,7 +44,9 @@ class DiffuseLight : public Material<DiffuseLight> {
   explicit DiffuseLight(glm::vec3 emit);
   explicit DiffuseLight(texture_t emit);
 
-  bool Scatter(const Ray& ray, const Collision& collision, glm::vec3& attenuation, Ray& scattered) const;
+  bool Scatter(const Ray& ray, const Collision& collision, glm::vec3& attenuation, Ray& scattered, float& pdf) const;
+
+  [[nodiscard]] float ScatteringPDF(const Ray& ray, const Collision& collision, const Ray& scattered) const;
 
   [[nodiscard]] glm::vec3 Emit(float u, float v, const glm::vec3& point) const;
 
@@ -52,7 +58,9 @@ class Dielectric : public Material<Dielectric> {
  public:
   explicit Dielectric(float refraction_index);
 
-  bool Scatter(const Ray& ray, const Collision& collision, glm::vec3& attenuation, Ray& scattered) const;
+  bool Scatter(const Ray& ray, const Collision& collision, glm::vec3& attenuation, Ray& scattered, float& pdf) const;
+
+  [[nodiscard]] float ScatteringPDF(const Ray& ray, const Collision& collision, const Ray& scattered) const;
 
   [[nodiscard]] glm::vec3 Emit(float u, float v, const glm::vec3& point) const;
 
@@ -67,7 +75,9 @@ class Isotropic : public Material<Isotropic> {
   explicit Isotropic(glm::vec3 albedo);
   explicit Isotropic(texture_t albedo);
 
-  bool Scatter(const Ray& ray, const Collision& collision, glm::vec3& attenuation, Ray& scattered) const;
+  bool Scatter(const Ray& ray, const Collision& collision, glm::vec3& attenuation, Ray& scattered, float& pdf) const;
+
+  [[nodiscard]] float ScatteringPDF(const Ray& ray, const Collision& collision, const Ray& scattered) const;
 
   [[nodiscard]] glm::vec3 Emit(float u, float v, const glm::vec3& point) const;
 
@@ -79,7 +89,9 @@ class Lambertian : public Material<Lambertian> {
  public:
   explicit Lambertian(texture_t albedo);
 
-  bool Scatter(const Ray& ray, const Collision& collision, glm::vec3& attenuation, Ray& scattered) const;
+  bool Scatter(const Ray& ray, const Collision& collision, glm::vec3& attenuation, Ray& scattered, float& pdf) const;
+
+  [[nodiscard]] float ScatteringPDF(const Ray& ray, const Collision& collision, const Ray& scattered) const;
 
   [[nodiscard]] glm::vec3 Emit(float u, float v, const glm::vec3& point) const;
 
@@ -91,7 +103,9 @@ class Metal : public Material<Metal> {
  public:
   explicit Metal(glm::vec3 albedo, float fuzziness);
 
-  bool Scatter(const Ray& ray, const Collision& collision, glm::vec3& attenuation, Ray& scattered) const;
+  bool Scatter(const Ray& ray, const Collision& collision, glm::vec3& attenuation, Ray& scattered, float& pdf) const;
+
+  [[nodiscard]] float ScatteringPDF(const Ray& ray, const Collision& collision, const Ray& scattered) const;
 
   [[nodiscard]] glm::vec3 Emit(float u, float v, const glm::vec3& point) const;
 

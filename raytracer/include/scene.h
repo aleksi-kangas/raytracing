@@ -28,6 +28,7 @@ enum SceneType {
   Part2Section8Subsection2 = 9,
   Part2Section9 = 10,
   Part2Section10 = 11,
+  Part3Section6 = 12,
 };
 
 static const char* kSceneNames[] = {"Part 1-13 | Where Next? - Final Render",
@@ -41,7 +42,8 @@ static const char* kSceneNames[] = {"Part 1-13 | Where Next? - Final Render",
                                     "Part 2-8-0 | Instances",
                                     "Part 2-8-2 | Translation and Rotation",
                                     "Part 2-9 | Volumes",
-                                    "Part 2-10 | A Scene Testing All New Features"};
+                                    "Part 2-10 | A Scene Testing All New Features",
+                                    "Part 3-6 | Importance Sampling Materials"};
 
 class Scene {
  public:
@@ -75,5 +77,6 @@ class Scene {
   void InitializePart2Section8Subsection2();
   void InitializePart2Section9();
   void InitializePart2Section10();
+  void InitializePart3Section6();
 };
 }  // namespace rt
