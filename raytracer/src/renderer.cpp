@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <variant>
 
+#include "pdf.h"
 #include "random.h"
 #include "utils.h"
 
@@ -147,21 +148,12 @@ glm::vec4 Renderer::RenderPixel(const Ray& ray, int32_t child_rays) {
     if (!scattered) {
       break;
     }
-    // Hardcoded stuff for now...
-    const glm::vec3 on_light{random::Float(213, 343), 554, random::Float(227, 332)};
-    glm::vec3 to_light = on_light - collision.point;
-    const float distance_squared = glm::dot(to_light, to_light);
-    to_light = glm::normalize(to_light);
-    if (glm::dot(to_light, collision.normal) < 0) {
-      break;
+    if (scene_->Light()) {
+      MixturePDF<CollidablePDF, CosinePDF> mixture_pdf{CollidablePDF{*scene_->Light(), collision.point},
+                                                       CosinePDF{collision.normal}};
+      scattered_ray = Ray{collision.point, mixture_pdf.Generate(), ray.Time()};
+      pdf = mixture_pdf.Value(scattered_ray.Direction());
     }
-    const float light_area = (343 - 213) * (332 - 227);
-    const float light_cosine = glm::abs(to_light.y);
-    if (light_cosine < 0.000001f) {
-      break;
-    }
-    pdf = distance_squared / (light_area * light_cosine);
-    scattered_ray = Ray{collision.point, to_light, ray.Time()};
     current_ray = scattered_ray;
     current_attenuation *= attenuation * std::visit([&](const auto& material) {
       return material.ScatteringPDF(current_ray,

@@ -25,6 +25,10 @@ class RectangleXY : public Collidable<RectangleXY> {
 
   [[nodiscard]] glm::vec3 Centroid() const;
 
+  [[nodiscard]] float PDFValue(const glm::vec3& origin, const glm::vec3& direction) const;
+
+  [[nodiscard]] glm::vec3 RandomTowards(const glm::vec3& origin) const;
+
  private:
   glm::vec2 x_{0.0f, 1.0f}, y_{0.0f, 1.0f};
   float z_ = 0.0f;
@@ -41,6 +45,10 @@ class RectangleXZ : public Collidable<RectangleXZ> {
 
   [[nodiscard]] glm::vec3 Centroid() const;
 
+  [[nodiscard]] float PDFValue(const glm::vec3& origin, const glm::vec3& direction) const;
+
+  [[nodiscard]] glm::vec3 RandomTowards(const glm::vec3& origin) const;
+
  private:
   glm::vec2 x_{0.0f, 1.0f}, z_{0.0f, 1.0f};
   float y_ = 0.0f;
@@ -56,6 +64,10 @@ class RectangleYZ : public Collidable<RectangleYZ> {
   bool BoundingBox(float time0, float time1, AABB& bounding_box) const;
 
   [[nodiscard]] glm::vec3 Centroid() const;
+
+  [[nodiscard]] float PDFValue(const glm::vec3& origin, const glm::vec3& direction) const;
+
+  [[nodiscard]] glm::vec3 RandomTowards(const glm::vec3& origin) const;
 
  private:
   glm::vec2 y_{0.0f, 1.0f}, z_{0.0f, 1.0f};

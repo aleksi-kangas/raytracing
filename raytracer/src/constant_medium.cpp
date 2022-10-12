@@ -51,4 +51,14 @@ glm::vec3 ConstantMedium::Centroid() const {
   return std::visit([](const auto& primitive) { return primitive.Centroid(); }, boundary_);
 }
 
+float ConstantMedium::PDFValue(const glm::vec3& origin, const glm::vec3& direction) const {
+  // TODO
+  return 0.0f;
+}
+
+glm::vec3 ConstantMedium::RandomTowards(const glm::vec3& origin) const {
+  // TODO
+  return {0.0f, 0.0f, 0.0f};
+}
+
 }  // namespace rt

@@ -14,6 +14,7 @@ add_library(${PROJECT_NAME}
         include/material.h          src/material.cpp
         include/image.h             src/image.cpp
         include/onb.h               src/onb.cpp
+        include/pdf.h               src/pdf.cpp
         include/perlin.h            src/perlin.cpp
         include/random.h            src/random.cpp
         include/ray.h               src/ray.cpp

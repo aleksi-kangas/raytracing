@@ -23,4 +23,14 @@ glm::vec3 Flip::Centroid() const {
   return std::visit([](const auto& primitive) { return primitive.Centroid(); }, primitive_);
 }
 
+float Flip::PDFValue(const glm::vec3& origin, const glm::vec3& direction) const {
+  // TODO
+  return 0.0f;
+}
+
+glm::vec3 Flip::RandomTowards(const glm::vec3& origin) const {
+  // TODO
+  return {0.0f, 0.0f, 0.0f};
+}
+
 }  // namespace rt

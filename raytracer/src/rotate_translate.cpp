@@ -75,4 +75,14 @@ glm::mat4 RotateTranslate::InverseTransformationMatrix() const {
   return inverse_rotation * inverse_translation;
 }
 
+float RotateTranslate::PDFValue(const glm::vec3& origin, const glm::vec3& direction) const {
+  // TODO
+  return 0.0f;
+}
+
+glm::vec3 RotateTranslate::RandomTowards(const glm::vec3& origin) const {
+  // TODO
+  return {0.0f, 0.0f, 0.0f};
+}
+
 }  // namespace rt

@@ -52,6 +52,16 @@ glm::vec3 Sphere::Centroid() const {
   return center_;
 }
 
+float Sphere::PDFValue(const glm::vec3& origin, const glm::vec3& direction) const {
+  // TODO
+  return 0.0f;
+}
+
+glm::vec3 Sphere::RandomTowards(const glm::vec3& origin) const {
+  // TODO
+  return {0.0f, 0.0f, 0.0f};
+}
+
 void Sphere::ComputeUV(const glm::vec3& point, float& u, float& v) {
   const float theta = acos(-point.y);
   const float phi = atan2f(-point.z, point.x) + static_cast<float>(std::numbers::pi);
@@ -110,6 +120,16 @@ bool MovingSphere::BoundingBox(float time0, float time1, AABB& bounding_box) con
 
 glm::vec3 MovingSphere::Centroid() const {
   return center0_ + (center1_ - center0_) / 2.0f;
+}
+
+float MovingSphere::PDFValue(const glm::vec3& origin, const glm::vec3& direction) const {
+  // TODO
+  return 0.0f;
+}
+
+glm::vec3 MovingSphere::RandomTowards(const glm::vec3& origin) const {
+  // TODO
+  return {0.0f, 0.0f, 0.0f};
 }
 
 glm::vec3 MovingSphere::CenterAt(float time) const {

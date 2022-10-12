@@ -32,6 +32,7 @@ enum SceneType {
   Part3Section6 = 12,
   Part3Section8 = 13,
   Part3Section9 = 14,
+  Part3Section10 = 15,
 };
 
 static const char* kSceneNames[] = {"Part 1-13 | Where Next? - Final Render",
@@ -48,7 +49,8 @@ static const char* kSceneNames[] = {"Part 1-13 | Where Next? - Final Render",
                                     "Part 2-10 | A Scene Testing All New Features",
                                     "Part 3-6 | Importance Sampling Materials",
                                     "Part 3-8 | Orthonormal Bases",
-                                    "Part 3-9 | Sampling Lights Directly"};
+                                    "Part 3-9 | Sampling Lights Directly",
+                                    "Part 3-10 | Mixture Densities"};
 
 class Scene {
  public:
@@ -60,6 +62,7 @@ class Scene {
 
   [[nodiscard]] Camera* GetCamera() const;
   [[nodiscard]] glm::vec3 BackgroundColor() const;
+  [[nodiscard]] collidable_t* Light() const;
 
  private:
   float aspect_ratio_ = 1.0f;
@@ -69,6 +72,7 @@ class Scene {
   std::unique_ptr<Camera> camera_;
   collidable_container_t collidables_;
   std::unique_ptr<BVH> bvh_;
+  std::unique_ptr<collidable_t> light_;
 
   void InitializePart1Section13();
   void InitializePart1Section13BVH();
@@ -85,5 +89,6 @@ class Scene {
   void InitializePart3Section6();
   void InitializePart3Section8();
   void InitializePart3Section9();
+  void InitializePart3Section10();
 };
 }  // namespace rt

@@ -20,6 +20,10 @@ class Box : public Collidable<Box> {
 
   [[nodiscard]] glm::vec3 Centroid() const;
 
+  [[nodiscard]] float PDFValue(const glm::vec3& origin, const glm::vec3& direction) const;
+
+  [[nodiscard]] glm::vec3 RandomTowards(const glm::vec3& origin) const;
+
  private:
   glm::vec3 min_point_;
   glm::vec3 max_point_;

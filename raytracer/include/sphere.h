@@ -19,6 +19,10 @@ class Sphere : public Collidable<Sphere> {
 
   [[nodiscard]] glm::vec3 Centroid() const;
 
+  [[nodiscard]] float PDFValue(const glm::vec3& origin, const glm::vec3& direction) const;
+
+  [[nodiscard]] glm::vec3 RandomTowards(const glm::vec3& origin) const;
+
  private:
   glm::vec3 center_;
   float radius_;
@@ -36,6 +40,10 @@ class MovingSphere : public Collidable<MovingSphere> {
   bool BoundingBox(float time0, float time1, AABB& bounding_box) const;
 
   [[nodiscard]] glm::vec3 Centroid() const;
+
+  [[nodiscard]] float PDFValue(const glm::vec3& origin, const glm::vec3& direction) const;
+
+  [[nodiscard]] glm::vec3 RandomTowards(const glm::vec3& origin) const;
 
   [[nodiscard]] glm::vec3 CenterAt(float time) const;
 

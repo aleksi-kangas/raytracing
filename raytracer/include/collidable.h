@@ -62,6 +62,14 @@ class Collidable : public CRTP<Collidable<T>> {
     return this->Actual().Centroid();
   }
 
+  [[nodiscard]] float PDFValue(const glm::vec3& origin, const glm::vec3& direction) const {
+    return this->Actual().PDFValue(origin, direction);
+  }
+
+  [[nodiscard]] glm::vec3 RandomTowards(const glm::vec3& origin) const {
+    return this->Actual().RandomTowards(origin);
+  }
+
  private:
   Collidable() = default;
   friend T;

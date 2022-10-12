@@ -41,4 +41,15 @@ bool Box::BoundingBox(float time0, float time1, AABB& bounding_box) const {
 glm::vec3 Box::Centroid() const {
   return min_point_ + (max_point_ - min_point_) * 0.5f;
 }
+
+float Box::PDFValue(const glm::vec3& origin, const glm::vec3& direction) const {
+  // TODO
+  return 0.0f;
+}
+
+glm::vec3 Box::RandomTowards(const glm::vec3& origin) const {
+  // TODO
+  return {0.0f, 0.0f, 0.0f};
+}
+
 }  // namespace rt

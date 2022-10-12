@@ -22,6 +22,10 @@ class RotateTranslate : public Collidable<RotateTranslate> {
 
   [[nodiscard]] glm::vec3 Centroid() const;
 
+  [[nodiscard]] float PDFValue(const glm::vec3& origin, const glm::vec3& direction) const;
+
+  [[nodiscard]] glm::vec3 RandomTowards(const glm::vec3& origin) const;
+
  private:
   rotatable_translatable_primitive_t collidable_;
   // TODO Support rotation around other axes.
