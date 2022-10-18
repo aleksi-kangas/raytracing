@@ -3,50 +3,12 @@
 #include <variant>
 #include <vector>
 
+#include "aabb.h"
 #include "collision.h"
 #include "crtp.h"
 #include "ray.h"
 
 namespace rt {
-class Box;
-class MovingSphere;
-class RectangleXY;
-class RectangleXZ;
-class RectangleYZ;
-class Sphere;
-using primitive_t = std::variant<Box,
-                                 MovingSphere,
-                                 RectangleXY,
-                                 RectangleXZ,
-                                 RectangleYZ,
-                                 Sphere>;
-class ConstantMedium;
-class Flip;
-using rotatable_translatable_primitive_t = std::variant<Box,
-                                                        ConstantMedium,
-                                                        Flip,
-                                                        MovingSphere,
-                                                        RectangleXY,
-                                                        RectangleXZ,
-                                                        RectangleYZ,
-                                                        Sphere>;
-
-class RotateTranslate;
-using collidable_t = std::variant<
-    Box,
-    ConstantMedium,
-    Flip,
-    MovingSphere,
-    RectangleXY,
-    RectangleXZ,
-    RectangleYZ,
-    Sphere,
-    RotateTranslate
->;
-using collidable_container_t = std::vector<collidable_t>;
-
-class AABB;
-
 template<class T>
 class Collidable : public CRTP<Collidable<T>> {
  public:

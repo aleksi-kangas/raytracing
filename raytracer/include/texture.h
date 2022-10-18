@@ -9,14 +9,6 @@
 #include "perlin.h"
 
 namespace rt {
-class SolidColorTexture;
-class CheckerTexture;
-class NoiseTexture;
-class ImageTexture;
-using texture_t = std::variant<SolidColorTexture,
-                               CheckerTexture,
-                               NoiseTexture,
-                               ImageTexture>;
 
 template<class T>
 class Texture : public CRTP<Texture<T>> {

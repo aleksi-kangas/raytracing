@@ -10,12 +10,6 @@
 #include "texture.h"
 
 namespace rt {
-class Dielectric;
-class DiffuseLight;
-class Isotropic;
-class Lambertian;
-class Metal;
-using material_t = std::variant<Dielectric, DiffuseLight, Isotropic, Lambertian, Metal>;
 
 struct Collision;
 

@@ -12,7 +12,7 @@
 namespace rt {
 class RotateTranslate : public Collidable<RotateTranslate> {
  public:
-  explicit RotateTranslate(rotatable_translatable_primitive_t collidable,
+  explicit RotateTranslate(transformable_t collidable,
                            float rotate_y = 0.0f,
                            glm::vec3 translate = {0.0f, 0.0f, 0.0f});
 
@@ -27,7 +27,7 @@ class RotateTranslate : public Collidable<RotateTranslate> {
   [[nodiscard]] glm::vec3 RandomTowards(const glm::vec3& origin) const;
 
  private:
-  rotatable_translatable_primitive_t collidable_;
+  transformable_t collidable_;
   // TODO Support rotation around other axes.
   float rotate_y_;
   glm::vec3 translate_{0.0f, 0.0f, 0.0f};
