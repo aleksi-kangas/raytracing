@@ -17,40 +17,10 @@
 namespace rt {
 
 enum SceneType {
-  Part1Section13 = 0,
-  Part1Section13BVH = 1,
-  Part2Section4Subsection3 = 2,
-  Part2Section4Subsection4 = 3,
-  Part2Section5 = 4,
-  Part2Section6 = 5,
-  Part2Section7Subsection4 = 6,
-  Part2Section7Subsection6 = 7,
-  Part2Section8Subsection0 = 8,
-  Part2Section8Subsection2 = 9,
-  Part2Section9 = 10,
-  Part2Section10 = 11,
-  Part3Section6 = 12,
-  Part3Section8 = 13,
-  Part3Section9 = 14,
-  Part3Section10 = 15,
+  Part3Section10 = 0,
 };
 
-static const char* kSceneNames[] = {"Part 1-13 | Where Next? - Final Render",
-                                    "Part 1-13 | Where Next? - Final Render (BVH)",
-                                    "Part 2-4-3 | Checker Texture",
-                                    "Part 2-4-4 | Rendering a Scene with a Checkered Texture",
-                                    "Part 2-5 | Perlin Noise",
-                                    "Part 2-6 | Image Texture Mapping",
-                                    "Part 2-7-4 | Turning Objects into Lights",
-                                    "Part 2-7-6 | Creating an Empty 'Cornell Box",
-                                    "Part 2-8-0 | Instances",
-                                    "Part 2-8-2 | Translation and Rotation",
-                                    "Part 2-9 | Volumes",
-                                    "Part 2-10 | A Scene Testing All New Features",
-                                    "Part 3-6 | Importance Sampling Materials",
-                                    "Part 3-8 | Orthonormal Bases",
-                                    "Part 3-9 | Sampling Lights Directly",
-                                    "Part 3-10 | Mixture Densities"};
+static const char* kSceneNames[] = {"Part 3-10 | Mixture Densities"};
 
 class Scene {
  public:
@@ -74,21 +44,6 @@ class Scene {
   std::unique_ptr<BVH> bvh_;
   std::unique_ptr<collidable_t> light_;
 
-  void InitializePart1Section13();
-  void InitializePart1Section13BVH();
-  void InitializePart2Section4Subsection3();
-  void InitializePart2Section4Subsection4();
-  void InitializePart2Section5();
-  void InitializePart2Section6();
-  void InitializePart2Section7Subsection4();
-  void InitializePart2Section7Subsection6();
-  void InitializePart2Section8Subsection0();
-  void InitializePart2Section8Subsection2();
-  void InitializePart2Section9();
-  void InitializePart2Section10();
-  void InitializePart3Section6();
-  void InitializePart3Section8();
-  void InitializePart3Section9();
   void InitializePart3Section10();
 };
 }  // namespace rt
