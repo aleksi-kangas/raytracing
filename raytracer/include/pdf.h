@@ -1,17 +1,13 @@
 #pragma once
 
+#include <variant>
+
 #include "glm/glm.hpp"
 
-#include "box.h"
-#include "collidable.h"
-#include "constant_medium.h"
+#include "collidables.h"
 #include "crtp.h"
-#include "flip.h"
 #include "onb.h"
 #include "random.h"
-#include "rectangle.h"
-#include "rotate_translate.h"
-#include "sphere.h"
 
 namespace rt {
 template<class T>
@@ -72,4 +68,6 @@ class MixturePDF : public PDF<MixturePDF<T1, T2>> {
   T1 pdf1_;
   T2 pdf2_;
 };
+
+using pdf_t = std::variant<CosinePDF, CollidablePDF, MixturePDF<CosinePDF, CollidablePDF>>;
 }  // namespace rt

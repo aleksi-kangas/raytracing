@@ -8,7 +8,7 @@
 
 #include "box.h"
 #include "rectangle.h"
-#include "rotate_translate.h"
+#include "transform.h"
 #include "sphere.h"
 
 namespace rt {

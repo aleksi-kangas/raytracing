@@ -7,6 +7,7 @@
 #include "aabb.h"
 #include "collidable.h"
 #include "material.h"
+#include "ray.h"
 #include "rectangle.h"
 
 namespace rt {

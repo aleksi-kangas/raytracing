@@ -2,19 +2,18 @@
 
 #include "glm/glm.hpp"
 
-#include "box.h"
+#include "aabb.h"
 #include "collidable.h"
-#include "constant_medium.h"
-#include "flip.h"
-#include "rectangle.h"
-#include "sphere.h"
+#include "collision.h"
+#include "ray.h"
+#include "transformables.h"
 
 namespace rt {
-class RotateTranslate : public Collidable<RotateTranslate> {
+class Transform : public Collidable<Transform> {
  public:
-  explicit RotateTranslate(transformable_t collidable,
-                           float rotate_y = 0.0f,
-                           glm::vec3 translate = {0.0f, 0.0f, 0.0f});
+  explicit Transform(transformable_t collidable,
+                     float rotate_y = 0.0f,
+                     glm::vec3 translate = {0.0f, 0.0f, 0.0f});
 
   bool Collide(const Ray& ray, float t_min, float t_max, Collision& collision) const;
 

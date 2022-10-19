@@ -2,6 +2,7 @@
 
 #include <filesystem>
 #include <variant>
+#include <vector>
 
 #include "glm/glm.hpp"
 
@@ -9,7 +10,6 @@
 #include "perlin.h"
 
 namespace rt {
-
 template<class T>
 class Texture : public CRTP<Texture<T>> {
  public:
@@ -74,4 +74,6 @@ class ImageTexture : public Texture<ImageTexture> {
   int32_t width_ = 0, height_ = 0;
   std::vector<uint8_t> buffer_;
 };
+
+using texture_t = std::variant<SolidColorTexture, CheckerTexture, NoiseTexture, ImageTexture>;
 }  // namespace rt

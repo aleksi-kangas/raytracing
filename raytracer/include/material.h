@@ -107,4 +107,6 @@ class Metal : public Material<Metal> {
   glm::vec3 albedo_{0, 0, 0};
   float fuzziness_;
 };
+
+using material_t = std::variant<Dielectric, DiffuseLight, Isotropic, Lambertian, Metal>;
 }  // namespace rt

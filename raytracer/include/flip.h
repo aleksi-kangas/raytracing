@@ -2,6 +2,7 @@
 
 #include "box.h"
 #include "collidable.h"
+#include "primitives.h"
 #include "rectangle.h"
 #include "sphere.h"
 

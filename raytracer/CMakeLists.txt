@@ -7,6 +7,7 @@ add_library(${PROJECT_NAME}
         include/bvh.h               src/bvh.cpp
         include/camera.h            src/camera.cpp
         include/collidable.h
+        include/collidables.h
         include/collision.h
         include/constant_medium.h   src/constant_medium.cpp
         include/crtp.h
@@ -16,6 +17,7 @@ add_library(${PROJECT_NAME}
         include/onb.h               src/onb.cpp
         include/pdf.h               src/pdf.cpp
         include/perlin.h            src/perlin.cpp
+        include/primitives.h
         include/random.h            src/random.cpp
         include/ray.h               src/ray.cpp
         include/raytracer.h         src/raytracer.cpp
@@ -24,7 +26,8 @@ add_library(${PROJECT_NAME}
         include/scene.h             src/scene.cpp
         include/sphere.h            src/sphere.cpp
         include/texture.h           src/texture.cpp
-        include/rotate_translate.h src/rotate_translate.cpp
+        include/transformables.h
+        include/transform.h src/transform.cpp
         include/utils.h             src/utils.cpp)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC glfw glad imgui glm thread_pool stbi)

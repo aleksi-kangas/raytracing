@@ -3,12 +3,11 @@
 #include "glm/glm.hpp"
 
 #include "aabb.h"
-#include "box.h"
 #include "collidable.h"
 #include "collision.h"
 #include "material.h"
+#include "primitives.h"
 #include "ray.h"
-#include "sphere.h"
 
 namespace rt {
 class ConstantMedium : public Collidable<ConstantMedium> {

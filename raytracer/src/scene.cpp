@@ -424,13 +424,13 @@ void Scene::InitializePart2Section8Subsection2() {
   collidables_.emplace_back(RectangleXZ{glm::vec2{213.0f, 343.0f}, glm::vec2{227.0f, 332.0f}, 554.0f,
                                         DiffuseLight{glm::vec3{15.0f, 15.0f, 15.0f}}});
 
-  collidables_.emplace_back(RotateTranslate{Box{glm::vec3{0.0f, 0.0f, 0.0f}, glm::vec3{165.0f, 330.0f, 165.0f},
-                                                Lambertian{SolidColorTexture{0.73f, 0.73f, 0.73f}}},
-                                            15.0f, glm::vec3{265.0f, 0.0f, 295.0f}});
+  collidables_.emplace_back(Transform{Box{glm::vec3{0.0f, 0.0f, 0.0f}, glm::vec3{165.0f, 330.0f, 165.0f},
+                                          Lambertian{SolidColorTexture{0.73f, 0.73f, 0.73f}}},
+                                      15.0f, glm::vec3{265.0f, 0.0f, 295.0f}});
 
-  collidables_.emplace_back(RotateTranslate{Box{glm::vec3{0.0f, 0.0f, 0.0f}, glm::vec3{165.0f, 165.0f, 165.0f},
-                                                Lambertian{SolidColorTexture{0.73f, 0.73f, 0.73f}}},
-                                            -18.0f, glm::vec3{130.0f, 0.0f, 65.0f}});
+  collidables_.emplace_back(Transform{Box{glm::vec3{0.0f, 0.0f, 0.0f}, glm::vec3{165.0f, 165.0f, 165.0f},
+                                          Lambertian{SolidColorTexture{0.73f, 0.73f, 0.73f}}},
+                                      -18.0f, glm::vec3{130.0f, 0.0f, 65.0f}});
 
   bvh_ = std::make_unique<BVH>(bvh_split_strategy_, collidables_, 0.0f, 1.0f);
 }
@@ -469,13 +469,13 @@ void Scene::InitializePart2Section9() {
   collidables_.emplace_back(RectangleXZ{glm::vec2{113.0f, 443.0f}, glm::vec2{127.0f, 432.0f}, 554.0f,
                                         DiffuseLight{glm::vec3{7.0f, 7.0f, 7.0f}}});
 
-  collidables_.emplace_back(RotateTranslate{
+  collidables_.emplace_back(Transform{
       ConstantMedium{Box{glm::vec3{0.0f, 0.0f, 0.0f}, glm::vec3{165.0f, 330.0f, 165.0f},
                          Lambertian{SolidColorTexture{0.73f, 0.73f, 0.73f}}},
                      0.01f, SolidColorTexture{0.0f, 0.0f, 0.0f}},
       15.0f, glm::vec3{265.0f, 0.0f, 295.0f}});
 
-  collidables_.emplace_back(RotateTranslate{
+  collidables_.emplace_back(Transform{
       ConstantMedium{Box{glm::vec3{0.0f, 0.0f, 0.0f}, glm::vec3{165.0f, 165.0f, 165.0f},
                          Lambertian{SolidColorTexture{0.73f, 0.73f, 0.73f}}},
                      0.01f, SolidColorTexture{1.0f, 1.0f, 1.0f}},
@@ -538,9 +538,9 @@ void Scene::InitializePart2Section10() {
   {  // White spheres
     constexpr uint32_t kNumSpheres = 1000;
     for (uint32_t i = 0; i < kNumSpheres; ++i) {
-      collidables_.emplace_back(RotateTranslate{Sphere{random::Vec3(0.0f, 165.0f), 10.0f,
-                                                       Lambertian{SolidColorTexture{0.73f, 0.73f, 0.73f}}},
-                                                15.0f, glm::vec3(-100.0f, 270.0f, 395.0f)});
+      collidables_.emplace_back(Transform{Sphere{random::Vec3(0.0f, 165.0f), 10.0f,
+                                                 Lambertian{SolidColorTexture{0.73f, 0.73f, 0.73f}}},
+                                          15.0f, glm::vec3(-100.0f, 270.0f, 395.0f)});
     }
   }
 
@@ -589,13 +589,13 @@ void Scene::InitializePart3Section9() {
   collidables_.emplace_back(Flip{RectangleXZ{glm::vec2{213.0f, 343.0f}, glm::vec2{227.0f, 332.0f}, 554.0f,
                                              DiffuseLight{glm::vec3{15.0f, 15.0f, 15.0f}}}});
 
-  collidables_.emplace_back(RotateTranslate{Box{glm::vec3{0.0f, 0.0f, 0.0f}, glm::vec3{165.0f, 330.0f, 165.0f},
-                                                Lambertian{SolidColorTexture{0.73f, 0.73f, 0.73f}}},
-                                            15.0f, glm::vec3{265.0f, 0.0f, 295.0f}});
+  collidables_.emplace_back(Transform{Box{glm::vec3{0.0f, 0.0f, 0.0f}, glm::vec3{165.0f, 330.0f, 165.0f},
+                                          Lambertian{SolidColorTexture{0.73f, 0.73f, 0.73f}}},
+                                      15.0f, glm::vec3{265.0f, 0.0f, 295.0f}});
 
-  collidables_.emplace_back(RotateTranslate{Box{glm::vec3{0.0f, 0.0f, 0.0f}, glm::vec3{165.0f, 165.0f, 165.0f},
-                                                Lambertian{SolidColorTexture{0.73f, 0.73f, 0.73f}}},
-                                            -18.0f, glm::vec3{130.0f, 0.0f, 65.0f}});
+  collidables_.emplace_back(Transform{Box{glm::vec3{0.0f, 0.0f, 0.0f}, glm::vec3{165.0f, 165.0f, 165.0f},
+                                          Lambertian{SolidColorTexture{0.73f, 0.73f, 0.73f}}},
+                                      -18.0f, glm::vec3{130.0f, 0.0f, 65.0f}});
 
   bvh_ = std::make_unique<BVH>(bvh_split_strategy_, collidables_, 0.0f, 1.0f);
 }
@@ -634,13 +634,13 @@ void Scene::InitializePart3Section10() {
   collidables_.emplace_back(Flip{RectangleXZ{glm::vec2{213.0f, 343.0f}, glm::vec2{227.0f, 332.0f}, 554.0f,
                                              DiffuseLight{glm::vec3{15.0f, 15.0f, 15.0f}}}});
 
-  collidables_.emplace_back(RotateTranslate{Box{glm::vec3{0.0f, 0.0f, 0.0f}, glm::vec3{165.0f, 330.0f, 165.0f},
-                                                Lambertian{SolidColorTexture{0.73f, 0.73f, 0.73f}}},
-                                            15.0f, glm::vec3{265.0f, 0.0f, 295.0f}});
+  collidables_.emplace_back(Transform{Box{glm::vec3{0.0f, 0.0f, 0.0f}, glm::vec3{165.0f, 330.0f, 165.0f},
+                                          Lambertian{SolidColorTexture{0.73f, 0.73f, 0.73f}}},
+                                      15.0f, glm::vec3{265.0f, 0.0f, 295.0f}});
 
-  collidables_.emplace_back(RotateTranslate{Box{glm::vec3{0.0f, 0.0f, 0.0f}, glm::vec3{165.0f, 165.0f, 165.0f},
-                                                Lambertian{SolidColorTexture{0.73f, 0.73f, 0.73f}}},
-                                            -18.0f, glm::vec3{130.0f, 0.0f, 65.0f}});
+  collidables_.emplace_back(Transform{Box{glm::vec3{0.0f, 0.0f, 0.0f}, glm::vec3{165.0f, 165.0f, 165.0f},
+                                          Lambertian{SolidColorTexture{0.73f, 0.73f, 0.73f}}},
+                                      -18.0f, glm::vec3{130.0f, 0.0f, 65.0f}});
 
   bvh_ = std::make_unique<BVH>(bvh_split_strategy_, collidables_, 0.0f, 1.0f);
   light_ = std::make_unique<collidable_t>(RectangleXZ{glm::vec2{213.0f, 343.0f}, glm::vec2{227.0f, 332.0f}, 554.0f,

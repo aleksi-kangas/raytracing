@@ -12,7 +12,7 @@
 #include "flip.h"
 #include "rectangle.h"
 #include "sphere.h"
-#include "rotate_translate.h"
+#include "transform.h"
 
 namespace rt {
 
