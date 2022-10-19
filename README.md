@@ -33,4 +33,4 @@ avoiding virtual functions altogether.
       Pattern*](https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern)
       (CRTP) for compile-time polymorphism (CTP).
 
-![The Next Week](E:\Aleksi\Documents\raytracing\example.png)
+![The Next Week](example.png)
