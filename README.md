@@ -8,10 +8,10 @@
 In order to learn about the essential math and things related to ray tracing, I
 decided to follow the great [Ray Tracing](https://raytracing.github.io/) -book
 series and implement my own version of the ray tracer. I followed the general
-logic and structure of the books, but took some liberty in certain areas. I
-might some day transform the code to use CUDA for accelerated computing.
-Keeping that in mind, some architectural changes (namely aiming for no runtime
-polymorphism) have been made already in the CPU version.
+logic and structure of the books, but took some liberty in certain areas. I have
+an interest in transforming the code into CUDA some day for acceleration
+purposes. Thus, I have made some critical architectural design changes, such as
+avoiding virtual functions altogether.
 
 ## Features & Architectural Differences
 
@@ -25,24 +25,12 @@ polymorphism) have been made already in the CPU version.
     - Accelerated rendering using multiple CPU cores via
       a [thread pool](https://github.com/bshoshany/thread-pool).
 
-- **No runtime (dynamic) polymorphism for collidable objects**
+- **No runtime polymorphism (i.e. virtual functions)**
     - Runtime polymorphism is largely present in the book, and understandably
-      so. It does make the code simpler to understand and easier to implement. But it comes with cost of virtual function overhead at runtime.
+      so. It does make the code simpler to understand and easier to implement.
+      But it comes with cost of virtual function overhead at runtime.
     - Instead, I've opted to use [*Curiously Recurring Template
       Pattern*](https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern)
       (CRTP) for compile-time polymorphism (CTP).
 
-## Results
-
-Without any SIMD or other low-level optimizations the results are as follows:
-
-| Processor       | Threads | Image                          | Resolution | Samples / Pixel | Render Time   |
-|-----------------|---------|--------------------------------|------------|-----------------|---------------|
-| AMD Ryzen 2700X | 16      | In One Weekend (1-13)          | 1200x800   | 500             | 16 min 22 sec |
-| AMD Ryzen 2700X | 16      | In One Weekend (1-13) with BVH | 1200x800   | 500             | 1 min 51 sec  |
-
-The introduction of BVH was a major improvement. There are probably a lot of
-smaller optimizations and low-hanging fruits waiting to be collected. I have
-opted not to do any tricky optimizations before I've completed the book. Later
-on, I plan to take a look at the lower-level inefficiencies and opportunities
-for optimization.
+![The Next Week](E:\Aleksi\Documents\raytracing\example.png)
